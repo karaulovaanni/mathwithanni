@@ -91,6 +91,14 @@ function sameDenVisual(id){
  if(fr.length===2)el.querySelector('p').insertAdjacentHTML('afterend','<div class="task-visual"><div style="width:100%">'+stripFor(nums[0],dens[0])+stripFor(nums[1],dens[1])+lineFor(nums[0],dens[0])+lineFor(nums[1],dens[1])+'</div></div>');
 }
 ['sd1','sd2','sd3','sd4'].forEach(sameDenVisual);
+compareFractions('compareBank','gc1','Сравнение · 5','',2,3,3,4);
+compareFractions('compareBank','gc2','Сравнение · 6','',3,5,2,3);
+compareFractions('compareBank','gc3','Сравнение · 7','',4,8,1,2);
+compareFractions('compareBank','gc4','Сравнение · 8','',5,6,7,9);
+['gc1','gc2','gc3','gc4'].forEach(id=>{
+ const el=document.getElementById(id),fr=[...el.querySelectorAll('.big .frac')],nums=fr.map(x=>+x.firstElementChild.textContent),dens=fr.map(x=>+x.lastElementChild.textContent);
+ el.querySelector('p').insertAdjacentHTML('afterend','<div class="task-visual"><div style="width:100%">'+stripFor(nums[0],dens[0])+stripFor(nums[1],dens[1])+'</div></div>');
+});
 
 // Модель для пятой темы: сравнение единичных долей на одинаковом целом.
 const topicIds=['whole','stories','names','models','compare'],decks=[];

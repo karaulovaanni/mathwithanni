@@ -24,3 +24,10 @@ body{font-size:17px;background:#faf9fc}.hero{background:#f0ebf7;border-radius:18
 .fraction-line .frac{position:absolute;top:16px;left:50%;transform:translateX(-50%);font-size:14px;white-space:nowrap}
 .second-line .mark:after{color:#4d9a78}
 @media(max-width:700px){.equivalent-controls,.same-controls{grid-template-columns:1fr}.rule{font-size:20px;padding:17px 18px}.fraction-line{margin-right:8px;margin-left:8px}}
+
+
+.compare-controls{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:20px 0}
+.compare-bars{gap:18px;margin:20px 0}
+.compare-bars .strip{height:48px}
+@media(max-width:700px){.compare-controls,.compare-bars{grid-template-columns:1fr}}
+

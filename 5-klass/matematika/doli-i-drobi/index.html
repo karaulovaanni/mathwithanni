@@ -22,7 +22,15 @@
 <section id="models"><div class="section-top"><h2>Сравнение дробей с равными знаменателями по правилу и с помощью координатной прямой</h2></div>
 <div class="card"><div class="rule">Если знаменатели равны, больше дробь с большим числителем.</div><div class="grid same-controls"><label>Число равных частей <b id="sameDVal"></b><input id="sameD" type="range" min="3" max="12" value="8"></label><label>Первая дробь: числитель <b id="sameAVal"></b><input id="sameA" type="range" min="1" max="8" value="3"></label><label>Вторая дробь: числитель <b id="sameBVal"></b><input id="sameB" type="range" min="1" max="8" value="5"></label></div><div id="sameFractions" class="formula big"></div><div id="sameBars" class="same-bars"></div><div id="sameLine" class="same-lines"></div><div id="sameRule" class="rule"></div></div><div id="sameDenBank" class="task-bank"></div></section>
 <section id="stories"><div class="section-top"><h2>Применение понятия дроби при решении задач</h2></div><div id="storyBank" class="task-bank"></div></section>
-<section id="compare"><div class="section-top"><h2>Сравнение дробей</h2></div><div class="card compare-lab"><h3>🎚️ Меняй число равных частей</h3><div class="grid"><div><label>Частей в первой ленте<input id="compA" type="range" min="2" max="24" value="3"></label><div id="stripA"></div></div><div><label>Частей во второй ленте<input id="compB" type="range" min="2" max="24" value="8"></label><div id="stripB"></div></div></div><div class="formula big" id="compResult"></div><p id="compExplain" style="text-align:center"></p></div><div class="rule">Сравниваем доли одинаковых целых.</div><div id="compareBank" class="task-bank"></div></section>
+<section id="compare"><div class="section-top"><h2>Сравнение дробей</h2></div>
+<div class="card compare-lab"><h3>🎚️ Собери две дроби</h3><div class="grid compare-controls">
+<label>Числитель первой дроби <b id="compANVal"></b><input id="compAN" type="range" min="1" max="3" value="2"></label>
+<label>Знаменатель первой дроби <b id="compADVal"></b><input id="compAD" type="range" min="2" max="24" value="3"></label>
+<label>Числитель второй дроби <b id="compBNVal"></b><input id="compBN" type="range" min="1" max="8" value="3"></label>
+<label>Знаменатель второй дроби <b id="compBDVal"></b><input id="compBD" type="range" min="2" max="24" value="8"></label>
+</div><div id="compResult" class="formula big"></div><div class="grid compare-bars"><div id="stripA"></div><div id="stripB"></div></div><p id="compExplain" style="text-align:center"></p></div>
+<div class="rule">При разных знаменателях можно найти равные дроби с общим знаменателем, а потом сравнить числители.</div>
+<div id="compareBank" class="task-bank"></div></section>
 <section id="photo"><div class="section-top"><span class="step">7</span><h2>Практикум по фотографии 📋</h2></div><div class="grid" id="photoTasks"></div></section>
 <section id="challenge"><div class="section-top"><span class="step">7</span><h2>Задачи на дроби</h2></div><div class="note"><b>Напоминание.</b> Сначала найди целое и равные части. Для остатка вычти число использованных частей из общего количества. Объясняй выбор знаменателя словами.</div><div class="grid" id="challengeTasks"></div></section>
 <div class="footer">✳ Матемастерская Аньки · Доли и дроби</div></main>
@@ -73,6 +81,18 @@ const den=$('#den'),num=$('#num');function drawPizza(){let d=+den.value,n=slices
 den.oninput=()=>{slices=new Set([...slices].filter(i=>i<+den.value));drawPizza()};num.oninput=()=>{slices=new Set(Array.from({length:+num.value},(_,i)=>i));drawPizza()};$('#clearPizza').onclick=()=>{slices.clear();drawPizza()};drawPizza();
 function selectable(id,count,emoji,countId){const box=$('#'+id);box.innerHTML=Array.from({length:count},(_,i)=>`<button aria-label="${id==='chocolate'?'Долька':'Черепаха'} ${i+1}" aria-pressed="false">${emoji||'◆'}</button>`).join('');function update(){let n=box.querySelectorAll('[aria-pressed=true]').length;$('#'+countId).innerHTML=`Выбрано ${n} из ${count}: ${F(n,count)}`;return n}box.querySelectorAll('button').forEach(b=>b.onclick=()=>{b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')==='true'?'false':'true');update()});update();return update}
 const choc=selectable('chocolate',12,'','chocCount'),turt=selectable('turtles',10,'🐢','turtleCount');$('#chocCheck').onclick=()=>feedback('chocFeedback',choc()===5,choc()===5?'Получилось 5 долек из 12!':'Нужно выбрать ровно 5 долек. Нажми ещё раз, чтобы снять выбор.');$('#turtleCheck').onclick=()=>feedback('turtleFeedback',turt()===4,turt()===4?'Накормлены 4 черепахи из 10.':'Выбери ровно 4 черепахи.');
-$('#ticks').innerHTML=Array.from({length:9},(_,i)=>`<span><b>${i===0?'0':i===8?'1':''}</b></span>`).join('');function line(){let n=+$('#lineSlider').value;$('#point').style.left=(n/8*100)+'%';$('#lineValue').innerHTML=F(n,8)+(n===8?' = 1':n===0?' = 0':'');}$('#lineSlider').oninput=line;line();function compareLab(){let a=+$('#compA').value,b=+$('#compB').value;$('#stripA').innerHTML=strip(1,a);$('#stripB').innerHTML=strip(1,b);$('#compResult').innerHTML=F(1,a)+(a===b?' = ':a<b?' &gt; ':' &lt; ')+F(1,b);$('#compExplain').textContent=a===b?'Делили одинаковые целые на одинаковое число частей — доли равны.':`Одна из ${Math.min(a,b)} частей больше, чем одна из ${Math.max(a,b)} частей такого же целого.`}$('#compA').oninput=compareLab;$('#compB').oninput=compareLab;compareLab();
+$('#ticks').innerHTML=Array.from({length:9},(_,i)=>`<span><b>${i===0?'0':i===8?'1':''}</b></span>`).join('');function line(){let n=+$('#lineSlider').value;$('#point').style.left=(n/8*100)+'%';$('#lineValue').innerHTML=F(n,8)+(n===8?' = 1':n===0?' = 0':'');}$('#lineSlider').oninput=line;line();const compAN=$('#compAN'),compAD=$('#compAD'),compBN=$('#compBN'),compBD=$('#compBD');
+function compareLab(){
+ let dA=+compAD.value,dB=+compBD.value;
+ compAN.max=dA;compAN.value=Math.min(+compAN.value,dA);
+ compBN.max=dB;compBN.value=Math.min(+compBN.value,dB);
+ const nA=+compAN.value,nB=+compBN.value,left=nA*dB,right=nB*dA;
+ const sign=left===right?'=':left<right?' &lt; ':' &gt; ';
+ $('#compANVal').textContent=nA;$('#compADVal').textContent=dA;$('#compBNVal').textContent=nB;$('#compBDVal').textContent=dB;
+ $('#stripA').innerHTML=strip(nA,dA);$('#stripB').innerHTML=strip(nB,dB);
+ $('#compResult').innerHTML=F(nA,dA)+sign+F(nB,dB);
+ $('#compExplain').textContent=left===right?'Дроби равны.':'Полоски одинаковой длины — сравни закрашенные части.';
+}
+[compAN,compAD,compBN,compBD].forEach(x=>x.oninput=compareLab);compareLab();
 score();$('#reset').onclick=()=>{saved={};save();document.querySelectorAll('.task input,.task select').forEach(x=>x.value='');document.querySelectorAll('.task').forEach(x=>{x.classList.remove('done');x.querySelector('.feedback').textContent=''});score()};
 </script><script src="topics.js?v=3"></script></body></html>
