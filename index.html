@@ -39,7 +39,7 @@
     footer{margin-top:34px;padding-top:19px;border-top:1px solid var(--line);color:var(--muted);font-size:14px}
     @media(max-width:600px){.wrap{padding:20px 16px 35px}.hero{margin:24px 0 28px;padding:28px 22px}.trainer-grid{grid-template-columns:1fr}.trainer-card{padding:23px}.brand{font-size:15px}}
     @media(prefers-reduced-motion:reduce){.trainer-card{transition:none}.trainer-card:hover{transform:none}}
-  </style>
+  .grade-category{border:1px solid #ded7ef;background:white;border-radius:18px;padding:0 22px;margin:18px 0}.grade-category>summary{cursor:pointer;font-size:23px;font-weight:bold;color:#6652b7;padding:22px 0}.grade-category[open]{padding-bottom:22px}summary:focus-visible{outline:3px solid #8472d4;outline-offset:3px}</style>
 </head>
 <body>
   <main class="wrap">
@@ -50,8 +50,7 @@
     </section>
     <section class="lessons" aria-labelledby="lessons-title">
       <h2 id="lessons-title">Занятия</h2>
-      <section aria-labelledby="grade-three-title">
-        <h3 class="grade-title" id="grade-three-title">3 класс</h3>
+      <details class="grade-category"><summary>3 класс · выбрать занятие</summary>
         <div class="trainer-grid">
           <a class="trainer-card" href="3-klass/matematika/matematicheskiy-detektiv/index.html">
             <div class="card-top"><span class="card-icon card-icon--formula" aria-hidden="true">x + a</span><span class="badge">3 класс · Урок</span></div>
@@ -60,9 +59,8 @@
             <span class="card-action">Открыть урок <span class="arrow" aria-hidden="true">→</span></span>
           </a>
         </div>
-      </section>
-      <section aria-labelledby="grade-five-title">
-        <h3 class="grade-title" id="grade-five-title">5 класс</h3>
+      </details>
+      <details class="grade-category"><summary>5 класс · выбрать занятие</summary>
         <div class="trainer-grid">
           <a class="trainer-card" href="5-klass/matematika/deliteli-kratnye/index.html?v=3">
             <div class="card-top"><span class="card-icon" aria-hidden="true">÷</span><span class="badge">Урок и практика</span></div>
@@ -95,10 +93,9 @@
             <span class="card-action">Открыть занятие <span class="arrow" aria-hidden="true">→</span></span>
           </a>
         </div>
-      </section>
+      </details>
 
-      <section aria-labelledby="grade-six-title">
-        <h3 class="grade-title" id="grade-six-title">6 класс</h3>
+      <details class="grade-category"><summary>6 класс · выбрать занятие</summary>
         <div class="trainer-grid">
           <a class="trainer-card" href="6-klass/matematika/procenty/index.html">
             <div class="card-top"><span class="card-icon" aria-hidden="true">%</span><span class="badge">Урок и практика · 31 задание</span></div>
@@ -107,10 +104,9 @@
             <span class="card-action">Открыть занятие <span class="arrow" aria-hidden="true">→</span></span>
           </a>
         </div>
-      </section>
+      </details>
 
-      <section aria-labelledby="grade-eight-title">
-        <h3 class="grade-title" id="grade-eight-title">8 класс</h3>
+      <details class="grade-category"><summary>8 класс · выбрать занятие</summary>
         <div class="trainer-grid">
           <a class="trainer-card" href="8-klass/algebra/kvadratny-koren/index.html">
             <div class="card-top"><span class="card-icon" aria-hidden="true">√</span><span class="badge">Урок и практика</span></div>
@@ -119,7 +115,7 @@
             <span class="card-action">Открыть занятие <span class="arrow" aria-hidden="true">→</span></span>
           </a>
         </div>
-      </section>
+      </details>
     </section>
     <section aria-labelledby="trainers-title">
       <h2 id="trainers-title">Тренажёры</h2>
@@ -148,3 +144,4 @@
   </main>
 </body>
 </html>
+
