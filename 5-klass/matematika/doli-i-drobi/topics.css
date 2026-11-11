@@ -87,8 +87,9 @@ body{font-size:17px;background:#faf9fc}.hero{background:#f0ebf7;border-radius:18
 .second-line .mark:after{background:#4d9a78}
 .line-ticks{border-top:3px solid #9980d0;margin:22px 5px 52px}
 .line-ticks>span{height:15px;border-color:#9980d0}
-.line-ticks>span.current:after{content:"";position:absolute;width:10px;height:10px;border-radius:50%;left:-6px;top:-26px;background:#7357ac}
-.line-ticks>span>b{position:absolute;left:0;top:15px;transform:translateX(-50%);font-size:15px;line-height:1.05;white-space:nowrap;font-weight:600}
+.line-ticks>span.current:after{content:"";position:absolute;width:10px;height:10px;border-radius:50%;left:-5.5px;top:-26px;background:#7357ac}
+.line-ticks>span>b{position:absolute;left:-.5px;top:15px;transform:translateX(-50%);font-size:15px;line-height:1.05;white-space:nowrap;font-weight:600}
+.line-ticks>span:first-child>b,.line-ticks>span:last-child>b{left:-1px}
 .line-ticks .frac{font-size:15px}
 .pizza-example{text-align:center;min-height:145px;display:flex;flex-direction:column;justify-content:center}
 .pizza-plates{display:flex;align-items:center;justify-content:center;gap:7px;flex-wrap:wrap;max-width:100%;margin:8px auto}
