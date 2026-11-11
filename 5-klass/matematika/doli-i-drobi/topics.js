@@ -5,6 +5,7 @@ function lineFor(n,d,cls="fraction-line"){
 }
 function stripFor(n,d){return `<div class="strip" aria-label="${n} из ${d} равных частей">${Array.from({length:d},(_,i)=>`<span class="${i<n?'on':''}"></span>`).join('')}</div>`}
 function circleModel(n,d){return `<svg viewBox="0 0 240 240" role="img" aria-label="Круг: ${n} выделенных долей из ${d}">${Array.from({length:d},(_,i)=>{const a=i*2*Math.PI/d-Math.PI/2,b=(i+1)*2*Math.PI/d-Math.PI/2;return `<path d="M120 120 L${120+108*Math.cos(a)} ${120+108*Math.sin(a)} A108 108 0 0 1 ${120+108*Math.cos(b)} ${120+108*Math.sin(b)} Z" fill="${i<n?'#987bc8':'#eee8f5'}" stroke="white" stroke-width="2"/>`}).join('')}</svg>`;}
+document.getElementById('shareBasics').innerHTML=[['Половина',2],['Треть',3],['Четверть',4]].map(([name,d])=>`<article class="share-card"><h3>${name}</h3>${circleModel(1,d)}<div>${F(1,d)}</div></article>`).join('');
 function taskPicture(id,html){const q=document.querySelector('#'+id+' > p');if(q)q.insertAdjacentHTML('afterend','<div class="task-visual">'+html+'</div>');}
 taskPicture('lab1',circleModel(2,7));
 taskPicture('lab2',stripFor(9,9));
@@ -34,7 +35,7 @@ const challenge=document.getElementById('challengeTasks');
 if(challenge){[...challenge.children].forEach(c=>{if(c.id==='challenge4')document.getElementById('compareBank').append(c);else document.getElementById('storyBank').append(c)})}
 
 // Сравнение дробей: используем задания с одинаковыми и разными знаменателями.
-+// Дополнительная практика по § 26. Все дроби в вопросах набираются в окошках.
+// Дополнительная практика по § 26. Все дроби в вопросах набираются в окошках.
 function coordinateLineQuestion(n,d){
  const marks=Array.from({length:d+1},(_,i)=>`<span class="${i===n?'mark':''}">${i===0?'0':i===d?'1':''}</span>`).join('');
  return `<div class="task-visual"><div class="fraction-line" style="--ticks:${d+1}" aria-label="Единичный отрезок от нуля до единицы">${marks}</div></div>`;

@@ -40,3 +40,6 @@ body{font-size:17px;background:#faf9fc}.hero{background:#f0ebf7;border-radius:18
 @media(max-width:650px){.notebook-tasks{padding:0 14px}.notebook-tasks ol{padding-left:22px}}
 @media print{.notebook-tasks{display:block}.notebook-tasks:not([open])>ol{display:block}.notebook-tasks>summary{border-bottom:1px solid #bbb}}
 
+
+.share-basics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:18px 0 24px}.share-card{text-align:center;padding:18px;border:1px solid var(--line);border-radius:14px;background:white}.share-card h3{margin:0;font-size:19px}.share-card svg{display:block;width:142px;height:142px;margin:8px auto}.share-card .frac{font-size:25px}
+@media(max-width:600px){.share-basics{gap:8px}.share-card{padding:12px 5px}.share-card h3{font-size:16px}.share-card svg{width:min(26vw,115px);height:min(26vw,115px)}.share-card .frac{font-size:22px}}

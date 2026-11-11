@@ -11,6 +11,7 @@
 <a href="#compare"><b>Сравнение дробей</b></a>
 </nav>
 <section id="whole"><div class="section-top"><h2>Доли и дроби. Изображение дробей на координатной (числовой) прямой</h2></div>
+<div class="share-basics" id="shareBasics" aria-label="Половина, треть и четверть"></div>
 <div class="grid"><div class="card"><h3>Одна доля</h3><div class="visual"><div class="strip"><span class="on"></span><span></span><span></span><span></span></div></div><p>Целое разделили на 4 равные части. Одна такая часть — <span class="frac"><span>1</span><span>4</span></span> целого.</p></div>
 <div class="card"><h3>Доля и дробь</h3><div class="rule"><b>Доля</b> — одна из равных частей целого.</div><div class="rule"><b>Дробь</b> показывает, сколько равных долей взяли: знаменатель показывает, на сколько равных частей разделили целое, числитель — сколько частей взяли.</div></div></div>
 <div class="source-banks" hidden><div id="equalTasks"></div><div id="nameTasks"></div><div id="modelTasks"></div><div id="lineTasks"></div><div id="storyTasks"></div><div id="compareTasks"></div></div><div id="wholeBank" class="task-bank"></div>
@@ -95,5 +96,5 @@ function compareLab(){
  $('#compExplain').textContent=left===right?'Дроби равны.':'Полоски одинаковой длины — сравни закрашенные части.';
 }
 [compAN,compAD,compBN,compBD].forEach(x=>x.oninput=compareLab);compareLab();
-score();$('#reset').onclick=()=>{saved={};save();document.querySelectorAll('.task input,.task select').forEach(x=>x.value='');document.querySelectorAll('.task').forEach(x=>{x.classList.remove('done');x.querySelector('.feedback').textContent=''});score()};
-</script><script src="topics.js?v=4"></script></body></html>
+score();const reset=$('#reset');if(reset)reset.onclick=()=>{saved={};save();document.querySelectorAll('.task input,.task select').forEach(x=>x.value='');document.querySelectorAll('.task').forEach(x=>{x.classList.remove('done');x.querySelector('.feedback').textContent=''});score()};
+</script><script src="topics.js?v=5"></script></body></html>
