@@ -25,7 +25,7 @@ function shapeSvg(type,n,d,interactive=false){
  return `<div class="shape-box"><svg class="shape-figure" viewBox="0 0 240 170" role="img" aria-label="${type==='strip'?'Полоска':type==='grid'?'Прямоугольная сетка':type==='triangle'?'Треугольник':type==='diamond'?'Ромб':type==='square'?'Квадрат':'Круг'}, ${d} равных частей">${parts}</svg>${interactive?`<div class="paint-count">Выбрано: <b>0</b> из ${d}</div>`:''}</div>`;
 }
 // Пицца собирается по секторам: начинку можно класть на несколько разных долек.
-const pizzaToppings=[['🧀','Сыр'],['🍄','Грибы'],['🍅','Помидоры'],['🫒','Оливки']];let pizzaSlices=[],activeTopping='🧀';
+const pizzaToppings=[['🧀','Сыр','сыром'],['🍄','Грибы','грибами'],['🍅','Помидоры','помидорами'],['🫒','Оливки','оливками']];let pizzaSlices=[],activeTopping='🧀';
 function drawBuildPizza(){
  const d=+document.getElementById('buildPizzaDen').value;document.getElementById('buildPizzaDenVal').textContent=d;
  const svg=document.getElementById('buildPizza'),cx=120,cy=120,r=96;let html=`<circle cx="${cx}" cy="${cy}" r="108" fill="#c78e50"/><circle cx="${cx}" cy="${cy}" r="100" fill="#f4d174"/>`;
@@ -35,7 +35,7 @@ function drawBuildPizza(){
  }
  svg.innerHTML=html;svg.querySelectorAll('[data-slice]').forEach(p=>p.onclick=()=>{const i=+p.dataset.slice;pizzaSlices[i]=pizzaSlices[i]===activeTopping?'':activeTopping;drawBuildPizza()});
  const count=pizzaSlices.slice(0,d).filter(x=>x===activeTopping).length;
- document.getElementById('buildPizzaReadout').innerHTML=`С ${pizzaToppings.find(x=>x[0]===activeTopping)[1].toLowerCase()}: <span class="big">${F(count,d)}</span> долек`;
+ document.getElementById('buildPizzaReadout').innerHTML=`С ${pizzaToppings.find(x=>x[0]===activeTopping)[2]}: <span class="big">${F(count,d)}</span> долек`;
 }
 document.getElementById('buildPizzaDen').addEventListener('input',()=>{pizzaSlices.length=+document.getElementById('buildPizzaDen').value;drawBuildPizza()});
 document.getElementById('toppingPicker').innerHTML=pizzaToppings.map(([emoji,name])=>`<button type="button" data-topping="${emoji}" aria-pressed="${emoji===activeTopping}">${emoji} ${name}</button>`).join('');
