@@ -12,9 +12,10 @@ function pizzaAmount(n,d){
  return items.join('');
 }
 function shapeParts(type,d){
- if(type==='strip')return Array.from({length:d},(_,i)=>`<rect x="${12+i*216/d}" y="35" width="${216/d}" height="100"/>`);
- if(type==='grid')return Array.from({length:d},(_,i)=>{const cols=d/2;return `<rect x="${25+(i%cols)*190/cols}" y="${35+Math.floor(i/cols)*50}" width="${190/cols}" height="50"/>`});
- if(type==='square')return Array.from({length:4},(_,i)=>`<rect x="${55+(i%2)*65}" y="${25+Math.floor(i/2)*60}" width="65" height="60"/>`);
+ const rectPath=(x,y,w,h)=>`M${x} ${y} H${x+w} V${y+h} H${x} Z`;
+ if(type==='strip')return Array.from({length:d},(_,i)=>rectPath(12+i*216/d,35,216/d,100));
+ if(type==='grid')return Array.from({length:d},(_,i)=>{const cols=d/2;return rectPath(25+(i%cols)*190/cols,35+Math.floor(i/cols)*50,190/cols,50)});
+ if(type==='square')return Array.from({length:4},(_,i)=>rectPath(55+(i%2)*65,25+Math.floor(i/2)*60,65,60));
  if(type==='triangle')return ['M120 18 L215 150 L120 106 Z','M215 150 L25 150 L120 106 Z','M25 150 L120 18 L120 106 Z'];
  if(type==='diamond')return ['M120 12 L215 85 L120 85 Z','M215 85 L120 158 L120 85 Z','M120 158 L25 85 L120 85 Z','M25 85 L120 12 L120 85 Z'];
  return Array.from({length:d},(_,i)=>{const a=i*2*Math.PI/d-Math.PI/2,b=(i+1)*2*Math.PI/d-Math.PI/2;return `M120 85 L${120+66*Math.cos(a)} ${85+66*Math.sin(a)} A66 66 0 0 1 ${120+66*Math.cos(b)} ${85+66*Math.sin(b)} Z`});
