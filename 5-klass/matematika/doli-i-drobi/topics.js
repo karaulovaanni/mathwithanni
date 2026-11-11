@@ -11,6 +11,35 @@ function pizzaAmount(n,d){
  if(rest)items.push(`<div class="pizza-piece">${circleModel(rest,d)}</div>`);
  return items.join('');
 }
+function shapeParts(type,d){
+ if(type==='strip')return Array.from({length:d},(_,i)=>`<rect x="${12+i*216/d}" y="35" width="${216/d}" height="100"/>`);
+ if(type==='grid')return Array.from({length:d},(_,i)=>{const cols=d/2;return `<rect x="${25+(i%cols)*190/cols}" y="${35+Math.floor(i/cols)*50}" width="${190/cols}" height="50"/>`});
+ if(type==='square')return Array.from({length:4},(_,i)=>`<rect x="${55+(i%2)*65}" y="${25+Math.floor(i/2)*60}" width="65" height="60"/>`);
+ if(type==='triangle')return ['M120 18 L215 150 L120 106 Z','M215 150 L25 150 L120 106 Z','M25 150 L120 18 L120 106 Z'];
+ if(type==='diamond')return ['M120 12 L215 85 L120 85 Z','M215 85 L120 158 L120 85 Z','M120 158 L25 85 L120 85 Z','M25 85 L120 12 L120 85 Z'];
+ return Array.from({length:d},(_,i)=>{const a=i*2*Math.PI/d-Math.PI/2,b=(i+1)*2*Math.PI/d-Math.PI/2;return `M120 85 L${120+66*Math.cos(a)} ${85+66*Math.sin(a)} A66 66 0 0 1 ${120+66*Math.cos(b)} ${85+66*Math.sin(b)} Z`});
+}
+function shapeSvg(type,n,d,interactive=false){
+ const paths=shapeParts(type,d);
+ const parts=paths.map((path,i)=>`<path class="shape-part ${i<n?'filled':''}" d="${path}" ${interactive?`data-paint-index="${i}" tabindex="0" role="button" aria-label="Часть ${i+1} из ${d}" aria-pressed="false"`:''}/>`).join('');
+ return `<div class="shape-box"><svg class="shape-figure" viewBox="0 0 240 170" role="img" aria-label="${type==='strip'?'Полоска':type==='grid'?'Прямоугольная сетка':type==='triangle'?'Треугольник':type==='diamond'?'Ромб':type==='square'?'Квадрат':'Круг'}, ${d} равных частей">${parts}</svg>${interactive?`<div class="paint-count">Выбрано: <b>0</b> из ${d}</div>`:''}</div>`;
+}
+// Пицца собирается по секторам: начинку можно класть на несколько разных долек.
+const pizzaToppings=[['🧀','Сыр'],['🍄','Грибы'],['🍅','Помидоры'],['🫒','Оливки']];let pizzaSlices=[],activeTopping='🧀';
+function drawBuildPizza(){
+ const d=+document.getElementById('buildPizzaDen').value;document.getElementById('buildPizzaDenVal').textContent=d;
+ const svg=document.getElementById('buildPizza'),cx=120,cy=120,r=96;let html=`<circle cx="${cx}" cy="${cy}" r="108" fill="#c78e50"/><circle cx="${cx}" cy="${cy}" r="100" fill="#f4d174"/>`;
+ for(let i=0;i<d;i++){
+  const a=i*2*Math.PI/d-Math.PI/2,b=(i+1)*2*Math.PI/d-Math.PI/2,x1=cx+r*Math.cos(a),y1=cy+r*Math.sin(a),x2=cx+r*Math.cos(b),y2=cy+r*Math.sin(b),large=(b-a)>Math.PI?1:0;
+  html+=`<path class="build-pizza-slice" data-slice="${i}" d="M${cx} ${cy} L${x1} ${y1} A${r} ${r} 0 ${large} 1 ${x2} ${y2} Z"/><text class="build-pizza-topping" x="${cx+57*Math.cos((a+b)/2)}" y="${cy+57*Math.sin((a+b)/2)}" text-anchor="middle" dominant-baseline="middle">${pizzaSlices[i]||''}</text>`;
+ }
+ svg.innerHTML=html;svg.querySelectorAll('[data-slice]').forEach(p=>p.onclick=()=>{const i=+p.dataset.slice;pizzaSlices[i]=pizzaSlices[i]===activeTopping?'':activeTopping;drawBuildPizza()});
+ const count=pizzaSlices.slice(0,d).filter(x=>x===activeTopping).length;
+ document.getElementById('buildPizzaReadout').innerHTML=`С ${pizzaToppings.find(x=>x[0]===activeTopping)[1].toLowerCase()}: <span class="big">${F(count,d)}</span> долек`;
+}
+document.getElementById('buildPizzaDen').addEventListener('input',()=>{pizzaSlices.length=+document.getElementById('buildPizzaDen').value;drawBuildPizza()});
+document.getElementById('toppingPicker').innerHTML=pizzaToppings.map(([emoji,name])=>`<button type="button" data-topping="${emoji}" aria-pressed="${emoji===activeTopping}">${emoji} ${name}</button>`).join('');
+document.getElementById('toppingPicker').querySelectorAll('button').forEach(b=>b.onclick=()=>{activeTopping=b.dataset.topping;document.querySelectorAll('#toppingPicker button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));drawBuildPizza()});drawBuildPizza();
 document.getElementById('properPizzaExample').innerHTML=`<div class="pizza-plates">${pizzaAmount(3,4)}</div><div class="formula">${F(3,4)} &lt; 1</div>`;
 document.getElementById('improperPizzaExample').innerHTML=`<div class="pizza-plates">${pizzaAmount(5,4)}</div><div class="formula">${F(5,4)} &gt; 1</div>`;
 function updatePizzaBuilder(){
@@ -31,6 +60,10 @@ taskPicture('model2','<div class="objects">🐢 🐢 🐢 🐢 <span style="opac
 taskPicture('name3','<div class="mini-fractions">'+F(1,2)+' = '+F(2,4)+'</div>');
 taskPicture('name4','<div class="mini-fractions">'+F(2,3)+' = '+F(4,6)+'</div>');
 stories.forEach((s,i)=>taskPicture('story'+i,'<div class="token-grid">'+Array.from({length:s[3]},(_,j)=>'<span class="token '+(i<7&&j<s[2]?'chosen':'')+'">'+(i<7&&j<s[2]?s[0]:'●')+'</span>').join('')+'</div>'));
+fraction('storyTasks','pizzaStory1','Пицца · 1','🍕 Пиццу разделили на 8 равных долек. Съели 3. Какую часть пиццы оставили?',5,8,'','','<div class="pizza-story">'+pizzaAmount(5,8)+'</div>');
+fraction('storyTasks','pizzaStory2','Пицца · 2','🍕 На двух пиццах было по 6 долек. Съели 7. Какую часть всех долек съели?',7,12,'','','<div class="pizza-story">'+pizzaAmount(7,12)+'</div>');
+fraction('storyTasks','pizzaStory3','Пицца · 3','🍕 Приготовили 3 пиццы по 8 долек. Продали 17 долек. Какую часть всех долек продали?',17,24,'','','<div class="pizza-story">'+pizzaAmount(17,24)+'</div>');
+['pizzaStory1','pizzaStory2','pizzaStory3'].forEach((id,i)=>document.getElementById(id).dataset.level=i+1);
 ['cmp0','cmp1','cmp2','cmp3','photo9','photo10','photo11','photo12'].forEach(id=>{const fr=[...document.querySelectorAll('#'+id+' .big .frac')],ds=fr.map(f=>+f.lastElementChild.textContent);if(ds.length===2)taskPicture(id,'<div style="width:100%">'+stripFor(1,ds[0])+stripFor(1,ds[1])+'</div>');});
 
 // Первый блок: доля, дробь, круг, полоска, набор предметов и числовая прямая.
@@ -68,6 +101,15 @@ modelPractice.forEach((x,i)=>{
  const n=x.remaining?x.d-x.n:x.n;
  const visual=x.type==='circle'?'<div class="task-visual compact-circle">'+circleModel(x.n,x.d)+'</div>':stripFor(x.n,x.d);
  fraction('wholeBank','wModel'+(i+1),'Модель',x.ask,n,x.d,'','',visual);
+});
+const shapeReadings=[['strip',3,7,2],['square',3,4,1],['triangle',2,3,1],['diamond',3,4,2],['grid',5,8,2],['circle',5,8,2],['grid',4,6,3],['strip',7,10,3],['pizza',2,5,3],['square',1,4,2]];
+shapeReadings.forEach(([kind,n,d,level],i)=>{
+ fraction('wholeBank','wReadShape'+(i+1),'Дробь по рисунку',`Запиши дробь, которая показывает закрашенную часть.`,n,d,'','',`<div class="task-visual shape-question">${shapeSvg(kind,n,d)}</div>`);
+ document.getElementById('wReadShape'+(i+1)).dataset.level=level;
+});
+const shadeTasks=[['strip',3,7,1],['circle',2,5,1],['grid',5,8,2],['triangle',2,3,2],['diamond',3,4,2],['square',1,4,1],['pizza',4,7,3],['strip',7,10,3],['grid',3,6,2],['circle',5,9,3]];
+shadeTasks.forEach(([kind,n,d,level],i)=>{
+ add('wholeBank',{id:'wShade'+(i+1),label:'Закрась долю',q:`Закрась на фигуре долю ${F(n,d)}.`,kind:'paint',answer:n,level,visual:`<div class="task-visual shape-question">${shapeSvg(kind,0,d,true)}</div>`});
 });
 const coordinatePractice=[[2,5],[4,7],[7,10],[3,8],[8,12],[1,6],[5,9],[9,10],[11,12],[3,4]];
 coordinatePractice.forEach(([n,d],i)=>fraction('wholeBank','wLine'+(i+1),'Координатная прямая','Запиши координату отмеченной точки.',n,d,'','',coordinateLineQuestion(n,d)));
