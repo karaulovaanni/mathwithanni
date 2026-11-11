@@ -1,0 +1,159 @@
+[hidden]{display:none!important}.wrap{max-width:960px}.hero{padding:28px 32px;background:#e9f7f6;grid-template-columns:1fr}.hero h1{font-size:44px;letter-spacing:-1px}.hero-art,.hero .chips{display:none}.hero p{font-size:17px;margin-bottom:0}.topic-toolbar{display:flex;align-items:center;gap:18px;margin:20px 0;color:var(--muted);font-size:15px}.topic-menu{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:24px 0}.topic-menu a{display:grid;grid-template-columns:50px 1fr;column-gap:14px;padding:23px;color:var(--ink);text-decoration:none;background:white;border:1px solid var(--line);border-radius:18px}.topic-menu a:hover{border-color:var(--purple);background:#f0fbfa}.topic-menu b{font-size:20px}.topic-menu small{grid-column:2;color:var(--muted);font-size:15px}.topic-icon{grid-row:1 / 3;font-size:33px;align-self:center}section{margin:24px 0 40px}.section-top{margin-bottom:24px}.section-top h2{margin:0}.rule{border:1px solid #a9cbb9;border-left:6px solid #53886c;background:#edf7f0;padding:25px 28px;font-size:23px;line-height:1.55;font-weight:600;margin:24px 0}.rule:before{content:'ЗАПОМНИ';display:block;font-size:12px;letter-spacing:2px;color:#477b60;font-weight:800;margin-bottom:10px}.note{font-size:18px}.task-deck{margin:28px 0;border:1px solid var(--line);border-radius:22px;padding:22px;background:#eff9f8}.deck-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.deck-top h3{margin:0;font-size:23px}.deck-numbers{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}.deck-numbers button{min-width:42px;padding:7px 10px;background:white;border-radius:10px;position:relative}.deck-numbers button[aria-current=true]{background:var(--purple);color:white;border-color:var(--purple)}.deck-numbers button.solved:after{content:'✓';position:absolute;right:-4px;top:-7px;font-size:10px;line-height:17px;width:17px;height:17px;border-radius:50%;background:#d9efdf;color:#247348}.deck-body>.task{margin:0;border-radius:15px}.task>p{font-size:22px;line-height:1.6}.task .frac:not(.edit){font-size:30px}.task .feedback .frac{font-size:22px}.task .tag{display:none}.task-visual{display:flex;gap:16px;align-items:center;justify-content:center;flex-wrap:wrap;background:#f8fdfd;border-radius:15px;margin:18px 0;padding:20px}.task-visual svg{width:190px;height:190px}.task-visual .strip{width:100%}.token-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;width:min(470px,100%)}.token{aspect-ratio:1;border-radius:7px;background:#dfefee;display:grid;place-items:center;font-size:18px}.token.chosen{background:#b8e5e2;outline:1px solid #94cfcb}.deck-bottom{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:18px}.deck-position{font-size:14px;color:var(--muted)}button:disabled{opacity:.4;cursor:default}.deck-complete{padding:15px;background:#e2f1e7;border-radius:12px;color:#286a46;font-weight:700;margin-top:15px}.topic-next{display:block;margin-top:28px;text-align:right;font-weight:700;text-decoration:none}.task .answer-row{margin-top:16px}.mini-fractions{flex-wrap:wrap}.compare-select{max-width:100%}.task-visual .objects{font-size:24px}
+@media(max-width:650px){.topic-menu{grid-template-columns:1fr}.topic-menu a{padding:18px}.hero{padding:24px}.hero h1{font-size:36px}.rule{padding:20px;font-size:21px}.task-deck{padding:14px}.task>p{font-size:20px}.token-grid{grid-template-columns:repeat(8,1fr)}.topic-toolbar{align-items:flex-start}.deck-bottom{flex-wrap:wrap}.task-visual{padding:15px}.task-visual svg{width:165px;height:165px}.hero p{font-size:16px}}
+
+/* Спокойная страница: сохраняем сиреневый и мятный акценты, убираем декоративные плашки. */
+body{font-size:17px;background:#f9fcfc}.hero{background:#ebf7f6;border-radius:18px;padding:30px 34px}.hero h1{font-size:clamp(34px,5vw,48px);letter-spacing:-.5px}.hero-art,.chips{display:none}.topic-toolbar{margin:14px 0}.topic-menu a{display:block;padding:16px 20px;border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent}.topic-menu a:hover{background:#f2f8f8}.topic-menu b{font-size:18px;font-weight:650}.topic-menu small,.topic-icon{display:none}.topic-menu{display:block;gap:0}.rule{font-size:20px;padding:18px 22px;border-radius:12px}.rule:before{display:none}.step{display:none}.section-top{margin-bottom:18px}.section-top h2{font-size:27px}.card{border-radius:14px}.task-deck{padding:16px;border-radius:16px;background:#f2f8f8}.deck-top h3{font-size:20px}.task>p{font-size:20px}.task-visual{background:transparent}.deck-complete{font-weight:600}.footer{font-size:13px}
+
+
+/* Лаконичные наглядные модели и правила дробей. */
+.topic-menu b{line-height:1.45}
+.section-top h2{font-size:clamp(22px,3vw,28px);font-weight:700}
+.rule{font-size:22px;line-height:1.5;padding:20px 24px;margin:18px 0;background:#e5f3eb;border:0;border-left:4px solid #73a889;border-radius:8px;font-weight:650}
+.hero{margin:20px 0 16px}
+.card{box-shadow:none}
+.task-bank{display:none}
+.equivalent-controls,.same-controls{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin:22px 0}
+.equivalent-bars,.same-bars{display:grid;gap:14px;margin:20px auto;max-width:720px}
+.equivalent-bars .strip,.same-bars .strip{height:42px}
+.same-lines{display:grid;gap:20px;max-width:720px;margin:25px auto 32px}
+.fraction-line{display:grid;grid-template-columns:repeat(var(--ticks,9),minmax(0,1fr));align-items:start;border-top:2px solid #69aeaa;margin:22px 0 30px}
+.fraction-line>span{height:16px;border-left:1px solid #69aeaa;position:relative;text-align:center}
+.fraction-line>span:first-child{border-left:2px solid #69aeaa}
+.fraction-line>span:last-child{border-right:2px solid #69aeaa}
+.fraction-line>span.mark:after{content:"●";position:absolute;top:-23px;left:50%;transform:translateX(-50%);font-size:18px;color:#59aca7}
+.fraction-line>span .frac{position:absolute;top:16px;left:50%;transform:translateX(-50%);font-size:14px;white-space:nowrap}
+.second-line .mark:after{color:#4d9a78}
+@media(max-width:700px){.equivalent-controls,.same-controls{grid-template-columns:1fr}.rule{font-size:20px;padding:17px 18px}.fraction-line{margin-right:8px;margin-left:8px}}
+
+
+.compare-controls{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:20px 0}
+.compare-bars{gap:18px;margin:20px 0}
+.compare-bars .strip{height:48px}
+@media(max-width:700px){.compare-controls,.compare-bars{grid-template-columns:1fr}}
+
+
+
+.notebook-tasks{margin:18px 0 24px;padding:0 18px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.notebook-tasks>summary{padding:15px 0;font-weight:700;color:var(--ink)}
+.notebook-tasks ol{margin:0 0 18px;padding-left:25px}
+.notebook-tasks li{padding:5px 5px 7px 2px;break-inside:avoid}
+@media(max-width:650px){.notebook-tasks{padding:0 14px}.notebook-tasks ol{padding-left:22px}}
+@media print{.notebook-tasks{display:block}.notebook-tasks:not([open])>ol{display:block}.notebook-tasks>summary{border-bottom:1px solid #bbb}}
+
+
+.share-basics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:18px 0 24px}.share-card{text-align:center;padding:18px;border:1px solid var(--line);border-radius:14px;background:white}.share-card h3{margin:0;font-size:19px}.share-card svg{display:block;width:142px;height:142px;margin:8px auto}.share-card .frac{font-size:25px}
+@media(max-width:600px){.share-basics{gap:8px}.share-card{padding:12px 5px}.share-card h3{font-size:16px}.share-card svg{width:min(26vw,115px);height:min(26vw,115px)}.share-card .frac{font-size:22px}}
+
+
+/* Уровни тренажёров: спокойные оттенки для быстрой навигации. */
+.deck-numbers{display:grid;gap:8px}
+.deck-number-group{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.deck-level-label{display:inline-flex;align-items:center;gap:6px;min-width:116px;font-size:14px;color:var(--muted);font-weight:700}
+.deck-level-label i{display:grid;place-items:center;width:23px;height:23px;border-radius:50%;font-style:normal;color:var(--ink)}
+.deck-number-group[data-level="1"] .deck-level-label i{background:#e0f5f4}
+.deck-number-group[data-level="2"] .deck-level-label i{background:#e1f0e7}
+.deck-number-group[data-level="3"] .deck-level-label i{background:#f8ebd7}
+.deck-number-group button[data-level="1"]{background:#ecf8f7;border-color:#d3eceb}
+.deck-number-group button[data-level="2"]{background:#edf6f0;border-color:#cfe2d5}
+.deck-number-group button[data-level="3"]{background:#fbf3e8;border-color:#eadbc2}
+.deck-numbers .deck-number-group button[aria-current=true]{background:var(--purple)!important;color:white;border-color:var(--purple)}
+.compact-circle{padding:12px;margin:12px auto;min-height:0}
+.compact-circle svg{display:block;width:150px!important;height:150px!important;max-width:100%;flex:none}
+.compare-rules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:16px 0 24px}
+.compare-rules .rule{margin:0;padding:15px 17px;font-size:17px;line-height:1.45}
+.compare-rules .frac{font-size:20px}
+.line-ticks{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));border-top:3px solid #80d0cb;margin:22px 5px 42px}
+.line-ticks>span{height:14px;border-left:1px solid #80d0cb;position:relative;text-align:center;min-width:0}
+.line-ticks>span:first-child{border-left:2px solid #80d0cb}
+.line-ticks>span:last-child{border-right:2px solid #80d0cb}
+.line-ticks>span.current:after{content:"●";position:absolute;left:50%;top:-25px;transform:translateX(-50%);font-size:17px;line-height:1;color:#59aca7}
+.line-ticks>span>b{position:absolute;left:50%;top:14px;transform:translateX(-50%);font-size:16px;line-height:1.15;white-space:nowrap;font-weight:600}
+.line-ticks .frac{font-size:16px}
+@media(max-width:650px){.deck-level-label{min-width:100%;margin-top:3px}.compare-rules{grid-template-columns:1fr}.line-ticks{margin-left:7px;margin-right:7px}}
+
+/* Подтемы как спокойная сетка карточек; точка и подпись стоят на одной засечке. */
+.wrap{max-width:1280px}
+.topic-menu{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:24px 0}
+.topic-menu a{display:flex;flex-direction:column;justify-content:center;gap:7px;min-height:112px;padding:20px 22px;border:1px solid var(--line);border-radius:16px;background:#fff;text-decoration:none;color:var(--ink)}
+.topic-menu a:hover{border-color:#a7d5d2;background:#f4fbfb}
+.topic-menu small{display:block;color:var(--muted);font-size:13px;line-height:1.2}
+.topic-menu b{font-size:19px;line-height:1.35;font-weight:550}
+.fraction-line,.line-ticks{display:flex;justify-content:space-between;align-items:flex-start;position:relative}
+.fraction-line{border-top:2px solid #69aeaa;margin:22px 0 38px}
+.fraction-line>span,.line-ticks>span{display:block;flex:0 0 0;width:0;height:14px;border:0;border-left:1px solid #69aeaa;position:relative;text-align:center;min-width:0}
+.fraction-line>span:first-child,.line-ticks>span:first-child{border-left:2px solid #69aeaa}
+.fraction-line>span:last-child,.line-ticks>span:last-child{border-left:2px solid #69aeaa;border-right:0}
+.fraction-line>span.mark:after{content:"";position:absolute;width:9px;height:9px;border-radius:50%;background:#59aca7;left:-5px;top:-27px}
+.fraction-line>span .frac{position:absolute;top:14px;left:0;transform:translateX(-50%);font-size:15px;white-space:nowrap}
+.second-line .mark:after{background:#4d9a78}
+.line-ticks{border-top:3px solid #80d0cb;margin:22px 5px 52px}
+.line-ticks>span{height:15px;border-color:#80d0cb}
+.line-ticks>span.current:after{content:"";position:absolute;width:10px;height:10px;border-radius:50%;left:-5.5px;top:-26px;background:#59aca7}
+.line-ticks>span>b{position:absolute;left:-.5px;top:15px;transform:translateX(-50%);font-size:15px;line-height:1.05;white-space:nowrap;font-weight:600}
+.line-ticks>span:first-child>b,.line-ticks>span:last-child>b{left:-1px}
+.line-ticks .frac{font-size:15px}
+.pizza-example{text-align:center;min-height:145px;display:flex;flex-direction:column;justify-content:center}
+.pizza-plates{display:flex;align-items:center;justify-content:center;gap:7px;flex-wrap:wrap;max-width:100%;margin:8px auto}
+.pizza-piece svg{display:block;width:112px!important;height:112px!important;max-width:100%;flex:none}
+.pizza-example .pizza-piece svg{width:104px!important;height:104px!important}
+.pizza-builder{margin-top:18px}
+.pizza-controls{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.pizza-builder-view{min-height:150px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;margin-top:8px;padding:14px;background:#f8fdfd;border-radius:14px}
+.pizza-builder-view .pizza-plates{max-width:700px}
+.pizza-builder-view .frac{font-size:28px}
+@media(max-width:760px){.topic-menu{grid-template-columns:repeat(2,minmax(0,1fr))}.line-ticks{margin-bottom:62px}.pizza-piece svg{width:90px!important;height:90px!important}}
+@media(max-width:560px){.topic-menu{grid-template-columns:1fr;gap:9px}.topic-menu a{min-height:82px;padding:15px 17px}.pizza-controls{grid-template-columns:1fr}.line-ticks>span>b{font-size:12px}.line-ticks .frac{font-size:12px}}
+
+/* Спокойная типографика: правила заметны, но не спорят с заданиями. */
+body{font-weight:400;line-height:1.55}
+h1,h2,h3{font-weight:600}
+h2{letter-spacing:-.25px}
+.rule{background:#f0f8f8;color:var(--ink);border:1px solid #e1eeed;border-left:3px solid #76bdb9;border-radius:9px;padding:16px 19px;margin:14px 0;font-size:18px;line-height:1.5;font-weight:450}
+.rule b,.rule strong{font-weight:650;color:#4a8e8a}
+.compare-rules .rule{font-size:16px;line-height:1.5}
+.section-top h2{font-weight:600}
+.task>p{font-size:19px;line-height:1.5;font-weight:450}
+.card h3{font-weight:600}
+.progress>span{background:#69bdb8}
+.task.done{border-color:#bbdfdd;background:#fcffff}
+.deck-numbers button.solved:after{background:#e4f4f3;color:#4a8a86}
+.deck-number-group[data-level="2"] .deck-level-label i{background:#e8f6f5}
+.deck-number-group[data-level="2"] button[data-level="2"]{background:#eef8f7;border-color:#d3eceb}
+.deck-complete{background:#ecf8f7;color:#488a86}
+.task-visual.shape-question{margin:18px 0;padding:15px;background:#f9fcfc;border:1px solid #eaf3f2}
+.shape-box{display:grid;justify-items:center;gap:8px;width:min(100%,300px);margin:auto}
+.shape-figure{display:block;width:min(100%,260px);height:auto;max-height:190px;overflow:visible}
+.shape-part{fill:#eef6f6;stroke:#6f9f9c;stroke-width:2;vector-effect:non-scaling-stroke}
+.shape-part.filled{fill:#8bceca}
+.shape-part[data-paint-index]{cursor:pointer;transition:fill .15s ease}
+.shape-part[data-paint-index]:hover{fill:#c9eae8}
+.shape-part[data-paint-index].selected{fill:#69bdb8}
+.shape-part:focus-visible{outline:none;stroke:#3a706d;stroke-width:4}
+.paint-count{font-size:15px;color:var(--muted)}
+.pizza-workbench{margin:20px 0;padding:23px}
+.pizza-workbench h3{margin:0 0 14px}
+.pizza-workbench-controls{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center}
+.pizza-workbench-controls label{font-weight:500}
+.pizza-workbench-controls label b{margin-left:8px;color:#4a8e8a}
+.control-label{display:block;font-weight:500;margin-bottom:6px}
+.topping-picker{display:flex;gap:7px;flex-wrap:wrap}
+.topping-picker button{font-size:15px;font-weight:500;padding:7px 10px}
+.topping-picker button[aria-pressed="true"]{background:#e7f7f6;border-color:#79c2be;color:#3a706d}
+.pizza-workbench-view{display:grid;grid-template-columns:minmax(210px,300px) 1fr;align-items:center;justify-content:center;gap:22px;margin:16px auto 0;max-width:660px;padding:17px;background:#f8fdfd;border-radius:14px}
+#buildPizza{display:block;width:min(100%,270px);height:auto;margin:auto}
+.build-pizza-slice{fill:#f1d37f;stroke:#fffaf0;stroke-width:2;cursor:pointer;transition:fill .12s}
+.build-pizza-slice:hover{fill:#f5df9f}
+.build-pizza-topping{font-size:20px;pointer-events:none;font-family:system-ui,sans-serif}
+.pizza-readout{font-size:18px;line-height:1.5}
+.pizza-readout .frac{font-size:27px}
+.pizza-story{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;padding:12px}
+.pizza-story .pizza-piece svg{width:90px!important;height:90px!important}
+@media(max-width:650px){.pizza-workbench-controls,.pizza-workbench-view{grid-template-columns:1fr}.pizza-workbench-view{gap:10px}.pizza-readout{text-align:center}.pizza-story .pizza-piece svg{width:72px!important;height:72px!important}}
+
+/* ТЗ математики: спокойная предметная мастерская без прогресса. */
+body{background:#fffcf6;color:#263f45}.hero{background:#f6ead6}.score,.progress{display:none!important}
+.topic-menu a{background:#fffef9;border-color:#e6dece}.topic-menu a.active{background:#28595b;border-color:#28595b;color:white}
+.rule{background:transparent;border:0;border-left:3px solid #df9875;border-radius:0;padding:8px 20px;font-weight:400;font-size:19px}.rule b,.rule strong{color:#244f54;font-weight:600}
+.compare-rules .rule{background:transparent;font-size:18px}.card{border-color:#e5e4d9;box-shadow:none}.task-deck{background:#f2f4ef}.topic-toolbar{background:#fffcf6}
+.pizzeria-scene{display:block;width:100%;height:920px;border:1px solid #e5dece;border-radius:24px;margin:32px 0;background:#fffaf1}.pizza-workbench[hidden]{display:none!important}
+@media(max-width:760px){.pizzeria-scene{height:1180px}}
