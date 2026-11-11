@@ -1,10 +1,25 @@
 // Перестраиваем исходные упражнения по пяти темам и сохраняем активные тренажёры.
 function moveChildren(fromId,toId){const from=document.getElementById(fromId),to=document.getElementById(toId);if(from&&to)to.append(...from.children)}
 function lineFor(n,d,cls="fraction-line"){
-  return `<div class="${cls}" aria-label="От 0 до 1" style="--ticks:${d+1}">${Array.from({length:d+1},(_,i)=>`<span class="${i===n?'mark':''}">${i===0?'0':i===d?'1':i===n?F(n,d):''}</span>`).join('')}</div>`;
+  return `<div class="${cls}" aria-label="От 0 до 1" style="--ticks:${d+1}">${Array.from({length:d+1},(_,i)=>`<span class="${i===n?'mark':''}">${i===0?'0':i===d?'1':F(i,d)}</span>`).join('')}</div>`;
 }
 function stripFor(n,d){return `<div class="strip" aria-label="${n} из ${d} равных частей">${Array.from({length:d},(_,i)=>`<span class="${i<n?'on':''}"></span>`).join('')}</div>`}
 function circleModel(n,d){return `<svg viewBox="0 0 240 240" role="img" aria-label="Круг: ${n} выделенных долей из ${d}">${Array.from({length:d},(_,i)=>{const a=i*2*Math.PI/d-Math.PI/2,b=(i+1)*2*Math.PI/d-Math.PI/2;return `<path d="M120 120 L${120+108*Math.cos(a)} ${120+108*Math.sin(a)} A108 108 0 0 1 ${120+108*Math.cos(b)} ${120+108*Math.sin(b)} Z" fill="${i<n?'#987bc8':'#eee8f5'}" stroke="white" stroke-width="2"/>`}).join('')}</svg>`;}
+function pizzaAmount(n,d){
+ const whole=Math.floor(n/d),rest=n%d,items=[];
+ for(let i=0;i<whole;i++)items.push(`<div class="pizza-piece">${circleModel(d,d)}</div>`);
+ if(rest)items.push(`<div class="pizza-piece">${circleModel(rest,d)}</div>`);
+ return items.join('');
+}
+document.getElementById('properPizzaExample').innerHTML=`<div class="pizza-plates">${pizzaAmount(3,4)}</div><div class="formula">${F(3,4)} &lt; 1</div>`;
+document.getElementById('improperPizzaExample').innerHTML=`<div class="pizza-plates">${pizzaAmount(5,4)}</div><div class="formula">${F(5,4)} &gt; 1</div>`;
+function updatePizzaBuilder(){
+ const n=+document.getElementById('pizzaNum').value,d=+document.getElementById('pizzaDen').value;
+ document.getElementById('pizzaNumVal').textContent=n;document.getElementById('pizzaDenVal').textContent=d;
+ const relation=n<d?'меньше единицы':n===d?'равна единице':'больше единицы';
+ document.getElementById('pizzaBuilderView').innerHTML=`<div class="pizza-plates">${pizzaAmount(n,d)}</div><div class="formula big">${F(n,d)} <span class="muted">${relation}</span></div>`;
+}
+['pizzaNum','pizzaDen'].forEach(id=>document.getElementById(id).addEventListener('input',updatePizzaBuilder));updatePizzaBuilder();
 document.getElementById('shareBasics').innerHTML=[['Половина',2],['Треть',3],['Четверть',4]].map(([name,d])=>`<article class="share-card"><h3>${name}</h3>${circleModel(1,d)}<div>${F(1,d)}</div></article>`).join('');
 function taskPicture(id,html){const q=document.querySelector('#'+id+' > p');if(q)q.insertAdjacentHTML('afterend','<div class="task-visual">'+html+'</div>');}
 taskPicture('lab1',circleModel(2,7));
@@ -208,8 +223,39 @@ const compareByRule=[
 ];
 compareByRule.forEach(([a,b,c,d,level],i)=>compareFractions('compareBank','ruleCmp'+(i+1),'Сравнение по правилу','',a,b,c,d,level));
 
+// Правильные и неправильные дроби: рисунок-пицца, сравнение с единицей, выбор и запись.
+const typeClassify=[
+ [1,5,'правильная дробь'],[5,8,'правильная дробь'],[7,7,'неправильная дробь'],[9,4,'неправильная дробь'],
+ [3,10,'правильная дробь'],[11,6,'неправильная дробь'],[4,4,'неправильная дробь'],[8,12,'правильная дробь'],
+ [13,9,'неправильная дробь'],[6,11,'правильная дробь'],[15,15,'неправильная дробь'],[17,20,'правильная дробь']
+];
+typeClassify.forEach(([n,d,answer],i)=>{
+ const level=i<4?1:i<8?2:3;
+ choice('typesBank','typeClass'+(i+1),`Классификация · ${i+1}`,`Определи вид дроби: <span class="big">${F(n,d)}</span>`,['правильная дробь','неправильная дробь'],answer==='правильная дробь'?0:1,'','');
+ document.getElementById('typeClass'+(i+1)).dataset.level=level;
+});
+const typeWrite=[[2,5,1],[4,7,1],[6,4,3],[7,5,3],[8,8,3],[10,3,3]];
+typeWrite.forEach(([n,d,level],i)=>{
+ const target=n<d?'запиши правильную дробь':'запиши неправильную дробь';
+ fraction('typesBank','typeWrite'+(i+1),`Запись по рисунку · ${i+1}`,`${target} по круговой модели.`,n,d,'','',`<div class="pizza-plates">${pizzaAmount(n,d)}</div>`);
+ document.getElementById('typeWrite'+(i+1)).dataset.level=level;
+ tasks.find(t=>t.id==='typeWrite'+(i+1)).strict=true;
+});
+const typeCompare=[[3,8,1,5,1],[4,7,8,7,1],[5,6,1,1,1],[9,4,2,1,2],[7,7,9,8,2],[11,12,1,1,2],[13,9,3,2,3],[5,3,2,1,3]];
+typeCompare.forEach(([a,b,c,d,level],i)=>{
+ compareFractions('typesBank','typeCompare'+(i+1),'Сравнение с единицей','',a,b,c,d,level);
+});
+fillNotebook('typesNotebook',[
+ 'Запиши все правильные дроби со знаменателем 6.',
+ 'Запиши все неправильные дроби с числителем 7 и знаменателем от 2 до 8.',
+ `Среди дробей ${F(3,8)}, ${F(9,7)}, ${F(6,6)}, ${F(4,9)}, ${F(11,5)} выпиши правильные, затем неправильные.`,
+ `Сравни каждую дробь с единицей: ${F(5,8)}, ${F(8,8)}, ${F(13,8)}, ${F(7,12)}, ${F(15,12)}.`,
+ `Нарисуй круговые модели дробей ${F(3,5)}, ${F(7,5)} и ${F(10,5)}.`,
+ 'Составь три правильные и три неправильные дроби со знаменателем 9.'
+]);
+
 // Модель для пятой темы: сравнение единичных долей на одинаковом целом.
-const topicIds=['whole','stories','names','models','compare'],decks=[];
+const topicIds=['whole','stories','types','names','models','compare'],decks=[];
 function makeDeck(bankId,title){
  const bank=document.getElementById(bankId);let cards=[...bank.children];if(!cards.length)return;
  function levelOf(id,explicit,index){
@@ -251,6 +297,7 @@ function makeDeck(bankId,title){
 }
 makeDeck('wholeBank','Тренажёр');
 makeDeck('storyBank','Задачи');
+makeDeck('typesBank','Тренажёр');
 makeDeck('equalFractionBank','Тренажёр');
 makeDeck('sameDenBank','Тренажёр');
 makeDeck('compareBank','Тренажёр');
