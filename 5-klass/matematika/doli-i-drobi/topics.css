@@ -72,11 +72,12 @@ body{font-size:17px;background:#faf9fc}.hero{background:#f0ebf7;border-radius:18
 @media(max-width:650px){.deck-level-label{min-width:100%;margin-top:3px}.compare-rules{grid-template-columns:1fr}.line-ticks{margin-left:7px;margin-right:7px}}
 
 /* Подтемы как спокойная сетка карточек; точка и подпись стоят на одной засечке. */
+.wrap{max-width:1280px}
 .topic-menu{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:24px 0}
 .topic-menu a{display:flex;flex-direction:column;justify-content:center;gap:7px;min-height:112px;padding:20px 22px;border:1px solid var(--line);border-radius:16px;background:#fff;text-decoration:none;color:var(--ink)}
 .topic-menu a:hover{border-color:#b7a7d5;background:#f7f4fb}
 .topic-menu small{display:block;color:var(--muted);font-size:13px;line-height:1.2}
-.topic-menu b{font-size:18px;line-height:1.35;font-weight:650}
+.topic-menu b{font-size:19px;line-height:1.35;font-weight:550}
 .fraction-line,.line-ticks{display:flex;justify-content:space-between;align-items:flex-start;position:relative}
 .fraction-line{border-top:2px solid #8069ae;margin:22px 0 38px}
 .fraction-line>span,.line-ticks>span{display:block;flex:0 0 0;width:0;height:14px;border:0;border-left:1px solid #8069ae;position:relative;text-align:center;min-width:0}
