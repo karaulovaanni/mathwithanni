@@ -31,3 +31,12 @@ body{font-size:17px;background:#faf9fc}.hero{background:#f0ebf7;border-radius:18
 .compare-bars .strip{height:48px}
 @media(max-width:700px){.compare-controls,.compare-bars{grid-template-columns:1fr}}
 
+
+
+.notebook-tasks{margin:18px 0 24px;padding:0 18px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.notebook-tasks>summary{padding:15px 0;font-weight:700;color:var(--ink)}
+.notebook-tasks ol{margin:0 0 18px;padding-left:25px}
+.notebook-tasks li{padding:5px 5px 7px 2px;break-inside:avoid}
+@media(max-width:650px){.notebook-tasks{padding:0 14px}.notebook-tasks ol{padding-left:22px}}
+@media print{.notebook-tasks{display:block}.notebook-tasks:not([open])>ol{display:block}.notebook-tasks>summary{border-bottom:1px solid #bbb}}
+
