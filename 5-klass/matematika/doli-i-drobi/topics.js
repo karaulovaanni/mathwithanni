@@ -51,7 +51,7 @@ const modelPractice=[
 ];
 modelPractice.forEach((x,i)=>{
  const n=x.remaining?x.d-x.n:x.n;
- const visual=x.type==='circle'?circleModel(x.n,x.d):stripFor(x.n,x.d);
+ const visual=x.type==='circle'?'<div class="task-visual compact-circle">'+circleModel(x.n,x.d)+'</div>':stripFor(x.n,x.d);
  fraction('wholeBank','wModel'+(i+1),'Модель',x.ask,n,x.d,'','',visual);
 });
 const coordinatePractice=[[2,5],[4,7],[7,10],[3,8],[8,12],[1,6],[5,9],[9,10],[11,12],[3,4]];
@@ -177,9 +177,9 @@ function drawSameDen(){
   document.getElementById('sameRule').innerHTML='Знаменатели равны — сравниваем числители: '+F(x,d)+' '+sign+' '+F(y,d)+'.';
 }
 [sameD,sameA,sameB].forEach(el=>el.addEventListener('input',drawSameDen));drawSameDen();
-function compareFractions(target,id,label,q,n1,d1,n2,d2){
+function compareFractions(target,id,label,q,n1,d1,n2,d2,level=1){
  const answer=n1*d2===n2*d1?'=':n1*d2<n2*d1?'<':'>';
- add(target,{id,label,q:q||`Сравни дроби: <span class="big">${F(n1,d1)} ? ${F(n2,d2)}</span>`,kind:'compare',answer,hint:'',explain:''});
+ add(target,{id,label,q:q||`Сравни дроби: <span class="big">${F(n1,d1)} ? ${F(n2,d2)}</span>`,kind:'compare',answer,hint:'',explain:'',level});
 }
 compareFractions('sameDenBank','sd1','Сравнение · 1','',3,8,5,8);
 compareFractions('sameDenBank','sd2','Сравнение · 2','',7,12,4,12);
@@ -190,25 +190,60 @@ function sameDenVisual(id){
  if(fr.length===2)el.querySelector('p').insertAdjacentHTML('afterend','<div class="task-visual"><div style="width:100%">'+stripFor(nums[0],dens[0])+stripFor(nums[1],dens[1])+lineFor(nums[0],dens[0])+lineFor(nums[1],dens[1])+'</div></div>');
 }
 ['sd1','sd2','sd3','sd4'].forEach(sameDenVisual);
-compareFractions('compareBank','gc1','Сравнение · 5','',2,3,3,4);
-compareFractions('compareBank','gc2','Сравнение · 6','',3,5,2,3);
-compareFractions('compareBank','gc3','Сравнение · 7','',4,8,1,2);
-compareFractions('compareBank','gc4','Сравнение · 8','',5,6,7,9);
+compareFractions('compareBank','gc1','Сравнение · 5','',2,3,3,4,3);
+compareFractions('compareBank','gc2','Сравнение · 6','',3,5,2,3,3);
+compareFractions('compareBank','gc3','Сравнение · 7','',4,8,1,2,3);
+compareFractions('compareBank','gc4','Сравнение · 8','',5,6,7,9,3);
 ['gc1','gc2','gc3','gc4'].forEach(id=>{
  const el=document.getElementById(id),fr=[...el.querySelectorAll('.big .frac')],nums=fr.map(x=>+x.firstElementChild.textContent),dens=fr.map(x=>+x.lastElementChild.textContent);
  el.querySelector('p').insertAdjacentHTML('afterend','<div class="task-visual"><div style="width:100%">'+stripFor(nums[0],dens[0])+stripFor(nums[1],dens[1])+'</div></div>');
 });
 
+// Сравнение по правилам без числовой прямой: одинаковый знаменатель,
+// одинаковый числитель, сравнение с единицей и подбор общего знаменателя.
+const compareByRule=[
+ [4,9,7,9,1],[3,5,3,8,1],[1,11,1,7,1],[8,13,6,13,1],[2,3,2,9,1],[5,12,5,8,1],
+ [5,6,1,1,2],[9,7,1,1,2],[2,3,4,6,2],[1,1,7,8,2],[3,5,5,8,2],[7,10,7,12,2],
+ [5,12,3,8,3],[7,10,2,3,3],[5,9,4,7,3],[7,12,3,5,3],[11,15,7,10,3],[13,18,5,7,3]
+];
+compareByRule.forEach(([a,b,c,d,level],i)=>compareFractions('compareBank','ruleCmp'+(i+1),'Сравнение по правилу','',a,b,c,d,level));
+
 // Модель для пятой темы: сравнение единичных долей на одинаковом целом.
 const topicIds=['whole','stories','names','models','compare'],decks=[];
 function makeDeck(bankId,title){
- const bank=document.getElementById(bankId),cards=[...bank.children];if(!cards.length)return;
+ const bank=document.getElementById(bankId);let cards=[...bank.children];if(!cards.length)return;
+ function levelOf(id,explicit,index){
+  if(explicit)return +explicit;
+  if(bankId==='wholeBank'){
+   if(/^(equal|name|photo[1-4]|wName)/.test(id))return 1;
+   if(/^(line|wLine|wUnit)/.test(id))return 3;
+   return 2;
+  }
+  if(bankId==='storyBank'){
+   const story=id.match(/^story(\d+)$/),extra=id.match(/^storyExtra(\d+)$/),part=id.match(/^storyPart(\d+)$/),photo=id.match(/^photo(\d+)$/);
+   if(photo&&+photo[1]<=8)return 1;
+   if(story)return +story[1]<=2?1:+story[1]<=6?2:3;
+   if(extra)return +extra[1]<=4?1:+extra[1]<=8?2:3;
+   if(part)return +part[1]<=2?2:3;
+   return id==='challenge3'?2:3;
+  }
+  if(bankId==='equalFractionBank')return index<3?1:2;
+  if(bankId==='sameDenBank')return index<2?1:2;
+  if(bankId==='compareBank'){
+   if(/^ruleCmp([1-6])$/.test(id)||/^photo(9|10|11|12)$/.test(id)||/^cmp/.test(id))return 1;
+   if(/^ruleCmp(7|8|9|10|11|12)$/.test(id)||id==='challenge4')return 2;
+   return 3;
+  }
+  return 1;
+ }
+ cards.forEach((c,i)=>c.dataset.level=String(levelOf(c.id,c.dataset.level,i)));
+ cards.sort((a,b)=>+a.dataset.level-+b.dataset.level);
  const deck=document.createElement('div');deck.className='task-deck';
  deck.innerHTML='<div class="deck-top"><h3>'+title+'</h3><span class="deck-position"></span></div><div class="deck-numbers" role="group" aria-label="Номера заданий"></div><div class="deck-body"></div><div class="deck-bottom"><button class="deck-prev">← Назад</button><button class="deck-next">Следующее задание →</button></div><div class="deck-complete" hidden>Все задания решены ✅</div>';
  bank.before(deck);const body=deck.querySelector('.deck-body');cards.forEach(c=>body.append(c));bank.remove();
  let active=0,timer;const numbers=deck.querySelector('.deck-numbers');
- cards.forEach((c,i)=>{const btn=document.createElement('button');btn.textContent=i+1;btn.setAttribute('aria-label','Задание '+(i+1));btn.onclick=()=>show(i);numbers.append(btn)});
- function refresh(){[...numbers.children].forEach((b,i)=>{b.classList.toggle('solved',!!saved[cards[i].id]?.done);b.setAttribute('aria-current',String(i===active))});deck.querySelector('.deck-complete').hidden=!cards.every(c=>saved[c.id]?.done)}
+ for(let level=1;level<=3;level++){const group=document.createElement('div');group.className='deck-number-group';group.dataset.level=level;const labels=['Основа','Практика','Сложнее'];group.setAttribute('role','group');group.setAttribute('aria-label','Уровень '+level+' — '+labels[level-1]);const label=document.createElement('span');label.className='deck-level-label';label.innerHTML='<i>'+level+'</i> '+labels[level-1];group.append(label);cards.forEach((c,i)=>{if(+c.dataset.level!==level)return;const btn=document.createElement('button');btn.textContent=i+1;btn.dataset.level=level;btn.dataset.taskIndex=i;btn.setAttribute('aria-label','Задание '+(i+1)+', уровень '+level);btn.onclick=()=>show(i);group.append(btn)});if(group.children.length>1)numbers.append(group)}
+ function refresh(){numbers.querySelectorAll('button[data-task-index]').forEach(b=>{const card=cards[+b.dataset.taskIndex];b.classList.toggle('solved',!!saved[card.id]?.done);b.setAttribute('aria-current',String(+b.dataset.taskIndex===active))});deck.querySelector('.deck-complete').hidden=!cards.every(c=>saved[c.id]?.done)}
  function show(i){clearTimeout(timer);active=i;cards.forEach((c,j)=>c.hidden=j!==i);deck.querySelector('.deck-position').textContent=`Задание ${i+1} из ${cards.length}`;deck.querySelector('.deck-prev').disabled=i===0;deck.querySelector('.deck-next').disabled=i===cards.length-1;refresh()}
  deck.querySelector('.deck-prev').onclick=()=>show(active-1);deck.querySelector('.deck-next').onclick=()=>show(active+1);
  cards.forEach((c,i)=>new MutationObserver(()=>{refresh();if(c.querySelector('.feedback').classList.contains('good')&&i<cards.length-1){clearTimeout(timer);timer=setTimeout(()=>{if(active===i)show(i+1)},1200)}}).observe(c.querySelector('.feedback'),{childList:true,subtree:true,characterData:true}));
@@ -237,4 +272,5 @@ window.addEventListener('hashchange',openTopic);
 const resetOriginal=document.getElementById('reset')?.onclick;
 if(document.getElementById('reset'))document.getElementById('reset').onclick=()=>{resetOriginal?.();decks.forEach(d=>d.reset())};
 openTopic();
+
 
