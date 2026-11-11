@@ -26,7 +26,7 @@ moveChildren('modelTasks','wholeBank');
 moveChildren('lineTasks','wholeBank');
 for(let i=1;i<=4;i++){const c=document.getElementById('photo'+i);if(c)document.getElementById('wholeBank').append(c)}
 const circleLab=document.getElementById('lab');
-if(circleLab)document.getElementById('whole').insertBefore(circleLab,document.getElementById('wholeBank'));
+if(circleLab)document.getElementById('whole').insertBefore(circleLab,document.getElementById('chocolate').closest('.grid'));
 
 // Задачи из жизни. В наборе остаются транспорт, книги, игры, билеты и другие сюжеты.
 for(let i=5;i<=8;i++){const c=document.getElementById('photo'+i);if(c)document.getElementById('storyBank').append(c)}
