@@ -21,3 +21,8 @@ if(lifeNotebook)bankGroup('В тетрадь · задачи на примене
 $('#tab-life').remove();life.remove();$('#tab-practice').innerHTML='<small>06 · Практикуемся</small>Практика по всем темам';$('#tab-test').innerHTML='<small>07 · Проверяем</small>Проверочная работа';
 $('#whole .next-topic').href='#practice';$('#whole .next-topic').textContent='Дальше: практика по всем темам →';bank.append(practiceNext);showTopic();
 const layout=document.createElement('style');layout.textContent='.practice-group{margin:18px 0;padding:22px;background:#fff;border:1px solid #dce5df;border-radius:20px}.practice-group>summary{cursor:pointer;font-size:21px;font-weight:800}.practice-group>section{margin-top:20px}.model-result ol{font-size:17px;line-height:1.65}.model-result h4{font-size:20px}.model-result .equation{font-size:22px}.cup-scene .model-layout{align-items:start}.cup-scene #cup{position:sticky;top:20px}';document.head.append(layout);
+
+$('#part .opening .equation')?.remove();$('#whole .opening .equation')?.remove();
+$('#whole .cinema-scene').previousElementSibling.querySelector('.equation')?.remove();
+$('#recoverResult').hidden=true;
+$$('[data-topic]').forEach((b,i)=>{b.onkeydown=e=>{const tabs=$$('[data-topic]');let j;if(e.key==='ArrowRight')j=(i+1)%tabs.length;else if(e.key==='ArrowLeft')j=(i+tabs.length-1)%tabs.length;else if(e.key==='Home')j=0;else if(e.key==='End')j=tabs.length-1;else return;e.preventDefault();tabs[j].focus();tabs[j].click()}});
