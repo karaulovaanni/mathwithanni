@@ -10,8 +10,8 @@ function clearFeedback(el){el.textContent='';el.className='feedback'}
 hydrate();
 
 // Topic navigation and direct links. No completion state is stored.
-const topicNames=['meaning','fractions','decimals','part','whole','life','practice','test'];
-const oldTopics={s1:'meaning',s2:'meaning',s3:'fractions',s4:'part',s5:'life',s6:'practice',s7:'whole',s8:'practice',s9:'practice',s10:'notebook'};
+const topicNames=['meaning','fractions','decimals','part','whole','practice','test'];
+const oldTopics={life:'practice',s1:'meaning',s2:'meaning',s3:'fractions',s4:'part',s5:'life',s6:'practice',s7:'whole',s8:'practice',s9:'practice',s10:'notebook'};
 let energyTimer=null,downloadTimer=null;
 function stopEnergy(){clearInterval(energyTimer);energyTimer=null;$('#charge').setAttribute('aria-pressed','false');$('#discharge').setAttribute('aria-pressed','false')}
 function stopDownload(){clearInterval(downloadTimer);downloadTimer=null;$('#downloadPlay').setAttribute('aria-pressed','false')}
