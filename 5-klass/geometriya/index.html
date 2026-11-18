@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Геометрия — Матемастерская Аньки</title>
+<title>Геометрия — Матемастерская</title>
 <link rel="icon" href="../../favicon.ico?v=1" sizes="any">
 <style>
 :root{--ink:#292d38;--muted:#697184;--line:#e5e8f0;--purple:#6652b7;--paper:#fafafd;--blue:#eef2ff;--mint:#edf7f0;--peach:#fff5e6;--rose:#fff0f4}
@@ -40,7 +40,7 @@ footer{padding-top:18px;margin-top:30px;border-top:1px solid var(--line);color:v
 <link rel="stylesheet" href="../../assets/theme.css?v=1">
 <script src="../../assets/reset-fields.js?v=20261117" defer></script></head>
 <body><main class="wrap">
-<a class="home" href="../../index.html">← Матемастерская Аньки</a>
+<a class="home" href="../../index.html">← Матемастерская</a>
 <header class="hero"><div class="kicker">Занятие · 5 класс</div><h1>Геометрия</h1><p class="lead">Изучаем плоскость, прямую, луч, ломаную, многоугольник и периметр.</p></header>
 <nav class="topic-menu" role="tablist" aria-label="Темы геометрии"><button type="button" role="tab" id="tab-plane" aria-controls="topic-plane" aria-selected="true" onclick="showTopic('plane')"><small>Тема 1</small>Плоскость и точки</button><button type="button" role="tab" id="tab-lines" aria-controls="topic-lines" aria-selected="false" onclick="showTopic('lines')"><small>Тема 2</small>Прямая и луч</button><button type="button" role="tab" id="tab-segments" aria-controls="topic-segments" aria-selected="false" onclick="showTopic('segments')"><small>Тема 3</small>Отрезок и его части</button><button type="button" role="tab" id="tab-broken" aria-controls="topic-broken" aria-selected="false" onclick="showTopic('broken')"><small>Тема 4</small>Ломаная</button><button type="button" role="tab" id="tab-polygons" aria-controls="topic-polygons" aria-selected="false" onclick="showTopic('polygons')"><small>Тема 5</small>Многоугольники</button><button type="button" role="tab" id="tab-perimeter" aria-controls="topic-perimeter" aria-selected="false" onclick="showTopic('perimeter')"><small>Тема 6</small>Периметр</button>
 <button type="button" role="tab" id="tab-angles" aria-controls="topic-angles" aria-selected="false" onclick="showTopic('angles')"><small>Тема 7</small>Виды углов</button><button type="button" role="tab" id="tab-measure-angles" aria-controls="topic-measure-angles" aria-selected="false" onclick="showTopic('measure-angles')"><small>Тема 8</small>Транспортир</button><button type="button" role="tab" id="tab-circles" aria-controls="topic-circles" aria-selected="false" onclick="showTopic('circles')"><small>Тема 9</small>Окружность и круг</button>
@@ -149,4 +149,4 @@ function updateCircleModel(){const radius=Number(document.getElementById('circle
 drawProtractor();drawMeasuringAngles();updateAngleModel();updateConstructModel();updateCircleModel();
 </script>
 
-<footer>Матемастерская Аньки · Геометрия, 5 класс</footer></main><script>function toggleAnswer(button){const panel=button.nextElementSibling;const show=panel.hidden;panel.hidden=!show;button.setAttribute('aria-expanded',String(show));button.textContent=show?'Скрыть ответ':'Показать ответ'}function showTopic(id){document.querySelectorAll('.topic-panel').forEach(p=>p.hidden=p.id!=='topic-'+id);document.querySelectorAll('.topic-menu button').forEach(b=>b.setAttribute('aria-selected',String(b.id==='tab-'+id)));history.replaceState(null,'','#'+id)}const aliases={'segment-practice':'segments','midpoints':'segments','reading-drawings':'lines','broken-line-practice':'broken','practice':'perimeter','definitions':'plane','plane-practice':'plane'};const requested=location.hash.slice(1);if(requested){const id=aliases[requested]||requested;if(document.getElementById('topic-'+id))showTopic(id)}</script></body></html>
+<footer>Матемастерская · Геометрия, 5 класс</footer></main><script>function toggleAnswer(button){const panel=button.nextElementSibling;const show=panel.hidden;panel.hidden=!show;button.setAttribute('aria-expanded',String(show));button.textContent=show?'Скрыть ответ':'Показать ответ'}function showTopic(id){document.querySelectorAll('.topic-panel').forEach(p=>p.hidden=p.id!=='topic-'+id);document.querySelectorAll('.topic-menu button').forEach(b=>b.setAttribute('aria-selected',String(b.id==='tab-'+id)));history.replaceState(null,'','#'+id)}const aliases={'segment-practice':'segments','midpoints':'segments','reading-drawings':'lines','broken-line-practice':'broken','practice':'perimeter','definitions':'plane','plane-practice':'plane'};const requested=location.hash.slice(1);if(requested){const id=aliases[requested]||requested;if(document.getElementById('topic-'+id))showTopic(id)}</script></body></html>
