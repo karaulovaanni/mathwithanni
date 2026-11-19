@@ -23,15 +23,40 @@ function triangleTile(sides, letters, mode = 'sides', angles = [], caption = '')
   }).join('');
   const angleMarks = angles.map((angle, i) => {
     if (angle === null) return '';
-    const p = points[i];
+    const vertex = points[i];
     const neighbours = points.filter((_, j) => j !== i);
-    const start = neighbours[0].map((v,j) => p[j] + (v - p[j]) * 18 / Math.hypot(neighbours[0][0]-p[0],neighbours[0][1]-p[1]));
-    const end = neighbours[1].map((v,j) => p[j] + (v - p[j]) * 18 / Math.hypot(neighbours[1][0]-p[0],neighbours[1][1]-p[1]));
-    const centre = [(start[0]+end[0])/2-p[0],(start[1]+end[1])/2-p[1]];
-    const factor = 38 / Math.hypot(...centre);
-    return '<path d="M' + start.join(' ') + 'Q' + p.join(' ') + ' ' + end.join(' ') + '" fill="none" stroke="' + colours[i] + '" stroke-width="2"/><text x="' + (p[0]+centre[0]*factor) + '" y="' + (p[1]+centre[1]*factor) + '" text-anchor="middle" font-size="12">' + angle + '°</text>';
+    const vectors = neighbours.map(point => {
+      const length = Math.hypot(point[0]-vertex[0],point[1]-vertex[1]);
+      return [(point[0]-vertex[0])/length,(point[1]-vertex[1])/length];
+    });
+    const [u,v] = vectors;
+    const radius = 19;
+    const start = [vertex[0]+radius*u[0],vertex[1]+radius*u[1]];
+    const end = [vertex[0]+radius*v[0],vertex[1]+radius*v[1]];
+    const isRight = Math.abs(u[0]*v[0]+u[1]*v[1]) < 0.00001;
+    const corner = [vertex[0]+radius*(u[0]+v[0]),vertex[1]+radius*(u[1]+v[1])];
+    const sweep = u[0]*v[1]-u[1]*v[0] > 0 ? 1 : 0;
+    const path = isRight
+      ? 'M'+start.join(' ')+'L'+corner.join(' ')+'L'+end.join(' ')
+      : 'M'+start.join(' ')+'A'+radius+' '+radius+' 0 0 '+sweep+' '+end.join(' ');
+    const bisector = [u[0]+v[0],u[1]+v[1]];
+    const size = Math.hypot(...bisector);
+    const label = isRight || angle === 'mark' ? '' :
+      '<text x="'+(vertex[0]+bisector[0]*38/size)+'" y="'+(vertex[1]+bisector[1]*38/size)+'" text-anchor="middle">'+ru(angle)+'°</text>';
+    return '<path class="'+(isRight?'right-angle-mark':'angle-arc')+'" d="'+path+'" fill="none" stroke="'+colours[i]+'" stroke-width="2"/>'+label;
   }).join('');
-  return '<div class="tri-tile"><svg viewBox="0 0 260 225" role="img" aria-label="Треугольник ' + letters + '. ' + caption + '"><polygon points="' + path + '" fill="#c8dced" fill-opacity=".45"/>' + lines + angleMarks + labels + '</svg><div class="data">' + caption + '</div></div>';
+  const ticks = mode.startsWith('proof-') ? edges.map(([a,b], index) => {
+    const show = mode === 'proof-sss' || (mode === 'proof-sas' && index < 2) || (mode === 'proof-asa' && index === 0);
+    if (!show) return '';
+    const p=points[a],q=points[b],length=Math.hypot(q[0]-p[0],q[1]-p[1]);
+    const u=[(q[0]-p[0])/length,(q[1]-p[1])/length];
+    return Array.from({length:index+1},(_,n)=>{
+      const offset=(n-index/2)*5;
+      const x=(p[0]+q[0])/2+offset*u[0], y=(p[1]+q[1])/2+offset*u[1];
+      return '<path d="M'+(x-5*u[1])+' '+(y+5*u[0])+'L'+(x+5*u[1])+' '+(y-5*u[0])+'" stroke="'+colours[index]+'" stroke-width="2"/>';
+    }).join('');
+  }).join('') : '';
+  return '<div class="tri-tile"><svg viewBox="0 0 260 225" role="img" aria-label="Треугольник ' + letters + '. ' + caption + '"><polygon points="' + path + '" fill="#c8dced" fill-opacity=".45"/>' + lines + ticks + angleMarks + labels + '</svg><div class="data">' + caption + '</div></div>';
 }
 
 const oldContent = content;
@@ -47,7 +72,7 @@ draw = function() {
   document.getElementById('drawing').innerHTML = triangle(120,195,1,0,'#547fa9','ABC') + triangle(overlay?120:400,195,k,rotation,'#b46e99','DEF');
   document.getElementById('scaleValue').textContent = 'k = ' + ru(k);
   document.getElementById('rotationValue').textContent = rotation + '°';
-  document.getElementById('measure').textContent = 'DE / AB = DF / AC = EF / BC = ' + ru(k);
+  document.getElementById('measure').innerHTML = fraction('DE','AB')+' = '+fraction('DF','AC')+' = '+fraction('EF','BC')+' = '+ru(k);
   document.getElementById('lab-readouts').innerHTML = '<div>Соответственные стороны<b>× ' + ru(k) + '</b>3 → ' + ru(3*k) + ' · 4 → ' + ru(4*k) + '</div><div>Периметр<b>12 → ' + ru(12*k) + '</b>Увеличился в ' + ru(k) + ' раза</div><div>Площадь<b>6 → ' + ru(6*k*k) + '</b>Множитель k² = ' + ru(k*k) + '</div>';
 };
 function connectLab() {
@@ -93,33 +118,46 @@ content = function(index) {
   if(index===4) return oldContent(index)+card('Проведи три опыта','<ol class="experiment-questions"><li>Поставь k = 2. Сравни периметры и площади. Почему множители различаются?</li><li>Поставь k = 0,5. Во сколько раз уменьшились стороны? А площадь?</li><li>Поверни копию. Изменились ли периметр и площадь?</li></ol>')+details('Разбор опыта','При k = 2 периметр увеличился в 2 раза, площадь — в 4. При k = 0,5 стороны уменьшились в 2 раза, площадь — в 4. Поворот сохраняет длины и площади.');
   return oldContent(index);
 };
+let geoApi = null;
+let geoScriptPromise = null;
 function geoSection() {
-  return '<section class="card"><h3>Построй свой пример в GeoGebra</h3><p>Нажми «Открыть лабораторию». Перетаскивай A, B и C. Синий треугольник меняет форму, розовая копия остаётся ему подобной. Ползунок k управляет размером копии.</p><button class="action primary" id="load-geo">Открыть лабораторию GeoGebra</button><p class="geo-status" role="status" id="geo-status"></p><div id="geogebra" class="geo-host" hidden></div><details><summary>Что исследовать</summary><ol><li>Измени положение вершины C. Сравни два треугольника.</li><li>Установи k = 2, затем k = 0,5. Что меняется?</li><li>Можно ли при k = 1 получить равные треугольники?</li></ol></details></section>';
+  const intro = page === 0;
+  return '<section class="card"><h3>'+(intro?'Исследуем форму в GeoGebra':'Проверь признаки на подвижном чертеже')+'</h3><p>'+(intro?'Перемещай вершины A, B и C. Сравни форму синего треугольника и его розовой копии. Понаблюдай, сохраняются ли соответственные углы.':'Перемещай вершины A, B и C и меняй k. Проверь равенство соответственных углов и пропорциональность сторон. Для второго признака выбери стороны AB и AC и угол BAC между ними.')+'</p><p class="geo-status" role="status" id="geo-status">Загружается чертёж GeoGebra…</p><div id="geogebra" class="geo-host"></div><button class="action" id="retry-geo" hidden>Повторить загрузку</button></section>';
 }
 function connectGeo() {
-  const button=document.getElementById('load-geo');
-  if(!button)return;
-  button.onclick=()=>{
-    button.disabled=true;
-    const status=document.getElementById('geo-status');
-    status.textContent='Загружается GeoGebra…';
-    const start=()=>{
-      if(!document.getElementById('geogebra'))return;
-      const host=document.getElementById('geogebra');host.hidden=false;
-      const applet=new GGBApplet({appName:'geometry',width:1000,height:470,scaleContainerClass:'geo-host',showToolBar:false,showMenuBar:false,showAlgebraInput:false,enableShiftDragZoom:false,appletOnLoad(api){
-        api.evalCommand('A=(0,0)\nB=(4,0)\nC=(1,3)\nk=Slider(0.5,2,0.25,1,160,false,true,false,false)\nO=(6,0)\nD=O+k*A\nE=O+k*B\nF=O+k*C\nt1=Polygon(A,B,C)\nt2=Polygon(D,E,F)');
-        api.setValue('k',1.5);api.setVisible('O',false);
-        api.setColor('t1',84,127,169);api.setColor('t2',180,110,153);
-        api.setFilling('t1',.25);api.setFilling('t2',.25);
-        api.setCoordSystem(-2,16,-2,8);
-        status.textContent='Лаборатория готова. Двигай синие вершины и ползунок k.';
-        button.hidden=true;
-      }},true);applet.inject('geogebra');
-    };
-    if(window.GGBApplet){start();return;}
-    const script=document.createElement('script');script.src='https://www.geogebra.org/apps/deployggb.js';script.onload=start;script.onerror=()=>{status.textContent='GeoGebra не загрузилась. Проверь соединение и попробуй снова. Попробуй повторно открыть лабораторию.';button.disabled=false;};document.head.append(script);
+  const host=document.getElementById('geogebra');
+  if(!host)return;
+  const status=document.getElementById('geo-status');
+  const retry=document.getElementById('retry-geo');
+  const introduction=page===0;
+  const fail=()=>{
+    if(!host.isConnected)return;
+    status.textContent='Не удалось загрузить GeoGebra. Проверь соединение и повтори загрузку.';
+    retry.hidden=false;
+    retry.onclick=()=>{geoScriptPromise=null;connectGeo();};
   };
+  if(!geoScriptPromise)geoScriptPromise=new Promise((resolve,reject)=>{
+    if(window.GGBApplet){resolve();return;}
+    const script=document.createElement('script');
+    script.src='https://www.geogebra.org/apps/deployggb.js';
+    script.onload=resolve;script.onerror=reject;document.head.append(script);
+  });
+  geoScriptPromise.then(()=>{
+    if(!host.isConnected)return;
+    const applet=new GGBApplet({appName:'geometry',width:1000,height:480,scaleContainerClass:'geo-host',showToolBar:false,showMenuBar:false,showAlgebraInput:false,enableShiftDragZoom:false,appletOnLoad(api){
+      if(!host.isConnected){api.remove();return;}
+      geoApi=api;
+      api.evalCommand('A=(0,0)\nB=(4,0)\nC=(1,3)\nk=Slider(0.5,2,0.25,1,160,false,true,false,false)\nO=(6,0)\nD=O+k*A\nE=O+k*B\nF=O+k*C\nt1=Polygon(A,B,C)\nt2=Polygon(D,E,F)\nalpha=Angle(B,A,C)\nbeta=Angle(C,B,A)\ndelta=Angle(E,D,F)\nepsilon=Angle(F,E,D)');
+      api.setGraphicsOptions(1,{rightAngleStyle:1});
+      api.setValue('k',1.5);api.setVisible('O',false);api.setVisible('k',!introduction);
+      api.setColor('t1',84,127,169);api.setColor('t2',180,110,153);
+      api.setFilling('t1',.22);api.setFilling('t2',.22);
+      api.setCoordSystem(-2,16,-2,8);
+      status.textContent=introduction?'Чертёж готов. Двигай синие вершины и сравнивай форму треугольников.':'Чертёж готов. Двигай вершины и ползунок k, наблюдай за отмеченными углами.';
+      retry.hidden=true;
+    }},true);
+    applet.inject('geogebra');
+  }).catch(fail);
 }
 const baseRender=render;
 render=function(){overlay=false;baseRender();connectLab();connectGeo();};
-render();
