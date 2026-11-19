@@ -2,11 +2,11 @@
 
 // Each side keeps the same colour in both triangles.
 const colours = ['#547fa9', '#a45e88', '#5e9076'];
-function triangleTile(sides, letters, mode = 'sides', angles = [], caption = '') {
+function triangleTile(sides, letters, mode = 'sides', angles = [], caption = '', sharedUnit = null) {
   const [ab, ac, bc] = sides;
   const cx = (ab * ab + ac * ac - bc * bc) / (2 * ab);
   const cy = Math.sqrt(Math.max(0, ac * ac - cx * cx));
-  const unit = 140 / Math.max(ab, ac, cy);
+  const unit = sharedUnit ?? (140 / Math.max(ab, ac, cy));
   const points = [[48, 171], [48 + ab * unit, 171], [48 + cx * unit, 171 - cy * unit]];
   const edges = [[0,1,ab],[0,2,ac],[1,2,bc]];
   const path = points.map(p => p.join(',')).join(' ');
