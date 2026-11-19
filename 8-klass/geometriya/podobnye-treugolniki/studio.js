@@ -17,7 +17,7 @@ function triangleTile(sides, letters, mode = 'sides', angles = [], caption = '')
     const midX = (p[0] + q[0]) / 2, midY = (p[1] + q[1]) / 2;
     const offsetX = i === 0 ? 0 : i === 1 ? -16 : 17;
     const offsetY = i === 0 ? 24 : -5;
-    const label = mode === 'sides' || (mode === 'sas' && i < 2)
+    const label = mode === 'sides' || (mode === 'sas' && i < 2) || (mode === 'asa' && i === 0)
       ? '<text x="' + (midX + offsetX) + '" y="' + (midY + offsetY) + '" text-anchor="middle" paint-order="stroke" stroke="#fff" stroke-width="5">' + ru(length) + '</text>' : '';
     return '<path d="M' + p.join(' ') + 'L' + q.join(' ') + '" stroke="' + colours[i] + '" stroke-width="3.5"/>' + label;
   }).join('');
@@ -117,7 +117,7 @@ function connectGeo() {
       }},true);applet.inject('geogebra');
     };
     if(window.GGBApplet){start();return;}
-    const script=document.createElement('script');script.src='https://www.geogebra.org/apps/deployggb.js';script.onload=start;script.onerror=()=>{status.textContent='GeoGebra не загрузилась. Проверь соединение и попробуй снова. SVG-лаборатория выше работает независимо.';button.disabled=false;};document.head.append(script);
+    const script=document.createElement('script');script.src='https://www.geogebra.org/apps/deployggb.js';script.onload=start;script.onerror=()=>{status.textContent='GeoGebra не загрузилась. Проверь соединение и попробуй снова. Попробуй повторно открыть лабораторию.';button.disabled=false;};document.head.append(script);
   };
 }
 const baseRender=render;
