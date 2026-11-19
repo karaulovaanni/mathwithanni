@@ -146,6 +146,13 @@ function similarityDefinition() {
     quiz('△ABC ∼ △DEF. Какая сторона сходственна стороне BC?',['DE','DF','EF'],2,'Стороны BC и EF лежат против равных углов BAC и EDF.');
 }
 
+function signPairModel(c) {
+  // Draw both triangles in one common scale; their size ratio matches the side lengths.
+  const sharedUnit = 140 / Math.max(...c.a, ...c.b);
+  return '<div class="pair-model">' +
+    triangleTile(c.a,'ABC',c.mode,c.aa,'△ABC',sharedUnit) +
+    triangleTile(c.b,'DEF',c.mode,c.ba,'△DEF',sharedUnit) + '</div>';
+}
 showSign = function() {
   const examples = [cases[0],cases[2],cases[4]];
   const conditions = [
@@ -154,13 +161,13 @@ showSign = function() {
     fraction('DE','AB')+' = '+fraction('DF','AC')+' = '+fraction('EF','BC')+' ⇒ △ABC ∼ △DEF.'
   ];
   document.getElementById('sign').innerHTML = examples.map((c,index)=>
-    '<section class="card similarity-sign"><h3>'+['Первый признак · По двум углам','Второй признак · По двум сторонам и углу между ними','Третий признак · По трём сторонам'][index]+'</h3><p>'+theory[index]+'</p><div class="pair-model">'+triangleTile(c.a,'ABC',c.mode,c.aa,'△ABC')+triangleTile(c.b,'DEF',c.mode,c.ba,'△DEF')+'</div><div class="theorem formula">'+conditions[index]+'</div><h4>Применим ли этот признак?</h4><p>Сравни данные пары ниже. Объясни свой вывод.</p><div id="sign-task-'+index+'"></div></section>'
+    '<section class="card similarity-sign"><h3>'+['Первый признак · По двум углам','Второй признак · По двум сторонам и углу между ними','Третий признак · По трём сторонам'][index]+'</h3><p>'+theory[index]+'</p>'+signPairModel(c)+'<div class="theorem formula">'+conditions[index]+'</div><h4>Применим ли этот признак?</h4><p>Сравни данные пары ниже. Объясни свой вывод.</p><div id="sign-task-'+index+'"></div></section>'
   ).join('');
   for(let index=0;index<3;index++)drawSignTask(index,0);
 };
 function drawSignTask(kind,variant) {
   const c=cases[kind*2+variant],box=document.getElementById('sign-task-'+kind);
-  box.innerHTML='<div class="pair-model">'+triangleTile(c.a,'ABC',c.mode,c.aa,'△ABC')+triangleTile(c.b,'DEF',c.mode,c.ba,'△DEF')+'</div><div class="row"><button class="action" data-verdict="true">Да, условия выполнены</button><button class="action" data-verdict="false">Нет, условия не выполнены</button><button class="action next-sign-pair">Другая пара</button></div><p class="feedback" role="status"></p>';
+  box.innerHTML=signPairModel(c)+'<div class="row"><button class="action" data-verdict="true">Да, условия выполнены</button><button class="action" data-verdict="false">Нет, условия не выполнены</button><button class="action next-sign-pair">Другая пара</button></div><p class="feedback" role="status"></p>';
   box.querySelectorAll('[data-verdict]').forEach(button=>button.onclick=()=>{
     const correct=(button.dataset.verdict==='true')===c.yes;
     box.querySelector('.feedback').textContent=correct?'Верно. '+c.reason:'Сверь отмеченные элементы с формулировкой признака.';
