@@ -6,13 +6,14 @@
   <meta name="description" content="Отношения и пропорции для 6 класса. Собери рецепт, раздели целое на равные части и реши пропорции.">
   <title>Отношения и пропорции · Матемастерская</title>
   <link rel="icon" href="../../../favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="../../../favicon-32.png"><link rel="apple-touch-icon" href="../../../apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&amp;display=swap">
   <link rel="stylesheet" href="../../../assets/theme.css">
-  <link rel="stylesheet" href="lesson.css?v=2">
+  <link rel="stylesheet" href="lesson.css?v=3">
   <script defer src="../../../assets/reset-fields.js"></script>
-  <script defer src="lesson.js?v=2"></script>
+  <script defer src="lesson.js?v=3"></script>
 </head>
 <body>
 <main class="wrap">
@@ -48,7 +49,7 @@
       <h2>Смешай ягодный напиток</h2>
       <p>В одной порции две мерки сока и три мерки воды. Одна мерка — 100 мл.</p>
       <div class="scene-grid">
-        <div class="recipe-board" id="recipe-board">
+        <div class="recipe-board" id="recipe-board"><div class="vessels"><svg viewBox="0 0 480 250" role="img" aria-label="Мензурки с ягодным соком и водой, кувшин со смесью"><defs><clipPath id="glass"><path d="M12 26h86l-8 126q-1 8-10 8H31q-9 0-10-8Z"/></clipPath><clipPath id="jug"><path d="M22 36h91l10 109q2 14-14 14H23q-14 0-13-14l9-92L6 36Z"/></clipPath></defs><ellipse cx="241" cy="196" rx="214" ry="11" fill="#e1d8cb"/><g transform="translate(18 30)"><path d="M12 26h86l-8 126q-1 8-10 8H31q-9 0-10-8Z" fill="#fff" fill-opacity=".7"/><rect id="jLevel" x="12" y="90" width="87" height="160" fill="#bd557c" clip-path="url(#glass)"/><path d="M12 26h86l-8 126q-1 8-10 8H31q-9 0-10-8Z M79 52h16 M82 77h12 M79 102h13 M81 127h10" fill="none" stroke="#536b74" stroke-width="2.6"/><text x="55" y="194" text-anchor="middle">Сок</text></g><g transform="translate(145 30)"><path d="M12 26h86l-8 126q-1 8-10 8H31q-9 0-10-8Z" fill="#fff" fill-opacity=".7"/><rect id="wLevel" x="12" y="90" width="87" height="160" fill="#73bcd1" clip-path="url(#glass)"/><path d="M12 26h86l-8 126q-1 8-10 8H31q-9 0-10-8Z M79 52h16 M82 77h12 M79 102h13 M81 127h10" fill="none" stroke="#536b74" stroke-width="2.6"/><text x="55" y="194" text-anchor="middle">Вода</text></g><g transform="translate(296 30)"><path d="M111 52c67-13 60 72 7 70" stroke="#546978" stroke-width="8" fill="none"/><path d="M22 36h91l10 109q2 14-14 14H23q-14 0-13-14l9-92L6 36Z" fill="white"/><rect id="jugLevel" x="5" y="86" width="130" height="160" fill="#ca819a" clip-path="url(#jug)"/><path d="M22 36h91l10 109q2 14-14 14H23q-14 0-13-14l9-92L6 36Z" fill="none" stroke="#546978" stroke-width="3"/><g transform="translate(66 112)"><g stroke="#743f63" stroke-width="1.4"><circle cx="-6" cy="1" r="7" fill="#cc6885"/><circle cx="4" cy="-1" r="8" fill="#ad4976"/><circle cx="0" cy="8" r="7" fill="#b65778"/></g><path d="M0 -7q-12 -16 -14 -5q4 6 14 5q4 -11 15 -10q-1 10 -15 10" fill="#549977"/></g><text x="70" y="194" text-anchor="middle">Напиток</text></g></svg></div>
           <div class="ingredient juice"><div><strong>Ягодный сок</strong><span id="juice-amount">200 мл</span></div><div class="cups" id="juice-cups" aria-hidden="true"></div></div>
           <div class="ingredient water"><div><strong>Вода</strong><span id="water-amount">300 мл</span></div><div class="cups" id="water-cups" aria-hidden="true"></div></div>
         </div>
@@ -94,7 +95,8 @@
         <p><b>Разные величины.</b> Частное может дать новую величину. Например, 36 км : 3 ч = 12 км/ч — средняя скорость.</p>
       </details>
     </section>
-    <a class="next-topic" href="#proportions">Дальше · Пропорция →</a>
+    <section><h2>Дроби тоже можно сравнить отношением</h2><p>Для двух лент длиной <math><mfrac><mn>1</mn><mn>2</mn></mfrac></math> м и <math><mfrac><mn>3</mn><mn>4</mn></mfrac></math> м выберем одну мерку — четверть метра. В первой ленте две такие мерки, во второй три.</p><p class="formula"><math><mfrac><mn>1</mn><mn>2</mn></mfrac></math> : <math><mfrac><mn>3</mn><mn>4</mn></mfrac></math> = 2 : 3</p><p>То же действие можно записать короче: умножаем оба члена отношения на общий знаменатель 4. Значение отношения сохраняется.</p></section>
+<section><h2>Попробуй самостоятельно</h2><form class="quick" data-value="3" autocomplete="off"><label>В банке 4 синих и 12 белых бусин. Во сколько раз белых больше?<span class="entry"><input required inputmode="decimal" aria-label="Числовой ответ"> раза</span></label><button>Проверить</button><output role="status"></output></form><form class="quick" data-value="25" autocomplete="off"><label>Сколько процентов всех бусин составляют синие?<span class="entry"><input required inputmode="decimal" aria-label="Числовой ответ"> %</span></label><button>Проверить</button><output role="status"></output></form><form class="quick" data-value="18" autocomplete="off"><label>Из 42 бусин сделали браслет в отношении 3 : 4. Сколько бусин первого цвета?<span class="entry"><input required inputmode="decimal" aria-label="Числовой ответ"> бусин</span></label><button>Проверить</button><output role="status"></output></form></section><a class="next-topic" href="#proportions">Дальше · Пропорция →</a>
   </article>
 
   <article id="proportions" hidden>
@@ -124,10 +126,11 @@
         <div class="product-check"><p class="outer">Крайние <b>2 · 6 = 12</b></p><p class="inner">Средние <b>3 · 4 = 12</b></p></div>
       </div>
       <p class="rule">Если <b>a : b = c : d</b>, то <b>a · d = b · c</b>. И наоборот, если произведения равны и оба делителя отличны от нуля, отношения равны.</p>
-      <details><summary>Почему это работает</summary><p>Запиши отношения дробями 2/3 и 4/6. Чтобы избавиться от знаменателей, умножь обе части равенства на 3 · 6. Останется 2 · 6 = 4 · 3.</p></details>
+      <details><summary>Почему это работает</summary><p>Запиши отношения дробями <math><mfrac><mn>2</mn><mn>3</mn></mfrac></math> и <math><mfrac><mn>4</mn><mn>6</mn></mfrac></math>. Чтобы избавиться от знаменателей, умножь обе части равенства на 3 · 6. Останется 2 · 6 = 4 · 3.</p></details>
       <details><summary>Какие члены можно переставлять?</summary><p>Если все четыре числа отличны от нуля, можно поменять местами средние (2 : 4 = 3 : 6), крайние (6 : 3 = 4 : 2) или обратить оба отношения сразу (3 : 2 = 6 : 4). Проверь каждое равенство произведениями.</p></details>
     </section>
-    <a class="next-topic" href="#parts">Дальше · Деление на части →</a>
+    <section><h2>Печать открытки</h2><p>У оригинала ширина 6 см и высота 4 см. Чтобы при печати круглая луна осталась круглой, каждый размер нужно увеличить в одно и то же число раз.</p><div class="scene lilac"><svg viewBox="0 0 500 238" role="img" aria-label="Исходная открытка и её копия"><defs><symbol id="landscape" viewBox="0 0 120 80" preserveAspectRatio="none"><rect width="120" height="80" rx="4" fill="#b7c1e3"/><circle cx="89" cy="21" r="12" fill="#fff0bb"/><path d="M0 61Q25 23 58 55T120 43V80H0Z" fill="#817ba5"/><path d="M0 67Q35 41 74 62T120 57V80H0Z" fill="#466f71"/><path d="M74 60q-19 8-2 12t-4 8h15q15-9-4-13t-5-7" fill="#eed8be"/></symbol></defs><use href="#landscape" x="16" y="83" width="90" height="60"/><text x="61" y="174" text-anchor="middle">Оригинал</text><svg x="140" y="4" width="350" height="195" viewBox="0 0 350 195"><use id="print" href="#landscape" x="60" y="32" width="180" height="120"/></svg><text x="307" y="224" text-anchor="middle">Отпечаток</text></svg><label>Ширина копии <input type="range" min="6" max="18" step="3" value="12" id="wide"><output id="wideN"></output></label><label><input type="checkbox" id="locked" checked> Сохранять отношение сторон</label><label id="heightControl" hidden>Высота копии <input type="range" min="4" max="12" value="8" id="high"><output id="highN"></output></label><p id="printRead" class="reading"></p></div><p class="prompt">Отключи сохранение отношения. Оставь высоту прежней и увеличь ширину. По какой детали рисунка легче всего заметить искажение? Как вернуть исходную форму?</p></section>
+<a class="next-topic" href="#parts">Дальше · Деление на части →</a>
   </article>
 
   <article id="parts" hidden>
@@ -158,7 +161,8 @@
         <p class="feedback" role="status"></p>
       </form>
     </section>
-    <a class="next-topic" href="#unknown">Дальше · Найти неизвестное →</a>
+    <section><h2>Собери браслет по схеме</h2><p>В каждом звене две коралловые бусины и три мятные. Числа 2 и 3 задают узор. Сколько раз повторить звено, определяет длина браслета.</p><div class="scene mint"><svg id="beads" viewBox="0 0 480 170" role="img" aria-label="Узор браслета из повторяющихся групп бусин"></svg><label>Число звеньев <input id="links" type="range" min="1" max="5" value="2"><output id="linksCount">2</output></label><p id="beadRead" class="reading"></p></div><p class="prompt">Сначала закрой пальцем запись под рисунком. Для браслета из 20 бусин предскажи число звеньев и количество бусин каждого цвета. Проверь на модели.</p></section>
+<a class="next-topic" href="#unknown">Дальше · Найти неизвестное →</a>
   </article>
 
   <article id="unknown" hidden>
@@ -180,7 +184,7 @@
         <p class="feedback" role="status"></p>
       </form>
     </section>
-    <a class="next-topic" href="#practice">Дальше · Задания в тетради →</a>
+    <section><h2>Попробуй самостоятельно</h2><form class="quick" data-value="15" autocomplete="off"><label>Фото 8 × 6 см увеличили без искажений до ширины 20 см. Найди новую высоту.<span class="entry"><input required inputmode="decimal" aria-label="Числовой ответ"> см</span></label><button>Проверить</button><output role="status"></output></form><form class="quick" data-value="21" autocomplete="off"><label>Найди x в пропорции 7 : 4 = x : 12.<span class="entry"><input required inputmode="decimal" aria-label="Числовой ответ"> </span></label><button>Проверить</button><output role="status"></output></form><form class="quick" data-value="12.5" autocomplete="off"><label>Из 5 м ткани шьют 8 одинаковых сумок. Сколько ткани нужно на 20 таких сумок?<span class="entry"><input required inputmode="decimal" aria-label="Числовой ответ"> м</span></label><button>Проверить</button><output role="status"></output></form></section><a class="next-topic" href="#practice">Дальше · Задания в тетради →</a>
   </article>
 
   <article id="practice" hidden>
@@ -191,12 +195,12 @@
         <button type="button" data-practice="ratio" aria-pressed="true">Отношения</button>
         <button type="button" data-practice="proportion" aria-pressed="false">Пропорции</button>
       </div>
-      <div id="ratio-practice"><h3>Уровень 1 · Запись и смысл</h3><ol><li>В вазе 8 ирисов и 12 роз. Запиши отношения числа ирисов к числу роз и числа ирисов ко всем цветам. Сократи оба.</li><li>Запиши обратное отношение к 9 : 4. Чему равно произведение значений этих отношений?</li><li>Найди отношения 45 мин к 2 ч и 350 г к 1,4 кг.</li></ol><details><summary>Сверить ответы</summary><ol><li>2 : 3 и 2 : 5. Во втором отношении сравниваем с 20 цветами.</li><li>4 : 9. Произведение равно 1.</li><li>45 : 120 = 3 : 8 и 350 : 1400 = 1 : 4.</li></ol></details>
-      <h3>Уровень 2 · Применение</h3><ol><li>Приведи 0,45 : 1,2 к отношению наименьших натуральных чисел.</li><li>Упрости <math><mfrac><mn>3</mn><mn>4</mn></mfrac></math> : <math><mfrac><mn>5</mn><mn>6</mn></mfrac></math>. На какое число удобно умножить оба члена?</li><li>За 6 одинаковых блокнотов заплатили 510 рублей. Что показывает отношение 510 : 6?</li><li>Раздели 96 бусин на две группы в отношении 3 : 5.</li></ol><details><summary>Сверить ответы</summary><ol><li>45 : 120 = 3 : 8.</li><li>На 12. Получится 9 : 10.</li><li>Один блокнот стоит 85 рублей.</li><li>8 частей, по 12 бусин. В группах 36 и 60 бусин.</li></ol></details>
-      <h3>Уровень 3 · Задачи</h3><ol><li>Две команды сделали 18 точных бросков из 24 и 21 из 30. У какой команды выше доля попаданий?</li><li>В смеси 80 г изюма и 120 г орехов. Добавили 50 г орехов. Как изменился процент изюма?</li><li>Ленту длиной 84 см разрезали в отношении 2 : 3 : 7. Найди длину каждого куска.</li></ol><details><summary>Сверить ответы</summary><ol><li>У первой. 75 % против 70 %.</li><li>Было 40 %, стало 32 %. Масса изюма прежняя, масса всей смеси выросла.</li><li>12 частей по 7 см. Куски по 14, 21 и 49 см.</li></ol></details></div>
-      <div id="proportion-practice" hidden><h3>Уровень 1 · Узнать пропорцию</h3><ol><li>Прочитай 4 : 7 = 12 : 21. Назови крайние и средние члены.</li><li>Какие пары образуют пропорцию? Сравни 3 : 5 и 9 : 15, затем 4 : 6 и 8 : 10.</li><li>Запиши словами и проверь равенство 0,8 : 2 = 2 : 5.</li></ol><details><summary>Сверить ответы</summary><ol><li>Четыре относится к семи, как двенадцать к двадцати одному. Крайние 4 и 21, средние 7 и 12.</li><li>Первая пара. Произведения равны 45. Во второй паре 40 ≠ 48.</li><li>Восемь десятых относится к двум, как два к пяти. Оба отношения равны 0,4.</li></ol></details>
-      <h3>Уровень 2 · Найти неизвестное</h3><ol><li>Реши x : 18 = 5 : 6 и проверь ответ.</li><li>Реши 2,4 : x = 6 : 15.</li><li>Найди t, если <math><mfrac><mn>1</mn><mn>2</mn></mfrac></math> : 3 = t : 9.</li><li>Из 3 : 8 = 9 : 24 получи две новые пропорции перестановкой членов.</li></ol><details><summary>Сверить ответы</summary><ol><li>6x = 90, x = 15. Проверка: 15 · 6 = 18 · 5.</li><li>6x = 36, x = 6.</li><li>3t = 4,5, t = 1,5.</li><li>Например, 3 : 9 = 8 : 24 и 24 : 8 = 9 : 3.</li></ol></details>
-      <h3>Уровень 3 · Составить и решить</h3><ol><li>Из 320 г муки пекут 8 одинаковых лепёшек. Сколько муки нужно на 14 таких лепёшек? Запиши пропорцию с одинаковым порядком величин.</li><li>Реши 15 : (x + 2) = 5 : 4. Подставь ответ в исходную запись.</li><li>Используй равенство 4 · 15 = 6 · 10, чтобы записать четыре разные пропорции. Почему каждая верна?</li></ol><details><summary>Сверить ответы</summary><ol><li>320 : 8 = x : 14. Для 14 лепёшек нужно 560 г.</li><li>5 · (x + 2) = 60, x + 2 = 12, x = 10. Обе части равны 1,25.</li><li>Например, 4 : 6 = 10 : 15, 4 : 10 = 6 : 15, 15 : 6 = 10 : 4, 15 : 10 = 6 : 4. Произведения крайних и средних равны 60.</li></ol></details></div>
+      <div id="ratio-practice"><h3>Уровень 1 · Запись и смысл</h3><ol><li>В вазе 8 ирисов и 12 роз. Запиши отношения числа ирисов к числу роз и числа ирисов ко всем цветам. Сократи оба.</li><li>Запиши обратное отношение к 9 : 4. Чему равно произведение значений этих отношений?</li><li>Найди отношения 45 мин к 2 ч и 350 г к 1,4 кг.</li></ol>
+      <h3>Уровень 2 · Применение</h3><ol><li>Приведи 0,45 : 1,2 к отношению наименьших натуральных чисел.</li><li>Упрости <math><mfrac><mn>3</mn><mn>4</mn></mfrac></math> : <math><mfrac><mn>5</mn><mn>6</mn></mfrac></math>. На какое число удобно умножить оба члена?</li><li>За 6 одинаковых блокнотов заплатили 510 рублей. Что показывает отношение 510 : 6?</li><li>Раздели 96 бусин на две группы в отношении 3 : 5.</li></ol>
+      <h3>Уровень 3 · Задачи</h3><ol><li>Две команды сделали 18 точных бросков из 24 и 21 из 30. У какой команды выше доля попаданий?</li><li>В смеси 80 г изюма и 120 г орехов. Добавили 50 г орехов. Как изменился процент изюма?</li><li>Ленту длиной 84 см разрезали в отношении 2 : 3 : 7. Найди длину каждого куска.</li></ol></div>
+      <div id="proportion-practice" hidden><h3>Уровень 1 · Узнать пропорцию</h3><ol><li>Прочитай 4 : 7 = 12 : 21. Назови крайние и средние члены.</li><li>Какие пары образуют пропорцию? Сравни 3 : 5 и 9 : 15, затем 4 : 6 и 8 : 10.</li><li>Запиши словами и проверь равенство 0,8 : 2 = 2 : 5.</li></ol>
+      <h3>Уровень 2 · Найти неизвестное</h3><ol><li>Реши x : 18 = 5 : 6 и проверь ответ.</li><li>Реши 2,4 : x = 6 : 15.</li><li>Найди t, если <math><mfrac><mn>1</mn><mn>2</mn></mfrac></math> : 3 = t : 9.</li><li>Из 3 : 8 = 9 : 24 получи две новые пропорции перестановкой членов.</li></ol>
+      <h3>Уровень 3 · Составить и решить</h3><ol><li>Из 320 г муки пекут 8 одинаковых лепёшек. Сколько муки нужно на 14 таких лепёшек? Запиши пропорцию с одинаковым порядком величин.</li><li>Реши 15 : (x + 2) = 5 : 4. Подставь ответ в исходную запись.</li><li>Используй равенство 4 · 15 = 6 · 10, чтобы записать четыре разные пропорции. Почему каждая верна?</li></ol></div>
     </section>
   </article>
 

@@ -67,6 +67,11 @@ function drawRecipe() {
   byId('juice-amount').textContent = 100 * juice + ' мл';
   byId('water-amount').textContent = 100 * water + ' мл';
 
+  byId('jLevel').setAttribute('y',160-12*juice);
+  byId('wLevel').setAttribute('y',160-12*water);
+  byId('jugLevel').setAttribute('y',159-7*(juice+water));
+  const tint = [0,1,2].map(i => Math.round(([178,65,110][i]*juice+[191,225,235][i]*water)/(juice+water)));
+  byId('jugLevel').setAttribute('fill','rgb('+tint.join(',')+')');
   const comparisons = {
     'juice-water': [juice, water, `Мерки сока (${juice}) сравниваем с мерками воды (${water}).`],
     'water-juice': [water, juice, `Сначала мерки воды (${water}), затем мерки сока (${juice}).`],
@@ -206,3 +211,47 @@ window.addEventListener('pageshow', () => {
   drawRecipe();
   drawScale();
 });
+
+function threadBeads() {
+  const n = +byId('links').value;
+  byId('linksCount').value = n;
+  let drawing = '';
+  for(let group=0;group<n;group++) {
+    const x = 240 + (group-(n-1)/2)*89;
+    drawing += '<path d="M'+(x-42)+' 81q42 18 84 0" fill="none" stroke="#76634f" stroke-width="3"/>';
+    for(let bead=0;bead<5;bead++) {
+      const bx = x+(bead-2)*16, by = 82+7*Math.cos((bead-2)*0.65);
+      drawing += '<circle cx="'+bx+'" cy="'+by+'" r="8.7" fill="'+(bead<2?'#d27f86':'#69ac9b')+'" stroke="#596963"/><circle cx="'+(bx-2.7)+'" cy="'+(by-3)+'" r="2.1" fill="#fffa"/>';
+    }
+    drawing += '<path d="M'+(x-38)+' 108v6h76v-6" fill="none" stroke="#8caaa1"/><text x="'+x+'" y="136" text-anchor="middle">'+(group+1)+'</text>';
+  }
+  byId('beads').innerHTML = drawing;
+  byId('beadRead').textContent = 'Коралловые и мятные: '+(2*n)+' : '+(3*n)+'. Всего '+(5*n)+' бусин.';
+}
+function printPhoto() {
+  const width = +byId('wide').value, locked=byId('locked').checked;
+  const height = locked ? width*2/3 : +byId('high').value;
+  if (locked) byId('high').value = height;
+  const format = n => Number.isInteger(n) ? String(n) : new Intl.NumberFormat('ru',{maximumFractionDigits:2}).format(n);
+  byId('wideN').value = width+' см';
+  byId('highN').value = format(height)+' см';
+  byId('heightControl').hidden = locked;
+  const picture = byId('print');
+  for(const [name,value] of Object.entries({width:width*15,height:height*15,x:(350-width*15)/2,y:(195-height*15)/2})) picture.setAttribute(name,value);
+  const equal=width*4===height*6;
+  byId('printRead').textContent = '6 : 4 '+(equal?'=':'≠')+' '+width+' : '+format(height)+'. '+(equal?'Форма сохранилась.':'Отношение сторон изменилось.');
+}
+byId('links').addEventListener('input',threadBeads);
+for (const id of ['wide','high','locked']) byId(id).addEventListener('input',printPhoto);
+function renderModels(){ threadBeads(); printPhoto(); }
+renderModels();
+window.addEventListener('pageshow',renderModels);
+for(const form of document.querySelectorAll('.quick')) {
+  const input=form.querySelector('input'), feedback=form.querySelector('output');
+  form.addEventListener('submit',event=>{
+    event.preventDefault();
+    const value=input.value.trim().replace(',','.');
+    feedback.textContent = !/^\d+(\.\d+)?$/.test(value) ? 'Введи число.' : Number(value)===Number(form.dataset.value) ? 'Верно!' : 'Проверь, какие величины ты сравниваешь, и попробуй ещё раз.';
+  });
+  input.addEventListener('input',()=>feedback.textContent='');
+}
