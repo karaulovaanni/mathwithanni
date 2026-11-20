@@ -130,3 +130,52 @@ footer { margin-top:20px; font-size:.9rem }
 .chapter:not(#parts) .notebook ol { padding:0; list-style:none; counter-reset:task }
 .chapter:not(#parts) .notebook li { position:relative; counter-increment:task; padding:14px 14px 14px 55px; margin:12px 0; background:#fffdfa; border:1px solid #eadcd3; border-radius:13px; font-size:clamp(17px,2.2vw,21px); line-height:1.5 }
 .chapter:not(#parts) .notebook li::before { content:counter(task); position:absolute; top:14px; left:13px; min-width:29px; text-align:center; color:#614674; background:#f1e5f4; border-radius:8px; font-weight:750 }
+
+.exercise-subtitle { margin-top:24px }
+.transition { margin:18px 0 10px }
+.ratio-entry { align-items:end; justify-content:center; flex-wrap:nowrap }
+.ratio-entry .inline { display:grid; text-align:center; gap:4px; justify-items:center; font-size:.85rem }
+.ratio-entry input,.solve-value input { width:clamp(65px,19vw,116px); padding:9px 4px; text-align:center; font-size:1.22rem }
+.entry-separator { font-size:1.45rem; align-self:end; padding-bottom:6px }
+.token-pieces { display:flex; justify-content:center; flex-wrap:wrap; gap:4px }
+.bonus,.regular { display:inline-grid; place-items:center; width:23px; height:23px; border-radius:50%; font-size:.82rem }
+.bonus { color:#745123; background:#ffe4a8 }
+.regular { color:#514079; background:#e9ddfa }
+.given-expression { font-size:clamp(24px,5vw,37px); text-align:center }
+.solve-stage { margin-top:16px; border:1px solid var(--line); border-radius:15px; padding:clamp(11px,3vw,20px); background:#fff }
+.solve-stage .task-text { font-size:clamp(17px,2.2vw,21px) }
+.solve-stage button:disabled { opacity:.8; cursor:default }
+.slots.products,.source-expression.proportion { display:grid; align-items:center; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr) }
+.source-expression { margin-top:10px; justify-items:center }
+.source-expression button { min-width:40px; padding:6px 10px; font-weight:700 }
+.source-used { display:inline-block; opacity:.5; padding:6px 10px }
+.source-expression.fractions { margin-inline:auto; max-width:300px; display:grid; grid-template-columns:1fr 30px 1fr; grid-template-rows:auto 3px auto }
+.source-expression.fractions [data-source-slot="0"] { grid-area:1/1 }
+.source-expression.fractions [data-source-slot="1"] { grid-area:3/1 }
+.source-expression.fractions [data-source-slot="2"] { grid-area:1/3 }
+.source-expression.fractions [data-source-slot="3"] { grid-area:3/3 }
+.source-expression.fractions .source-separator { grid-area:1/2/4; align-self:center }
+.source-expression.fractions::before,.source-expression.fractions::after { content:""; width:100%; height:3px; background:#594774 }
+.source-expression.fractions::before { grid-area:2/1 }
+.source-expression.fractions::after { grid-area:2/3 }
+.pair-grid { position:relative; max-width:400px; margin:8px auto; height:160px; background:#faf6fd; border-radius:12px }
+.pair-grid svg { position:absolute; inset:0; width:100%; height:100%; pointer-events:none }
+.pair-grid button { position:absolute; transform:translate(-50%,-50%); min-width:54px; font-weight:750 }
+.pair-grid button[data-node="0"],.pair-grid button[data-node="1"] { left:25% }
+.pair-grid button[data-node="2"],.pair-grid button[data-node="3"] { left:75% }
+.pair-grid button[data-node="0"],.pair-grid button[data-node="2"] { top:25% }
+.pair-grid button[data-node="1"],.pair-grid button[data-node="3"] { top:75% }
+.pair-grid b { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); color:#4c3775; background:#faf6fd; padding:0 3px }
+.pair-grid::before,.pair-grid::after { content:""; position:absolute; top:50%; width:26%; height:3px; background:#594774; transform:translateX(-50%) }
+.pair-grid::before { left:25% }
+.pair-grid::after { left:75% }
+.solve-value { display:flex; flex-wrap:wrap; align-items:center; gap:10px }
+.solve-value input { border:1px solid #cfc0df; border-radius:9px }
+.solve-value .feedback { width:100% }
+.answer-fraction { display:grid; grid-template-rows:auto 3px auto; gap:4px }
+.answer-fraction::after { content:""; background:#594774; grid-row:2 }
+@media(max-width:500px) {
+  .slots.products button,.source-expression button { padding:6px 4px; min-width:0 }
+  .slots.products { gap:3px }
+  .bonus,.regular { width:18px; height:18px; font-size:.65rem }
+}

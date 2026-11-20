@@ -215,6 +215,11 @@ function mountBuilder(id, tasks, layout, options = {}) {
   const slots = find('.slots');
   const bank = find('.bank');
   slots.classList.add(layout);
+  if (options.source) bank.classList.add('source-expression',options.source);
+  if (options.single) {
+    find('[data-action=next]').hidden = true;
+    find('.task-count').hidden = true;
+  }
   const feedback = find('.feedback');
   const valueForm = find('.value-form');
   let current = 0;
@@ -236,13 +241,17 @@ function mountBuilder(id, tasks, layout, options = {}) {
       const attrs = 'data-slot="'+i+'" data-step-label="'+(i+1)+'. " aria-label="'+name+(card==null?', пусто':', '+cards[card])+'"';
       const slot = card==null ? cardButton(attrs,name) :
         cardButton(attrs+' draggable="true" data-card="'+card+'" aria-pressed="'+(selected===card)+'"',cards[card]);
-      const separator = layout==='proportion' && i===2 ? '=' : (layout!=='steps' && i>0 ? ':' : '');
+      const separator = i===2 && ['proportion','products'].includes(layout) ? '=' : (layout!=='steps' && i>0 ? (layout==='products'?'·':':') : '');
       if (layout==='fractions') return (i===2?'<span class="fraction-equals" aria-hidden="true">=</span>':'')+slot;
       return (separator?'<span aria-hidden="true">'+separator+'</span>':'')+slot;
     });
     slots.innerHTML = slotsHtml.join('');
-    bank.innerHTML = cards.map((item,i)=>placed.includes(i)?'':
-      cardButton('draggable="true" data-card="'+i+'" aria-pressed="'+(i===selected)+'"',item)).join('');
+    bank.innerHTML = cards.map((item,i)=>{
+      const card = placed.includes(i) ? '' : cardButton('draggable="true" data-card="'+i+'" aria-pressed="'+(i===selected)+'"',item);
+      if (!options.source) return card;
+      const symbol = i===2 ? '=' : options.source==='proportion' && i>0 ? ':' : '';
+      return (symbol?'<span class="source-separator">'+symbol+'</span>':'')+'<div data-source-slot="'+i+'">'+(card||'<span class="source-used">'+item+'</span>')+'</div>';
+    }).join('');
     if (focusSelector) find(focusSelector)?.focus({preventScroll:true});
   }
 
@@ -288,6 +297,11 @@ function mountBuilder(id, tasks, layout, options = {}) {
       if (valueForm) valueForm.hidden = !correct;
       feedback.textContent = placed.includes(null) ? 'Заполни все окошки.' :
         correct ? 'Верно!' : 'Проверь порядок карточек и попробуй ещё раз.';
+      if (correct && options.onComplete) {
+        for (const item of host.querySelectorAll('button')) item.disabled = true;
+        for (const item of host.querySelectorAll('[draggable]')) item.draggable = false;
+        options.onComplete();
+      }
     } else if (slot!=null && selected!=null && Number(card)!==selected) {
       place(selected,Number(slot));
     } else if (card!=null) {
@@ -334,6 +348,7 @@ function mountBuilder(id, tasks, layout, options = {}) {
 
 mountBuilder('ratio-builder',ratioTasks,'ratio');
 mountBuilder('prop-builder',proportionTasks,'proportion');
+mountBuilder('prop-fraction-builder',[...proportionTasks.slice(3),...proportionTasks.slice(0,3)],'fractions');
 mountBuilder('parts-builder',splitTasks,'steps');
 
 
@@ -380,7 +395,7 @@ mountBuilder('four-numbers',[
   return a*d===b*c;
 }});
 
-function mountQuiz(id, questions) {
+function mountQuiz(id, questions, separator = '') {
   const host=byId(id);
   host.innerHTML='<p class="task-count"></p><p class="task-text"></p><form autocomplete="off"><div class="quiz-fields"></div><div class="controls"><button class="primary">Проверить</button><button type="button">Другое задание →</button></div><p class="feedback" role="status"></p></form>';
   const quiz=host.querySelector('form');
@@ -391,9 +406,11 @@ function mountQuiz(id, questions) {
     const [title,choices]=questions[index];
     host.querySelector('.task-count').textContent='Задание '+(index+1)+' из '+questions.length;
     host.querySelector('.task-text').textContent=title;
+    const numeric = Array.isArray(questions[index][2]);
+    fields.classList.toggle('ratio-entry',numeric && separator === ':');
     fields.innerHTML=choices.map((choice,i)=>Array.isArray(questions[index][2]) ?
       '<label class="inline">'+choice+' <input aria-label="'+choice+'" name="entry" inputmode="decimal" required></label>' :
-      '<label class="choice"><input type="radio" name="entry" value="'+i+'" required>'+choice+'</label>').join('');
+      '<label class="choice"><input type="radio" name="entry" value="'+i+'" required>'+choice+'</label>').join(numeric && separator ? '<b class="entry-separator" aria-hidden="true">'+separator+'</b>' : '');
     feedback.textContent='';
   }
   quiz.addEventListener('submit',event=>{
@@ -410,9 +427,8 @@ function mountQuiz(id, questions) {
 }
 mountQuiz('ratio-quiz',[
  ['Как называется результат деления первого числа на второе?',['Сумма','Разность','Частное','Произведение'],2,'Вспомни, на какой вопрос отвечает отношение.'],
- ['Сократи отношение 84 : 12 до наименьших целых чисел.',['7 : 4','7 : 1','12 : 1','1 : 7'],1,'Раздели оба числа на один и тот же общий делитель.'],
- ['Какое отношение обратно к 9 : 4?',['9 : 5','4 : 9','5 : 4','18 : 8'],1,'В обратном отношении числа меняются местами.'],
- ['Как записать отношение 30 минут к двум часам в наименьших целых числах?',['15 : 1','1 : 2','1 : 4','4 : 1'],2,'Сначала вырази обе величины в минутах.']
+ ['Что нужно записать первым в отношении количества яблок к количеству груш?',['Количество груш','Количество яблок','Число всех фруктов'],1,'В вопросе сначала названы яблоки.'],
+ ['Какое отношение обратно к 9 : 4?',['9 : 5','4 : 9','5 : 4','18 : 8'],1,'В обратном отношении числа меняются местами.']
 ]);
 mountQuiz('prop-quiz',[
  ['Можно ли поставить знак равенства между 12 : 8 и 21 : 14? Сначала найди оба частных.',['Да','Нет'],0,'Вычисли левое и правое частное отдельно.'],
@@ -442,12 +458,12 @@ mountQuiz('quiz-same', [
   ['На уроке прочитали 18 страниц из 24. Запиши отношение прочитанных страниц ко всем в наименьших целых числах.', ['Первое число','Второе число'],[3,4],'Обе величины уже в страницах. Сократи отношение чисел 18 и 24.'],
   ['Две дорожки имеют длины 42 м и 70 м. Найди отношение первой длины ко второй в наименьших целых числах.', ['Первое число','Второе число'],[3,5],'Обе длины в метрах. Найди общий делитель чисел.'],
   ['Участок в 800 м² включает 240 м² цветников. Какую долю занимает остальная часть? Запиши отношение в наименьших целых числах.', ['Первое число','Второе число'],[7,10],'Вычти площадь цветников из всей площади, затем раздели полученное число на 800 и сократи.']
-]);
+], ':');
 mountQuiz('quiz-convert', [
   ['Запиши отношение 36 см к 1,2 м в наименьших целых числах.', ['Первое число','Второе число'],[3,10],'Сначала вырази обе длины в сантиметрах.'],
   ['Найди отношение 75 мин к 2,5 ч в наименьших целых числах.', ['Первое число','Второе число'],[1,2],'Переведи часы в минуты.'],
   ['Найди отношение 840 г к 1,4 кг в наименьших целых числах.', ['Первое число','Второе число'],[3,5],'Вырази обе массы в граммах.']
-]);
+], ':');
 mountQuiz('quiz-rate', [
   ['Турист прошёл 18 км за 4 часа. Найди его среднюю скорость в км/ч.', ['км/ч'],[4.5],'Раздели путь на время. Десятичную дробь можно ввести через запятую.'],
   ['За 6 тетрадей заплатили 270 рублей. Найди стоимость одной тетради.', ['руб. за тетрадь'],[45],'Раздели общую стоимость на количество тетрадей.'],
@@ -463,11 +479,218 @@ mountQuiz('ratio-stories', [
   ['В корзине 12 слив и 16 персиков. Запиши отношение числа слив к числу всех фруктов.', ['Сливы','Все фрукты'],[12,28],'Чтобы узнать целое, сложи количества двух видов фруктов.'],
   ['У Лены 15 наклеек, у Димы на 5 больше. Запиши отношение числа наклеек Димы к числу наклеек Лены.', ['У Димы','У Лены'],[20,15],'Сначала узнай, сколько наклеек у Димы.'],
   ['За два дня туристы прошли 42 км. В первый день они прошли 18 км. Запиши отношение расстояния второго дня ко всему маршруту.', ['Второй день, км','Весь маршрут, км'],[24,42],'Из всего маршрута вычти расстояние первого дня.']
-]);
+], ':');
 
 mountBuilder('fraction-builder',[
+  ['Перепиши 6 : 4 = 15 : 10 дробями.',['15','4','10','6'],[3,1,0,2]],
+  ['Перепиши 14 : 8 = 21 : 12 дробями.',['12','21','8','14'],[3,2,1,0]],
+  ['Перепиши 0,6 : 0,8 = 9 : 12 дробями.',['9','0,8','0,6','12'],[2,1,0,3]],
+  ['Перепиши 3 : 2 = 18 : 12 дробями.',['2','18','3','12'],[2,0,1,3]],
   ['Перепиши 5 : 8 = x : 24 дробями. Сохрани порядок отношений.',['24','8','x','5'],[3,1,2,0]],
   ['Перепиши 14 : x = 7 : 3 дробями. Сохрани порядок отношений.',['7','3','14','x'],[2,3,0,1]],
   ['Перепиши x : 9 = 4 : 6 дробями. Сохрани порядок отношений.',['4','x','6','9'],[1,3,0,2]],
   ['Перепиши 4 : 7 = 12 : x дробями. Сохрани порядок отношений.',['12','x','7','4'],[3,2,0,1]]
 ],'fractions');
+
+mountQuiz('reduce-quiz',[
+  ['Сократи 84 : 12.', ['Первый член','Второй член'],[7,1],'Оба числа делятся на 12.'],
+  ['Сократи 36 : 60.', ['Первый член','Второй член'],[3,5],'Найди наибольший общий делитель чисел 36 и 60.'],
+  ['Сократи 45 : 72.', ['Первый член','Второй член'],[5,8],'Используй признаки делимости.'],
+  ['Сократи 0,75 : 1,25.', ['Первый член','Второй член'],[3,5],'Умножь оба числа на 100, затем сократи.'],
+  ['Сократи 1,2 : 0,45.', ['Первый член','Второй член'],[8,3],'Избавься от запятых одинаковым множителем.'],
+  ['Сократи 108 : 81.', ['Первый член','Второй член'],[4,3],'Раздели оба числа на общий делитель.']
+], ':');
+mountQuiz('quotients-quiz',[
+  ['Вычисли значения 12 : 8 и 21 : 14.', ['12 : 8','21 : 14'],[1.5,1.5],'Вырази каждый результат десятичной дробью.'],
+  ['Вычисли значения 18 : 24 и 27 : 36.', ['18 : 24','27 : 36'],[0.75,0.75],'Сократи обе дроби и запиши значения через запятую.'],
+  ['Вычисли значения 8 : 5 и 12 : 10. Сравни результаты.', ['8 : 5','12 : 10'],[1.6,1.2],'Считай частные по отдельности.']
+], 'и');
+
+const tokenLab = byId('token-lab');
+const tokenOrders = [
+  [4, [5,6,7]], [6, [8,10,9]], [8, [12,13,11]]
+];
+let tokenOrder = 0;
+tokenLab.innerHTML = '<p class="task-text"></p><div class="token-table"></div><div class="controls token-options"></div>'+
+  '<div class="controls"><button type="button" class="primary" data-token-check>Проверить набор</button>'+
+  '<button type="button" data-token-next>Другой набор →</button></div><p class="feedback" role="status"></p>';
+let ordinary = null;
+
+function renderTokens() {
+  const [bonus,choices] = tokenOrders[tokenOrder];
+  const icons = (count, style, symbol) => count === null ? '—' :
+    '<span class="token-pieces" aria-label="'+count+'">'+
+    ('<span class="'+style+'" aria-hidden="true">'+symbol+'</span>').repeat(count)+'</span>';
+  tokenLab.querySelector('.task-text').textContent = 'Сохрани правило набора 2 : 3. Теперь бонусных жетонов '+bonus+'.';
+  tokenLab.querySelector('.token-table').innerHTML =
+    '<table><thead><tr><th scope="col">Набор</th><th scope="col">Бонусные</th><th scope="col">Обычные</th><th scope="col">Отношение</th></tr></thead><tbody>'+
+    '<tr><th scope="row">Пробный</th><td>'+icons(2,'bonus','★')+'</td><td>'+icons(3,'regular','●')+'</td><td>2 : 3</td></tr>'+
+    '<tr><th scope="row">Новый</th><td>'+icons(bonus,'bonus','★')+'</td><td>'+icons(ordinary,'regular','●')+'</td><td>'+bonus+' : '+(ordinary??'□')+'</td></tr></tbody></table>';
+  tokenLab.querySelector('.token-options').innerHTML = choices.map(n=>'<button type="button" data-token="'+n+'" aria-pressed="'+(ordinary===n)+'">'+n+' обычных</button>').join('');
+}
+tokenLab.addEventListener('click',event=>{
+  const button=event.target.closest('button');
+  if (!button) return;
+  const feedback=tokenLab.querySelector('[role=status]');
+  if ('tokenNext' in button.dataset) {
+    tokenOrder=(tokenOrder+1)%tokenOrders.length;
+    ordinary=null;
+    feedback.textContent='';
+    renderTokens();
+  } else if ('token' in button.dataset) {
+    ordinary=Number(button.dataset.token);
+    feedback.textContent='';
+    renderTokens();
+    tokenLab.querySelector('[data-token="'+ordinary+'"]').focus({preventScroll:true});
+  } else if ('tokenCheck' in button.dataset) {
+    const [bonus]=tokenOrders[tokenOrder];
+    feedback.textContent=ordinary===null ? 'Выбери количество обычных жетонов.' : bonus*3===ordinary*2 ?
+      'Верно! Оба количества изменились в одно и то же число раз.' : 'Отношения различаются. Проверь, во сколько раз выросло число бонусных жетонов.';
+  }
+});
+renderTokens();
+
+const solveLab = byId('solve-lab');
+const solveLevels = [
+  {name:'Уровень 1 · целые числа', problems:[
+    {terms:['x','7','6','14'],answer:3},
+    {terms:['9','6','12','x'],answer:8, fraction:true},
+    {terms:['12','x','3','5'],answer:20}
+  ]},
+  {name:'Уровень 2 · десятичные числа', problems:[
+    {terms:['2,4','x','6','15'],answer:6},
+    {terms:['0,8','2','x','15'],answer:6,fraction:true},
+    {terms:['x','1,5','10','6'],answer:2.5}
+  ]},
+  {name:'Уровень 3 · дробный ответ', problems:[
+    {terms:['4','7','x','3'],answer:[12,7],fraction:true},
+    {terms:['x','6','5','7'],answer:[30,7]},
+    {terms:['3','8','4','x'],answer:[32,3],fraction:true}
+  ]}
+];
+solveLab.innerHTML = '<div class="controls" id="solve-levels">'+solveLevels.map((level,i)=>
+  '<button type="button" data-solve-level="'+i+'" aria-pressed="'+(i===0)+'">'+level.name+'</button>').join('')+
+  '</div><div id="solve-problem"></div><div class="controls"><button type="button" id="solve-reset">Начать заново</button>'+
+  '<button type="button" id="solve-next">Другой пример →</button></div>';
+let solveLevel = 0;
+let solveIndex = 0;
+const stage = (title,body) => '<section class="solve-stage"><h3 tabindex="-1">'+title+'</h3>'+body+'</section>';
+const pairsMatch = (first,second) => first.length===2 && second.every(value=>first.includes(value));
+
+function renderSolve() {
+  const level = solveLevels[solveLevel];
+  const problem = level.problems[solveIndex];
+  const terms = problem.terms;
+  const fractionDisplay = (a,b) => '<math><mfrac>'+[a,b].map(value=>value==='x'?'<mi>x</mi>':'<mn>'+value+'</mn>').join('')+'</mfrac></math>';
+  const expression = problem.fraction ? fractionDisplay(...terms.slice(0,2))+' = '+fractionDisplay(...terms.slice(2)) :
+    terms[0]+' : '+terms[1]+' = '+terms[2]+' : '+terms[3];
+  byId('solve-problem').innerHTML =
+    '<p class="task-count">Пример '+(solveIndex+1)+' из '+level.problems.length+'</p><p class="formula given-expression">'+expression+'</p>'+
+    (problem.fraction?'':stage('1. Перенеси члены в дроби','<div id="solve-transfer"></div>'))+
+    '<div id="solve-connect"'+(problem.fraction?'':' hidden')+'></div><div id="solve-equation" hidden></div><div id="solve-answer" hidden></div>';
+  function reveal(id,html) {
+    const area=byId(id);
+    area.innerHTML=html;
+    area.hidden=false;
+    area.querySelector('h3').focus({preventScroll:true});
+  }
+  const baseStep=problem.fraction?1:2;
+  function equationStage() {
+    reveal('solve-equation',stage((baseStep+1)+'. Собери равенство произведений','<div id="solve-products"></div>'));
+    mountBuilder('solve-products', [['Перенеси в одно произведение два члена одной диагонали, в другое — два члена второй.',terms,[0,3,1,2]]], 'products',{
+      single:true,source:'fractions',
+      accept:(_,order)=>pairsMatch(order.slice(0,2),[0,3]) || pairsMatch(order.slice(0,2),[1,2]),
+      onComplete:answerStage
+    });
+  }
+  function answerStage() {
+    const fractional=Array.isArray(problem.answer);
+    const fields=fractional ?
+      '<span class="answer-fraction"><input name="numerator" aria-label="Числитель ответа" id="solve-numerator" inputmode="numeric" required><input name="denominator" aria-label="Знаменатель ответа" id="solve-denominator" inputmode="numeric" required></span>' :
+      '<input name="number" aria-label="Значение x" inputmode="decimal" required>';
+    reveal('solve-answer',stage((baseStep+2)+'. Найди неизвестный множитель',
+      '<p>Вычисли произведение известных чисел. Раздели его на число, которое умножается на x.'+
+      (fractional?' Запиши ответ дробью.':'')+'</p><form id="solve-value" class="solve-value" autocomplete="off"><span>x = </span>'+fields+
+      '<button class="primary">Проверить x</button><p class="feedback" role="status"></p></form>'));
+    const form=byId('solve-value');
+    const feedback=form.querySelector('[role=status]');
+    form.addEventListener('submit',event=>{
+      event.preventDefault();
+      let correct;
+      if(fractional){
+        const top=parseValue(form.elements.numerator.value);
+        const bottom=parseValue(form.elements.denominator.value);
+        correct=Number.isInteger(top) && Number.isInteger(bottom) && bottom>0 && top*problem.answer[1]===bottom*problem.answer[0];
+      } else correct=parseValue(form.elements.number.value)===problem.answer;
+      feedback.textContent=correct?'Верно! Расскажи, как проверить значение подстановкой.':'Проверь произведение известных чисел и деление.';
+    });
+    form.addEventListener('input',()=>{ feedback.textContent=''; });
+  }
+  function connectionStage() {
+    const html='<p>Нажми два члена, которые нужно перемножить. Затем соедини оставшуюся пару.</p>'+
+      '<div class="pair-grid"><svg viewBox="0 0 400 160" preserveAspectRatio="none" aria-hidden="true"></svg>'+
+      terms.map((term,i)=>'<button type="button" data-node="'+i+'" aria-label="'+
+        ['Левый числитель','Левый знаменатель','Правый числитель','Правый знаменатель'][i]+': '+term+'" aria-pressed="false">'+term+'</button>').join('')+
+      '<b aria-hidden="true">=</b></div><div class="controls"><button type="button" class="primary" data-pair-check>Проверить пары</button>'+
+      '<button type="button" data-pair-reset>Убрать линии</button></div><p class="feedback" role="status"></p>';
+    reveal('solve-connect',stage(baseStep+'. Соедини пары',html));
+    const area=byId('solve-connect');
+    const buttons=[...area.querySelectorAll('[data-node]')];
+    const lineLayer=area.querySelector('svg');
+    const feedback=area.querySelector('[role=status]');
+    let selected=null;
+    let pairs=[];
+    function drawPairs(){
+      buttons.forEach((button,i)=>{
+        button.setAttribute('aria-pressed',i===selected);
+        button.disabled=pairs.some(pair=>pair.includes(i));
+      });
+      const positions=[[100,40],[100,120],[300,40],[300,120]];
+      lineLayer.innerHTML=pairs.map(([a,b],i)=>{
+        const [x1,y1]=positions[a], [x2,y2]=positions[b];
+        return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+(i===0?'#9c673b':'#7455a4')+'" stroke-width="4"/>';
+      }).join('');
+    }
+    area.addEventListener('click', event=>{
+      const button=event.target.closest('button:not(:disabled)');
+      if(!button)return;
+      if('pairCheck' in button.dataset){
+        if(pairs.length!==2) feedback.textContent='Соедини обе пары.';
+        else if(pairs.some(pair=>pairsMatch(pair,[0,3]))) {
+          feedback.textContent='Верно! Теперь перенеси те же пары в уравнение.';
+          area.querySelectorAll('button').forEach(item=>{item.disabled=true;});
+          equationStage();
+        } else feedback.textContent='Линии должны пройти крест-накрест. Убери линии и выбери пары заново.';
+      } else {
+        feedback.textContent='';
+        if('pairReset' in button.dataset){pairs=[];selected=null;}
+        else {
+          const node=Number(button.dataset.node);
+          if(selected===null)selected=node;
+          else {
+            if(selected!==node)pairs.push([selected,node]);
+            selected=null;
+          }
+        }
+        drawPairs();
+      }
+    });
+  }
+  if(problem.fraction) connectionStage();
+  else mountBuilder('solve-transfer',[['Перетащи числа и x из исходной записи в дроби.',terms,[0,1,2,3]]],'fractions',
+    {single:true,source:'proportion',onComplete:connectionStage});
+}
+byId('solve-levels').addEventListener('click',event=>{
+  const button=event.target.closest('button[data-solve-level]');
+  if(!button)return;
+  solveLevel=Number(button.dataset.solveLevel);
+  solveIndex=0;
+  for(const item of byId('solve-levels').children)item.setAttribute('aria-pressed',item===button);
+  renderSolve();
+});
+byId('solve-next').addEventListener('click',()=>{
+  solveIndex=(solveIndex+1)%solveLevels[solveLevel].problems.length;
+  renderSolve();
+});
+byId('solve-reset').addEventListener('click',renderSolve);
+renderSolve();
