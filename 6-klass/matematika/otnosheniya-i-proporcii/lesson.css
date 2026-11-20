@@ -127,9 +127,47 @@ footer { margin-top:20px; font-size:.9rem }
 .slots.fractions::before,.slots.fractions::after { content:""; height:3px; background:#594774; border-radius:3px }
 .slots.fractions::before { grid-area:2/1 }
 .slots.fractions::after { grid-area:2/3 }
-.chapter:not(#parts) .notebook ol { padding:0; list-style:none; counter-reset:task }
-.chapter:not(#parts) .notebook li { position:relative; counter-increment:task; padding:14px 14px 14px 55px; margin:12px 0; background:#fffdfa; border:1px solid #eadcd3; border-radius:13px; font-size:clamp(17px,2.2vw,21px); line-height:1.5 }
-.chapter:not(#parts) .notebook li::before { content:counter(task); position:absolute; top:14px; left:13px; min-width:29px; text-align:center; color:#614674; background:#f1e5f4; border-radius:8px; font-weight:750 }
+.notebook-heading,
+.notebook ol {
+  max-width:720px;
+  margin-inline:auto;
+}
+.notebook ol {
+  display:grid;
+  gap:clamp(18px,3vw,30px);
+  margin-block:20px 0;
+  padding:0;
+  list-style:none;
+  counter-reset:task;
+}
+.notebook li {
+  --task-inset:clamp(14px,2.5vw,32px);
+  position:relative;
+  counter-increment:task;
+  min-height:clamp(94px,12vw,122px);
+  padding:var(--task-inset) var(--task-inset) var(--task-inset) calc(var(--task-inset) + 43px);
+  background:#fffdfa;
+  border:1px solid #eadcd3;
+  border-radius:16px;
+  font-size:clamp(19px,2.5vw,24px);
+  line-height:1.45;
+  overflow-wrap:break-word;
+}
+.notebook li::before {
+  content:counter(task);
+  position:absolute;
+  top:var(--task-inset);
+  left:var(--task-inset);
+  min-width:30px;
+  padding-inline:5px;
+  text-align:center;
+  color:#614674;
+  background:#f1e5f4;
+  border-radius:8px;
+  font-weight:750;
+}
+.notebook-line { display:block; max-width:46ch }
+.notebook-line + .notebook-line { margin-top:.28em }
 
 .exercise-subtitle { margin-top:24px }
 .transition { margin:18px 0 10px }
