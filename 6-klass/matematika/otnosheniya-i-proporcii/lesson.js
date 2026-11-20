@@ -5,13 +5,15 @@ const chapters = [...document.querySelectorAll('.chapter')];
 const tabs = [...document.querySelectorAll('.topic-nav a')];
 
 function openChapter(moveFocus) {
-  const chapter = chapters.find(item => '#' + item.id === location.hash) ?? chapters[0];
+  const notebook = chapters.flatMap(item => [...item.querySelectorAll('.notebook')]).find(item => '#'+item.id === location.hash);
+  const chapter = notebook?.closest('.chapter') ?? chapters.find(item => '#'+item.id === location.hash) ?? chapters[0];
   for (const item of chapters) item.hidden = item !== chapter;
   for (const link of tabs) {
     if (link.hash === '#' + chapter.id) link.setAttribute('aria-current', 'page');
     else link.removeAttribute('aria-current');
   }
-  if (moveFocus) {
+  if (notebook) notebook.scrollIntoView({block:'start'});
+  else if (moveFocus) {
     chapter.focus({preventScroll: true});
     window.scrollTo({top: 0, behavior: 'instant'});
   }
@@ -85,15 +87,59 @@ function renderPostcard() {
     (equal?'Отношение сторон сохранилось. Луна осталась круглой.':'Стороны изменились в разное число раз. Луна стала овальной.')+'</p>';
 }
 
+function crossDiagram(values, crossed) {
+  const nodes = [[83,44],[83,119],[277,44],[277,119]];
+  const lines = [
+    '<path d="M83 44L277 119" stroke="#a65c38" stroke-width="4"/>',
+    '<path d="M83 119L277 44" stroke="#7857a5" stroke-width="4"/>'
+  ];
+  return svg(360,165,crossed.map(i=>lines[i]).join('')+
+    '<path d="M49 82H117M243 82H311" stroke="#4b3856" stroke-width="3"/>'+
+    label(180,87,'=','svg-large')+
+    nodes.map(([x,y],i)=>'<rect x="'+(x-33)+'" y="'+(y-19)+'" width="66" height="38" rx="10" fill="'+([0,3].includes(i)?'#f7d6ba':'#e8dcf5')+'"/>'+label(x,y+7,values[i],'svg-large')).join(''));
+}
+
 function renderProducts() {
   const middle = byId('product-choice').selectedIndex === 1;
-  const selected = middle ? [146,254] : [52,348];
-  byId('products').innerHTML = svg(400,110,
-    '<path d="M'+selected[0]+' 64V82H'+selected[1]+'V64" fill="none" stroke="#8467ad" stroke-width="3"/>'+
-    [52,146,254,348].map(x=>'<circle cx="'+x+'" cy="43" r="23" fill="'+(selected.includes(x)?'#e2d4f4':'#f4f0f9')+'"/>').join('')+
-    label(52,51,'6','svg-large')+label(146,51,'4','svg-large')+label(254,51,'12','svg-large')+label(348,51,'8','svg-large')+
-    label(99,51,':')+label(200,51,'=')+label(301,51,':')+label(200,104,middle?'Средние · 4 × 12':'Крайние · 6 × 8'));
+  byId('products').innerHTML = crossDiagram([6,4,12,8],[middle?1:0]);
+  byId('product-pair').textContent = middle ? 'Средние: 4 · 12 = 48' : 'Крайние: 6 · 8 = 48';
 }
+
+function renderDiagonalStep(step) {
+  const descriptions = [
+    ['9 и x — крайние','В записи 9 : 6 = 12 : x числа 9 и x стоят по краям. В записи дробями их соединяет одна диагональ.'],
+    ['6 · 12 = 72','На другой диагонали оба числа известны. Их произведение равно произведению 9 · x.'],
+    ['x = 72 : 9 = 8','В равенстве 9 · x = 72 ищем неизвестный множитель. Делим произведение на 9.'],
+    ['9 · 8 = 6 · 12','Подставляем 8 в исходную пропорцию. Оба произведения равны 72.']
+  ];
+  byId('step-diagram').innerHTML = crossDiagram([9,6,12,step===3?8:'x'],step===0?[0]:[0,1]);
+  const [equation,explanation]=descriptions[step];
+  byId('diagonal-message').innerHTML = '<p class="formula">'+equation+'</p><p>'+explanation+'</p>';
+}
+byId('diagonal-steps').addEventListener('click', event=>{
+  const btn=event.target.closest('button[data-step]');
+  if (!btn) return;
+  for(const sibling of byId('diagonal-steps').children) sibling.setAttribute('aria-pressed',sibling===btn);
+  renderDiagonalStep(Number(btn.dataset.step));
+});
+renderDiagonalStep(0);
+
+function renderFruit(id, grouped) {
+  function mark(x,y,pear) {
+    const fruit = pear ?
+      '<path d="M-12 9Q-13 0 -5 -8Q-5 -17 1 -17Q9 -17 10 -5Q16 2 14 10Q11 17 1 17Q-10 17 -12 9Z" fill="#81ad61"/>' :
+      '<path d="M0 -10C-20 -21 -18 7 -10 13Q-5 18 0 14Q9 19 15 6Q22 -16 0 -10Z" fill="#ce667d"/>';
+    return '<g transform="translate('+x+' '+y+')">'+fruit+'<path d="M0 -11q-2 -9 5 -11M0 -16q-10 0 -11 -7q8 0 11 7" fill="#639865" stroke="#426c48" stroke-width="1.3"/></g>';
+  }
+  let drawing = grouped ?
+    '<rect x="13" y="5" width="145" height="114" rx="14" fill="#f1e8f7"/><rect x="171" y="5" width="145" height="114" rx="14" fill="#f1e8f7"/>' :
+    '<path d="M43 48v26m48-26v26" stroke="#8866a5" stroke-width="2" stroke-dasharray="4 3"/>';
+  for (let i=0;i<6;i++) drawing+=mark(grouped?40+(i%3)*44+Math.floor(i/3)*158:43+i*48,34,false);
+  for (const x of (grouped?[84,242]:[43,91])) drawing+=mark(x,96,true);
+  byId(id).innerHTML=svg(335,125,drawing);
+}
+renderFruit('fruit-difference',false);
+renderFruit('fruit-ratio',true);
 
 function renderBeads(step) {
   const messages = [
@@ -158,18 +204,19 @@ const strategyTasks = [
   ['Увеличили рисунок шириной 8 см и высотой 5 см. Ширина копии 24 см, высота x см.', ['Проверить, что обе стороны увеличились в одинаковое число раз','Найти x делением на 8','Приравнять 8 · x и 5 · 24','Записать 8 : 5 = 24 : x'], [3,2,1,0]]
 ];
 
-function mountBuilder(id, tasks, layout) {
+function mountBuilder(id, tasks, layout, options = {}) {
   const host = byId(id);
   host.innerHTML = '<p class="task-count"></p><p class="task-text"></p><div class="slots"></div>'+
     '<div class="bank" aria-label="Карточки"></div>'+
     '<div class="controls"><button type="button" class="primary" data-action="check">Проверить</button>'+
     '<button type="button" data-action="reset">Сбросить</button><button type="button" data-action="next">Другое условие →</button></div>'+
-    '<p class="feedback" role="status"></p>';
+    '<p class="feedback" role="status"></p>'+(options.solve ? '<form class="value-form" hidden autocomplete="off"><label class="inline">Найди x <input name="value" inputmode="decimal" required></label> <button class="primary">Проверить x</button><p class="feedback" role="status"></p></form>' : '');
   const find = selector => host.querySelector(selector);
   const slots = find('.slots');
   const bank = find('.bank');
   slots.classList.add(layout);
   const feedback = find('.feedback');
+  const valueForm = find('.value-form');
   let current = 0;
   let placed = [];
   let selected = null;
@@ -197,7 +244,16 @@ function mountBuilder(id, tasks, layout) {
     if (focusSelector) find(focusSelector)?.focus({preventScroll:true});
   }
 
+  function clearValue() {
+    if (valueForm) {
+      valueForm.hidden = true;
+      valueForm.reset();
+      valueForm.querySelector('[role=status]').textContent = '';
+    }
+  }
+
   function place(card, destination) {
+    clearValue();
     const source = placed.indexOf(card);
     const previous = placed[destination];
     if (source>=0) placed[source]=previous;
@@ -208,6 +264,7 @@ function mountBuilder(id, tasks, layout) {
   }
 
   function start() {
+    clearValue();
     placed = Array(tasks[current][2].length).fill(null);
     selected = null;
     feedback.textContent = '';
@@ -224,7 +281,9 @@ function mountBuilder(id, tasks, layout) {
     } else if (action==='reset') {
       start();
     } else if (action==='check') {
-      const correct = tasks[current][2].every((item,i)=>item===placed[i]);
+      const [,,order] = tasks[current];
+      const correct = !placed.includes(null) && (options.accept ? options.accept(tasks[current][1], placed) : order.every((item,i)=>item===placed[i]));
+      if (valueForm) valueForm.hidden = !correct;
       feedback.textContent = placed.includes(null) ? 'Заполни все окошки.' :
         correct ? 'Верно!' : 'Проверь порядок карточек и попробуй ещё раз.';
     } else if (slot!=null && selected!=null && Number(card)!==selected) {
@@ -234,6 +293,12 @@ function mountBuilder(id, tasks, layout) {
       feedback.textContent = selected==null ? '' : 'Теперь выбери окошко.';
       paint('[data-card="'+card+'"]');
     }
+  });
+
+  valueForm?.addEventListener('submit', event=>{
+    event.preventDefault();
+    const value = parseValue(valueForm.elements.value.value);
+    valueForm.querySelector('[role=status]').textContent = value === tasks[current][3] ? 'Верно!' : 'Проверь произведения по диагоналям и деление.';
   });
 
   host.addEventListener('dragstart',event=>{
@@ -254,6 +319,7 @@ function mountBuilder(id, tasks, layout) {
     const card=Number(key);
     if (target.dataset.slot!=null) place(card,Number(target.dataset.slot));
     else {
+      clearValue();
       const source=placed.indexOf(card);
       if(source>=0) placed[source]=null;
       selected=null;
@@ -291,3 +357,68 @@ form.querySelector('[type=button]').addEventListener('click',()=>{
   form.elements.answer.focus({preventScroll:true});
 });
 renderEquation();
+
+function parseValue(text) {
+  const normalized = text.trim().replace(',','.');
+  return /^\d+(?:\.\d+)?$/.test(normalized) ? Number(normalized) : NaN;
+}
+
+mountBuilder('x-builder',[
+  ['На 4 одинаковые гирлянды ушло 14 м ленты. Сколько метров нужно на 10 гирлянд? В каждом отношении запиши сначала количество гирлянд, затем длину ленты.',['14','x','10','4'],[3,0,2,1],35],
+  ['В первый день мастер собрал 18 коробок. За 5 часов второго дня он собрал 30 коробок. Сколько часов заняла работа в первый день при той же скорости? Запиши сначала коробки, затем часы.',['5','18','x','30'],[1,2,3,0],3],
+  ['На одну серию из одинаковых рамок ушло 24 м проволоки. На другую серию из 10 рамок ушло 40 м. Сколько рамок в первой серии? Запиши сначала число рамок, затем длину проволоки.',['40','24','x','10'],[2,1,3,0],6],
+  ['Плакат шириной 8 см и высотой 5 см увеличили без искажений. Высота копии 15 см. Найди её ширину. Запиши сначала ширину, затем высоту.',['15','8','5','x'],[1,2,3,0],24]
+],'proportion',{solve:true});
+
+mountBuilder('four-numbers',[
+  ['Используй числа 5, 8, 15 и 24, чтобы составить любое верное равенство двух отношений.',['8','5','24','15'],[1,0,3,2]],
+  ['Составь пропорцию из чисел 7, 9, 14 и 18. Проверь её перекрёстным умножением.',['14','7','18','9'],[1,3,0,2]]
+],'proportion',{accept:(cards,order)=>{
+  const [a,b,c,d]=order.map(i=>Number(cards[i]));
+  return a*d===b*c;
+}});
+
+function mountQuiz(id, questions) {
+  const host=byId(id);
+  host.innerHTML='<p class="task-count"></p><p class="task-text"></p><form autocomplete="off"><div class="quiz-fields"></div><div class="controls"><button class="primary">Проверить</button><button type="button">Другое задание →</button></div><p class="feedback" role="status"></p></form>';
+  const quiz=host.querySelector('form');
+  const fields=host.querySelector('.quiz-fields');
+  const feedback=quiz.querySelector('[role=status]');
+  let index=0;
+  function render() {
+    const [title,choices]=questions[index];
+    host.querySelector('.task-count').textContent='Задание '+(index+1)+' из '+questions.length;
+    host.querySelector('.task-text').textContent=title;
+    fields.innerHTML=choices.map((choice,i)=>Array.isArray(questions[index][2]) ?
+      '<label class="inline">'+choice+' <input aria-label="'+choice+'" name="entry" inputmode="numeric" required></label>' :
+      '<label class="choice"><input type="radio" name="entry" value="'+i+'" required>'+choice+'</label>').join('');
+    feedback.textContent='';
+  }
+  quiz.addEventListener('submit',event=>{
+    event.preventDefault();
+    const answer=questions[index][2];
+    const correct=Array.isArray(answer) ?
+      [...fields.querySelectorAll('input')].every((item,i)=>parseValue(item.value)===answer[i]) :
+      Number(new FormData(quiz).get('entry'))===answer;
+    feedback.textContent=correct?'Верно!':questions[index][3];
+  });
+  quiz.addEventListener('input',()=>{feedback.textContent='';});
+  quiz.querySelector('[type=button]').addEventListener('click',()=>{index=(index+1)%questions.length;render();});
+  render();
+}
+mountQuiz('ratio-quiz',[
+ ['Как называется результат деления первого числа на второе?',['Сумма','Разность','Частное','Произведение'],2,'Вспомни, на какой вопрос отвечает отношение.'],
+ ['Сократи отношение 84 : 12 до наименьших целых чисел.',['7 : 4','7 : 1','12 : 1','1 : 7'],1,'Раздели оба числа на один и тот же общий делитель.'],
+ ['Какое отношение обратно к 9 : 4?',['9 : 5','4 : 9','5 : 4','18 : 8'],1,'В обратном отношении числа меняются местами.'],
+ ['Как записать отношение 30 минут к двум часам в наименьших целых числах?',['15 : 1','1 : 2','1 : 4','4 : 1'],2,'Сначала вырази обе величины в минутах.']
+]);
+mountQuiz('prop-quiz',[
+ ['Образуют ли отношения 4 : 10 и 14 : 35 пропорцию?',['Да','Нет'],0,'Сравни произведения чисел по диагоналям.'],
+ ['Образуют ли отношения 8 : 12 и 18 : 9 пропорцию?',['Да','Нет'],1,'Проверь, какое число стоит в конце равенства.'],
+ ['Назови средние члены пропорции 14 : 6 = 21 : 9.',['14 и 9','6 и 21','14 и 6','21 и 9'],1,'Посмотри на два внутренних места записи.'],
+ ['В записи m : n = k : p какое равенство следует из основного свойства?',['m · n = k · p','m · k = n · p','m · p = n · k'],2,'Найди два крайних и два средних члена.']
+]);
+mountQuiz('split-quiz',[
+ ['Для школьного праздника закупили 135 цветов. Розы и тюльпаны взяли в отношении 4 : 5. Сколько цветов каждого вида?',['Розы','Тюльпаны'],[60,75],'Проверь, что сумма равна 135, а отношение количеств равно 4 : 5.'],
+ ['Разложи 84 жетона по трём конвертам в отношении 2 : 3 : 7.',['Первый','Второй','Третий'],[14,21,49],'Сначала найди, сколько жетонов приходится на одну долю.']
+]);
