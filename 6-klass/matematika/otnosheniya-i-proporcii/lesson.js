@@ -1,257 +1,293 @@
 'use strict';
 
 const byId = id => document.getElementById(id);
-const nav = document.querySelector('.topic-nav');
-const chapters = [...document.querySelectorAll('article')];
-const chapterLinks = [...nav.querySelectorAll('a')];
+const chapters = [...document.querySelectorAll('.chapter')];
+const tabs = [...document.querySelectorAll('.topic-nav a')];
 
-function showChapter() {
-  const target = chapters.find(chapter => '#' + chapter.id === location.hash) ?? chapters[0];
-  for (const chapter of chapters) chapter.hidden = chapter !== target;
-  for (const link of chapterLinks) {
-    if (link.hash === '#' + target.id) link.setAttribute('aria-current', 'page');
+function openChapter(moveFocus) {
+  const chapter = chapters.find(item => '#' + item.id === location.hash) ?? chapters[0];
+  for (const item of chapters) item.hidden = item !== chapter;
+  for (const link of tabs) {
+    if (link.hash === '#' + chapter.id) link.setAttribute('aria-current', 'page');
     else link.removeAttribute('aria-current');
   }
-  return target;
+  if (moveFocus) {
+    chapter.focus({preventScroll: true});
+    window.scrollTo({top: 0, behavior: 'instant'});
+  }
 }
 
-showChapter();
-window.addEventListener('hashchange', () => {
-  const target = showChapter();
-  if (document.activeElement.closest('.next-topic') || document.activeElement === document.body) {
-    const heading = target.querySelector('h2');
-    heading.tabIndex = -1;
-    heading.focus({ preventScroll: true });
-  }
-  nav.scrollIntoView();
+openChapter(false);
+history.scrollRestoration = 'manual';
+document.querySelector('main').addEventListener('click', event => {
+  const link = event.target.closest('.topic-nav a, .next-topic');
+  if (!link || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  event.preventDefault();
+  if (location.hash !== link.hash) history.pushState(null, '', link.hash);
+  openChapter(true);
+});
+window.addEventListener('popstate', () => openChapter(true));
+window.addEventListener('hashchange', () => openChapter(true));
+window.addEventListener('pageshow', event => {
+  if (event.persisted) location.reload();
 });
 
-function bindChoices(id, key, change) {
-  const group = byId(id);
-  group.addEventListener('click', event => {
+const svg = (width, height, art) =>
+  '<svg viewBox="0 0 '+width+' '+height+'" aria-hidden="true" focusable="false">'+art+'</svg>';
+const fraction = (a,b) => '<math><mfrac><mn>'+a+'</mn><mn>'+b+'</mn></mfrac></math>';
+const label = (x,y,text,cls='') =>
+  '<text x="'+x+'" y="'+y+'" text-anchor="middle" class="'+cls+'">'+text+'</text>';
+const number = n => n.toLocaleString('ru-RU',{maximumFractionDigits:2});
+const gcd = (a,b) => b ? gcd(b,a%b) : a;
+
+function renderDrink() {
+  const portions = Number(byId('servings').value);
+  const extra = Number(byId('extra-water').checked);
+  const juice = 2*portions;
+  const water = 3*portions + extra;
+  byId('servings-value').value = portions;
+  const cup = (x,y,kind) => '<g transform="translate('+x+' '+y+') scale(.88)"><path d="M0 0H28L24 27Q23 32 19 32H9Q5 32 4 27Z" fill="#fff" stroke="#786d86" stroke-width="1.3"/><path d="M4 13H24L22 27Q22 29 19 29H9Q6 29 6 27Z" class="'+kind+'"/><path d="M7 8h7m-6 10h5" stroke="#5b526e" opacity=".55"/></g>';
+  const cups = (count,y,kind) => Array.from({length:count},(_,i)=>cup(18+i*27,y,kind)).join('');
+  const surface = 163 - (juice+water)*7;
+  const tint = 100 - Math.round(juice/(juice+water)*90);
+  byId('drink').innerHTML = svg(510,226,
+    '<defs><clipPath id="pitcher"><path d="M326 54H425L416 156Q414 173 400 173H345Q332 173 330 156L320 68L306 54Z"/></clipPath></defs>'+
+    '<rect x="4" y="13" width="288" height="192" rx="18" fill="#fffcff"/>'+
+    label(101,40,'Сок · '+juice+' мерок')+cups(juice,51,'berry-fill')+
+    label(111,123,'Вода · '+water+' мерок')+cups(water,135,'water-fill')+
+    '<path d="M420 81Q484 59 471 113Q466 134 418 139" fill="none" stroke="#796782" stroke-width="6"/>'+
+    '<path d="M326 54H425L416 156Q414 173 400 173H345Q332 173 330 156L320 68L306 54Z" fill="#fff" stroke="#796782" stroke-width="3"/>'+
+    '<path d="M308 '+surface+'Q351 '+(surface-6)+' 386 '+surface+'T437 '+surface+'V177H308Z" clip-path="url(#pitcher)" fill="hsl(333 45% '+tint+'%)"/>'+
+    '<path d="M341 69l7 81m50-65h16m-18 20h16m-17 20h15" fill="none" stroke="#796782" opacity=".65"/>'+
+    label(387,200,'Всего '+(juice+water)+' мерок'));
+  const mode = byId('compare').selectedIndex;
+  const [first,second] = [[juice,water],[water,juice],[juice,juice+water]][mode];
+  const divisor = gcd(first,second);
+  const explanation = extra ? 'Добавили воду только во вторую группу. Состав напитка изменился.' :
+    portions>1 ? 'Увеличили оба количества в '+portions+' раза. Отношение сохранилось.' :
+    'Первое число показывает, что сравниваем. Второе показывает, с чем сравниваем.';
+  byId('ratio-result').innerHTML = '<p class="formula">'+first+' : '+second+' = '+fraction(first,second)+(divisor>1?' = '+fraction(first/divisor,second/divisor):'')+'</p><p>'+explanation+'</p>';
+}
+
+function renderPostcard() {
+  const w = Number(byId('width').value);
+  const locked = byId('keep-shape').checked;
+  const h = locked ? w*2/3 : Number(byId('height').value);
+  byId('width-value').value = w;
+  byId('height-value').value = number(h);
+  byId('height-option').hidden = locked;
+  const picture = (x,y,width,height) => '<svg x="'+x+'" y="'+y+'" width="'+width+'" height="'+height+'" viewBox="0 0 120 80" preserveAspectRatio="none"><rect width="120" height="80" fill="#bcd3e6"/><circle cx="87" cy="24" r="12" fill="#fff4cd"/><path d="M0 65L25 31L57 67L82 49L120 69V80H0Z" fill="#8b8ab9"/><path d="M0 71Q28 53 59 69T120 64V80H0Z" fill="#699e96"/><path d="M74 64q-19 7-2 16h17q-15-9-3-16" fill="#efe0cf"/><rect x="1" y="1" width="118" height="78" fill="none" stroke="#fdf7ff" stroke-width="2"/></svg>';
+  const equal = locked || 6*h === 4*w;
+  byId('postcard').innerHTML = svg(500,235,'<rect x="6" y="7" width="488" height="196" rx="17" fill="#edf3fb"/>'+
+    picture(23,74,96,64)+picture(160+(320-w*16)/2,7+(196-h*16)/2,w*16,h*16)+
+    label(70,225,'Оригинал 6 × 4')+label(320,225,'Копия '+w+' × '+number(h)));
+  byId('scale-result').innerHTML = '<p class="formula">6 : 4 '+(equal?'=':'≠')+' '+w+' : '+number(h)+'</p><p>'+
+    (equal?'Отношение сторон сохранилось. Луна осталась круглой.':'Стороны изменились в разное число раз. Луна стала овальной.')+'</p>';
+}
+
+function renderProducts() {
+  const middle = byId('product-choice').selectedIndex === 1;
+  const selected = middle ? [146,254] : [52,348];
+  byId('products').innerHTML = svg(400,110,
+    '<path d="M'+selected[0]+' 64V82H'+selected[1]+'V64" fill="none" stroke="#8467ad" stroke-width="3"/>'+
+    [52,146,254,348].map(x=>'<circle cx="'+x+'" cy="43" r="23" fill="'+(selected.includes(x)?'#e2d4f4':'#f4f0f9')+'"/>').join('')+
+    label(52,51,'6','svg-large')+label(146,51,'4','svg-large')+label(254,51,'12','svg-large')+label(348,51,'8','svg-large')+
+    label(99,51,':')+label(200,51,'=')+label(301,51,':')+label(200,104,middle?'Средние · 4 × 12':'Крайние · 6 × 8'));
+}
+
+function renderBeads(step) {
+  const messages = [
+    ['2 + 3 = 5 долей','Размечаем пять равных долей. Две будут коралловыми, три — мятными.'],
+    ['60 : 5 = 12 бусин','Разделили все бусины поровну на пять долей. Размер каждой доли теперь известен.'],
+    ['12 · 2 = 24, 12 · 3 = 36','Объединяем доли каждого цвета и находим два количества.']
+  ];
+  const art = Array.from({length:5},(_,i)=>{
+    const x=17+i*94;
+    const beads=Array.from({length:12},(_,j)=>{
+      const cx=12+(j%4)*19, cy=16+Math.floor(j/4)*19;
+      return '<circle cx="'+cx+'" cy="'+cy+'" r="7.3" class="'+(i<2?'berry-fill':'mint-fill')+'"/><circle cx="'+(cx-2)+'" cy="'+(cy-2)+'" r="2" fill="#fff" opacity=".7"/>';
+    }).join('');
+    return '<g transform="translate('+x+' 47)"><rect width="82" height="72" rx="11" fill="'+(i<2?'#fbe3e9':'#d9eee5')+'"/>'+
+      (step===0?label(41,42,String(i+1),'svg-large'):beads)+label(41,93,step?'12 бусин':'Доля '+(i+1))+'</g>';
+  }).join('');
+  byId('beads').innerHTML = svg(500,174,label(250,25,'Весь браслет · 60 бусин')+art+
+    (step===2?'<path d="M17 147v7h176v-7m12 0v7h270v-7" fill="none" stroke="#79678d" stroke-width="2"/>'+label(105,172,'Коралловые')+label(340,172,'Мятные'):''));
+  byId('part-result').innerHTML='<p class="formula">'+messages[step][0]+'</p><p>'+messages[step][1]+'</p>';
+}
+
+byId('balance').innerHTML=svg(430,124,
+  '<path d="M47 37Q215 106 382 37" fill="none" stroke="#ae7292" stroke-width="3"/>'+
+  '<path d="M147 37Q215 74 282 37" fill="none" stroke="#688eab" stroke-width="3"/>'+
+  [[47,'3','#f9dfea'],[147,'5','#e1ecf8'],[282,'12','#e1ecf8'],[382,'x','#f9dfea']].map(([x,t,c])=>'<circle cx="'+x+'" cy="25" r="21" fill="'+c+'"/>'+label(x,33,t,'svg-large')).join('')+
+  label(97,33,':')+label(215,33,'=')+label(332,33,':')+label(215,108,'3 · x = 5 · 12'));
+
+for (const id of ['servings','extra-water','compare']) byId(id).addEventListener('input',renderDrink);
+for (const id of ['width','height']) byId(id).addEventListener('input',renderPostcard);
+byId('keep-shape').addEventListener('change', () => {
+  byId('height').value = Math.round(Number(byId('width').value)*2/3);
+  renderPostcard();
+});
+byId('product-choice').addEventListener('change',renderProducts);
+byId('part-steps').addEventListener('click',event=>{
+  const button = event.target.closest('button[data-step]');
+  if (!button) return;
+  for(const child of byId('part-steps').children) child.setAttribute('aria-pressed',child===button);
+  renderBeads(Number(button.dataset.step));
+});
+renderDrink();
+renderPostcard();
+renderProducts();
+renderBeads(0);
+
+const ratioTasks = [
+  ['В корзине 8 яблок и 12 груш. Запиши отношение числа яблок ко всем фруктам.', ['8 яблок','12 груш','20 фруктов'], [0,2]],
+  ['В группе 6 новичков и 9 опытных игроков. Запиши отношение числа опытных игроков к числу новичков.', ['6 новичков','9 опытных','15 игроков'], [1,0]],
+  ['За 3 часа поезд проехал 210 км. Запиши отношение пути ко времени.', ['3 часа','210 км','70 км в час'], [1,0]]
+];
+const proportionTasks = [
+  ['В одном пакете 2 красные и 3 синие бусины. В другом пакете 8 красных и 12 синих. Сравни красные с синими сначала в первом пакете, затем во втором.', ['12','2','8','3'], [1,3,2,0]],
+  ['Для 3 листов нужно 6 наклеек, для 5 листов — 10. Сравни число листов с числом наклеек сначала в первой паре, затем во второй.', ['10','6','5','3'], [3,1,2,0]]
+];
+const splitTasks = [
+  ['Раздели 96 бусин на две группы в отношении 3 : 5.', ['Разделить 96 на число равных долей','Проверить, что группы дают 96 и имеют отношение 3 : 5','Сложить 3 и 5','Размер доли умножить отдельно на 3 и на 5'], [2,0,3,1]],
+  ['Распредели 72 жетона между тремя игроками в отношении 1 : 2 : 3.', ['Проверить сумму и отношение трёх групп','Умножить размер доли на 1, 2 и 3','Сложить 1, 2 и 3','Разделить 72 на число долей'], [2,3,1,0]]
+];
+const strategyTasks = [
+  ['Для 4 одинаковых альбомов понадобилось 28 листов. Для 9 альбомов нужно x листов.', ['Найти x делением на 4','Записать 4 : 28 = 9 : x','Проверить подстановкой и записать единицу измерения','Приравнять 4 · x и 28 · 9'], [1,3,0,2]],
+  ['На 6 порций нужно 450 г ягод. На 8 порций нужно x граммов.', ['Приравнять 6 · x и 450 · 8','Проверить подстановкой и записать единицу измерения','Найти x делением на 6','Записать 6 : 450 = 8 : x'], [3,0,2,1]],
+  ['Увеличили рисунок шириной 8 см и высотой 5 см. Ширина копии 24 см, высота x см.', ['Проверить, что обе стороны увеличились в одинаковое число раз','Найти x делением на 8','Приравнять 8 · x и 5 · 24','Записать 8 : 5 = 24 : x'], [3,2,1,0]]
+];
+
+function mountBuilder(id, tasks, layout) {
+  const host = byId(id);
+  host.innerHTML = '<p class="task-count"></p><p class="task-text"></p><div class="slots"></div>'+
+    '<div class="bank" aria-label="Карточки"></div>'+
+    '<div class="controls"><button type="button" class="primary" data-action="check">Проверить</button>'+
+    '<button type="button" data-action="reset">Сбросить</button><button type="button" data-action="next">Другое условие →</button></div>'+
+    '<p class="feedback" role="status"></p>';
+  const find = selector => host.querySelector(selector);
+  const slots = find('.slots');
+  const bank = find('.bank');
+  slots.classList.add(layout);
+  const feedback = find('.feedback');
+  let current = 0;
+  let placed = [];
+  let selected = null;
+
+  function cardButton(attrs, text) {
+    return '<button type="button" '+attrs+'>'+text+'</button>';
+  }
+
+  function paint(focusSelector) {
+    const [question, cards, order] = tasks[current];
+    find('.task-text').textContent = question;
+    find('.task-count').textContent = 'Задание '+(current+1)+' из '+tasks.length;
+    const slotsHtml = order.map((_,i)=>{
+      const card = placed[i];
+      const name = layout==='steps' ? 'Шаг '+(i+1) : 'Место '+(i+1);
+      const attrs = 'data-slot="'+i+'" data-step-label="'+(i+1)+'. " aria-label="'+name+(card==null?', пусто':', '+cards[card])+'"';
+      const slot = card==null ? cardButton(attrs,name) :
+        cardButton(attrs+' draggable="true" data-card="'+card+'" aria-pressed="'+(selected===card)+'"',cards[card]);
+      const separator = layout==='proportion' && i===2 ? '=' : (layout!=='steps' && i>0 ? ':' : '');
+      return (separator?'<span aria-hidden="true">'+separator+'</span>':'')+slot;
+    });
+    slots.innerHTML = slotsHtml.join('');
+    bank.innerHTML = cards.map((item,i)=>placed.includes(i)?'':
+      cardButton('draggable="true" data-card="'+i+'" aria-pressed="'+(i===selected)+'"',item)).join('');
+    if (focusSelector) find(focusSelector)?.focus({preventScroll:true});
+  }
+
+  function place(card, destination) {
+    const source = placed.indexOf(card);
+    const previous = placed[destination];
+    if (source>=0) placed[source]=previous;
+    placed[destination]=card;
+    selected=null;
+    feedback.textContent='';
+    paint('[data-slot="'+destination+'"]');
+  }
+
+  function start() {
+    placed = Array(tasks[current][2].length).fill(null);
+    selected = null;
+    feedback.textContent = '';
+    paint();
+  }
+
+  host.addEventListener('click',event=>{
     const button = event.target.closest('button');
     if (!button) return;
-    for (const member of group.querySelectorAll('button')) {
-      member.setAttribute('aria-pressed', member === button);
+    const {action, slot, card} = button.dataset;
+    if (action==='next') {
+      current = (current+1)%tasks.length;
+      start();
+    } else if (action==='reset') {
+      start();
+    } else if (action==='check') {
+      const correct = tasks[current][2].every((item,i)=>item===placed[i]);
+      feedback.textContent = placed.includes(null) ? 'Заполни все окошки.' :
+        correct ? 'Верно!' : 'Проверь порядок карточек и попробуй ещё раз.';
+    } else if (slot!=null && selected!=null && Number(card)!==selected) {
+      place(selected,Number(slot));
+    } else if (card!=null) {
+      selected = selected===Number(card) ? null : Number(card);
+      feedback.textContent = selected==null ? '' : 'Теперь выбери окошко.';
+      paint('[data-card="'+card+'"]');
     }
-    change(button.dataset[key]);
   });
-}
 
-function gcd(a, b) {
-  while (b !== 0) [a, b] = [b, a % b];
-  return a;
-}
-
-function simplify(a, b) {
-  const divisor = gcd(a, b);
-  return (a / divisor) + ' : ' + (b / divisor);
-}
-
-const cup = `<svg class="cup" viewBox="0 0 34 40" aria-hidden="true">
-  <path class="glass" d="M3 4h28l-3.5 30q-.4 3-3.5 3H10q-3.1 0-3.5-3Z"/>
-  <path class="liquid" d="M6.2 14h21.6l-2.3 19q-.2 2-2.3 2H10.8q-2.1 0-2.3-2Z"/>
-  <path class="marks" d="M5.4 12h8M6.5 20h6M7.5 28h5"/>
-</svg>`;
-
-let servings = 1;
-let extraWater = false;
-const compare = byId('compare');
-const extra = byId('extra-water');
-
-function drawRecipe() {
-  const juice = 2 * servings;
-  const water = 3 * servings + Number(extraWater);
-  byId('juice-cups').innerHTML = cup.repeat(juice);
-  byId('water-cups').innerHTML = cup.repeat(water);
-  byId('juice-amount').textContent = 100 * juice + ' мл';
-  byId('water-amount').textContent = 100 * water + ' мл';
-
-  byId('jLevel').setAttribute('y',160-12*juice);
-  byId('wLevel').setAttribute('y',160-12*water);
-  byId('jugLevel').setAttribute('y',159-7*(juice+water));
-  const tint = [0,1,2].map(i => Math.round(([178,65,110][i]*juice+[191,225,235][i]*water)/(juice+water)));
-  byId('jugLevel').setAttribute('fill','rgb('+tint.join(',')+')');
-  const comparisons = {
-    'juice-water': [juice, water, `Мерки сока (${juice}) сравниваем с мерками воды (${water}).`],
-    'water-juice': [water, juice, `Сначала мерки воды (${water}), затем мерки сока (${juice}).`],
-    'juice-all': [juice, juice + water, `Всего мерок ${juice} + ${water} = ${juice + water}. Из них ${juice} — сок.`]
-  };
-  const [first, second, description] = comparisons[compare.value];
-  const reduced = simplify(first, second);
-  const equation = first + ' : ' + second;
-  byId('recipe-equation').textContent = equation === reduced ? equation : equation + ' = ' + reduced;
-  const note = extraWater ? ' Добавили воду, поэтому рецепт изменился.' :
-    servings > 1 ? ' Увеличили оба количества одинаково, поэтому отношение сохранилось.' : '';
-  byId('recipe-message').textContent = description + note;
-}
-
-bindChoices('recipe-buttons', 'recipe', value => {
-  servings = Number(value);
-  drawRecipe();
-});
-extra.addEventListener('click', () => {
-  extraWater = !extraWater;
-  extra.setAttribute('aria-pressed', extraWater);
-  drawRecipe();
-});
-compare.addEventListener('change', drawRecipe);
-
-function strips(juice, water) {
-  return '<div class="strip juice">' + '<i></i>'.repeat(juice) +
-    '</div><div class="strip water">' + '<i></i>'.repeat(water) + '</div>';
-}
-
-const tryJuice = byId('try-juice');
-const tryWater = byId('try-water');
-byId('base-strip').innerHTML = strips(2, 3);
-
-function drawScale() {
-  const juice = tryJuice.valueAsNumber;
-  const water = tryWater.valueAsNumber;
-  const match = 3 * juice === 2 * water;
-  byId('try-juice-count').textContent = juice;
-  byId('try-water-count').textContent = water;
-  byId('try-strip').innerHTML = strips(juice, water);
-  byId('scale-equation').textContent = `2 : 3 ${match ? '=' : '≠'} ${juice} : ${water}`;
-  byId('scale-message').textContent = match && juice === 2
-    ? 'Взяли столько же сока и воды. Отношения равны — получилась пропорция.'
-    : match ? `Сока и воды стало в ${juice / 2} раза больше. Отношения равны — получилась пропорция.`
-    : `В твоём рецепте отношение ${simplify(juice, water)}. Для того же вкуса нужно 2 : 3.`;
-}
-
-tryJuice.addEventListener('input', drawScale);
-tryWater.addEventListener('input', drawScale);
-
-const division = [
-  ['Сколько всего равных частей?', '2 + 3 = 5', 'Две части сока и три части воды. Отметим на схеме все пять.'],
-  ['Сколько в одной части?', '750 : 5 = 150 мл', 'Разделили весь напиток на пять равных частей и узнали объём одной части.'],
-  ['Сколько сока и воды?', '300 мл и 450 мл', 'Для сока берём 2 · 150 = 300 мл, для воды — 3 · 150 = 450 мл. Проверка: 300 + 450 = 750 мл.']
-];
-
-function drawDivision(step) {
-  byId('ribbon').replaceChildren(...Array.from({ length: 5 }, (_, index) => {
-    const part = document.createElement('span');
-    part.className = index < 2 ? 'juice' : 'water';
-    const highlight = step === 2 || (step === 1 && index === 0);
-    part.classList.toggle('highlight', highlight);
-    part.textContent = highlight ? '150 мл' : String(index + 1);
-    return part;
-  }));
-  byId('ribbon-juice').textContent = step === 2 ? 'Сок · 300 мл' : 'Ягодный сок';
-  byId('ribbon-water').textContent = step === 2 ? 'Вода · 450 мл' : 'Вода';
-  const [title, equation, message] = division[step];
-  byId('divide-title').textContent = title;
-  byId('divide-equation').textContent = equation;
-  byId('divide-message').textContent = message;
-}
-bindChoices('divide-buttons', 'step', value => drawDivision(Number(value)));
-drawDivision(0);
-
-function readNumber(input) {
-  const value = input.value.trim().replace(',', '.');
-  return /^[+-]?(?:\d+(?:\.\d+)?|\.\d+)$/.test(value) ? Number(value) : NaN;
-}
-
-function showFeedback(form, correct, message) {
-  const feedback = form.querySelector('.feedback');
-  feedback.dataset.correct = correct;
-  feedback.textContent = message;
-}
-
-const partsForm = byId('parts-form');
-partsForm.addEventListener('submit', event => {
-  event.preventDefault();
-  const first = readNumber(partsForm.elements.first);
-  const second = readNumber(partsForm.elements.second);
-  const correct = first === 36 && second === 60;
-  const totalCorrect = first + second === 96;
-  showFeedback(partsForm, correct, correct ? 'Верно. 36 + 60 = 96, а 36 : 60 = 3 : 5.'
-    : totalCorrect ? 'Сумма равна 96. Проверь ещё и отношение первой группы ко второй.'
-    : 'Проверь, что в двух группах вместе ровно 96 бусин.');
-});
-
-const problems = [
-  ['x : 18 = 5 : 6', 15, '15 · 6 = 18 · 5 = 90.'],
-  ['2,4 : x = 6 : 15', 6, '2,4 · 15 = 6 · 6 = 36.'],
-  ['3 : 8 = x : 4', 1.5, '3 · 4 = 8 · 1,5 = 12.'],
-  ['5 : 7 = 15 : x', 21, '5 · 21 = 7 · 15 = 105.']
-];
-let problem = 0;
-const unknownForm = byId('unknown-form');
-
-unknownForm.addEventListener('submit', event => {
-  event.preventDefault();
-  const [, answer, check] = problems[problem];
-  const correct = readNumber(unknownForm.elements.answer) === answer;
-  showFeedback(unknownForm, correct, correct ? 'Верно. ' + check
-    : 'Приравняй произведения крайних и средних членов и найди неизвестный множитель.');
-});
-
-byId('next-problem').addEventListener('click', () => {
-  problem = (problem + 1) % problems.length;
-  byId('unknown-equation').textContent = problems[problem][0];
-  unknownForm.reset();
-  showFeedback(unknownForm, false, '');
-  unknownForm.elements.answer.focus();
-});
-
-for (const form of [partsForm, unknownForm]) {
-  form.addEventListener('input', () => showFeedback(form, false, ''));
-}
-
-bindChoices('practice-buttons', 'practice', value => {
-  byId('ratio-practice').hidden = value !== 'ratio';
-  byId('proportion-practice').hidden = value !== 'proportion';
-});
-
-drawRecipe();
-drawScale();
-window.addEventListener('pageshow', () => {
-  drawRecipe();
-  drawScale();
-});
-
-function threadBeads() {
-  const n = +byId('links').value;
-  byId('linksCount').value = n;
-  let drawing = '';
-  for(let group=0;group<n;group++) {
-    const x = 240 + (group-(n-1)/2)*89;
-    drawing += '<path d="M'+(x-42)+' 81q42 18 84 0" fill="none" stroke="#76634f" stroke-width="3"/>';
-    for(let bead=0;bead<5;bead++) {
-      const bx = x+(bead-2)*16, by = 82+7*Math.cos((bead-2)*0.65);
-      drawing += '<circle cx="'+bx+'" cy="'+by+'" r="8.7" fill="'+(bead<2?'#d27f86':'#69ac9b')+'" stroke="#596963"/><circle cx="'+(bx-2.7)+'" cy="'+(by-3)+'" r="2.1" fill="#fffa"/>';
-    }
-    drawing += '<path d="M'+(x-38)+' 108v6h76v-6" fill="none" stroke="#8caaa1"/><text x="'+x+'" y="136" text-anchor="middle">'+(group+1)+'</text>';
-  }
-  byId('beads').innerHTML = drawing;
-  byId('beadRead').textContent = 'Коралловые и мятные: '+(2*n)+' : '+(3*n)+'. Всего '+(5*n)+' бусин.';
-}
-function printPhoto() {
-  const width = +byId('wide').value, locked=byId('locked').checked;
-  const height = locked ? width*2/3 : +byId('high').value;
-  if (locked) byId('high').value = height;
-  const format = n => Number.isInteger(n) ? String(n) : new Intl.NumberFormat('ru',{maximumFractionDigits:2}).format(n);
-  byId('wideN').value = width+' см';
-  byId('highN').value = format(height)+' см';
-  byId('heightControl').hidden = locked;
-  const picture = byId('print');
-  for(const [name,value] of Object.entries({width:width*15,height:height*15,x:(350-width*15)/2,y:(195-height*15)/2})) picture.setAttribute(name,value);
-  const equal=width*4===height*6;
-  byId('printRead').textContent = '6 : 4 '+(equal?'=':'≠')+' '+width+' : '+format(height)+'. '+(equal?'Форма сохранилась.':'Отношение сторон изменилось.');
-}
-byId('links').addEventListener('input',threadBeads);
-for (const id of ['wide','high','locked']) byId(id).addEventListener('input',printPhoto);
-function renderModels(){ threadBeads(); printPhoto(); }
-renderModels();
-window.addEventListener('pageshow',renderModels);
-for(const form of document.querySelectorAll('.quick')) {
-  const input=form.querySelector('input'), feedback=form.querySelector('output');
-  form.addEventListener('submit',event=>{
+  host.addEventListener('dragstart',event=>{
+    const card = event.target.closest('[data-card]');
+    if (!card) return;
+    event.dataTransfer.setData('text/plain', id+':'+card.dataset.card);
+    event.dataTransfer.effectAllowed='move';
+  });
+  host.addEventListener('dragover',event=>{
+    if (event.target.closest('[data-slot], .bank')) event.preventDefault();
+  });
+  host.addEventListener('drop',event=>{
+    const target = event.target.closest('[data-slot], .bank');
+    if (!target) return;
     event.preventDefault();
-    const value=input.value.trim().replace(',','.');
-    feedback.textContent = !/^\d+(\.\d+)?$/.test(value) ? 'Введи число.' : Number(value)===Number(form.dataset.value) ? 'Верно!' : 'Проверь, какие величины ты сравниваешь, и попробуй ещё раз.';
+    const [origin,key]=event.dataTransfer.getData('text/plain').split(':');
+    if (origin!==id || !/^\d+$/.test(key) || Number(key)>=tasks[current][1].length) return;
+    const card=Number(key);
+    if (target.dataset.slot!=null) place(card,Number(target.dataset.slot));
+    else {
+      const source=placed.indexOf(card);
+      if(source>=0) placed[source]=null;
+      selected=null;
+      feedback.textContent='';
+      paint('[data-card="'+card+'"]');
+    }
   });
-  input.addEventListener('input',()=>feedback.textContent='');
+  start();
 }
+
+mountBuilder('ratio-builder',ratioTasks,'ratio');
+mountBuilder('prop-builder',proportionTasks,'proportion');
+mountBuilder('parts-builder',splitTasks,'steps');
+mountBuilder('strategy-builder',strategyTasks,'steps');
+
+const equations = [['x : 18 = 5 : 6',15],['2,4 : x = 6 : 15',6],['3 : 8 = x : 4',1.5],['5 : 7 = 15 : x',21]];
+let equationIndex = 0;
+const form = byId('unknown-form');
+const message = form.querySelector('.feedback');
+function renderEquation() {
+  byId('unknown-equation').textContent = equations[equationIndex][0];
+  form.reset();
+  message.textContent='';
+}
+form.addEventListener('submit',event=>{
+  event.preventDefault();
+  const raw=form.elements.answer.value.trim().replace(',','.');
+  message.textContent = !/^\d+(?:\.\d+)?$/.test(raw) ? 'Введи число.' :
+    Number(raw)===equations[equationIndex][1] ? 'Верно!' : 'Проверь, какие члены нужно перемножить.';
+});
+form.addEventListener('input',()=>{message.textContent='';});
+form.querySelector('[type=button]').addEventListener('click',()=>{
+  equationIndex=(equationIndex+1)%equations.length;
+  renderEquation();
+  form.elements.answer.focus({preventScroll:true});
+});
+renderEquation();
