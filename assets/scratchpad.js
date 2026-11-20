@@ -1,6 +1,52 @@
 (() => {
-  const panel = document.querySelector("#lesson-scratchpad");
-  const toggle = document.querySelector("#scratchpad-toggle");
+  if (document.querySelector("math-scratchpad")) return;
+  const host = document.createElement("math-scratchpad");
+  host.hidden = true;
+  const root = host.attachShadow({ mode: "open" });
+  root.innerHTML = `
+<aside id="lesson-scratchpad" aria-label="Черновик" hidden>
+  <div class="scratchpad-heading">
+    <h2 id="scratchpad-title"><button type="button" data-scratch-grip="move" aria-label="Переместить черновик" title="Потяни, чтобы переместить">Черновик</button></h2>
+    <button type="button" data-scratch-clear>Стереть всё</button>
+    <button type="button" data-scratch-close aria-label="Закрыть черновик" title="Закрыть"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+  </div>
+  <div class="scratchpad-tools">
+    <div role="group" aria-label="Инструмент">
+      <button type="button" data-scratch-tool="pen" aria-pressed="true" aria-label="Ручка" title="Ручка"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 20 4.5-1 11-11a2.5 2.5 0 0 0-3.5-3.5l-11 11L4 20Z"/><path d="m14.5 6 3.5 3.5"/></svg></button>
+      <button type="button" data-scratch-tool="eraser" aria-pressed="false" aria-label="Ластик" title="Ластик"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 20h10M7 20l-3-3a2 2 0 0 1 0-2.8l8.3-8.3a2 2 0 0 1 2.8 0l4 4a2 2 0 0 1 0 2.8L12 20H7Zm1-9 6 6"/></svg></button>
+    </div>
+    <div role="group" aria-label="Цвет ручки">
+      <button type="button" data-scratch-color="#202024" style="--swatch:#202024" aria-pressed="true" aria-label="Чёрный" title="Чёрный"></button>
+      <button type="button" data-scratch-color="#2456ad" style="--swatch:#2456ad" aria-pressed="false" aria-label="Синий" title="Синий"></button>
+      <button type="button" data-scratch-color="#923e77" style="--swatch:#923e77" aria-pressed="false" aria-label="Малиновый" title="Малиновый"></button>
+    </div>
+    <select aria-label="Толщина ручки" title="Толщина ручки">
+      <option value="2">Тонкая</option>
+      <option value="4" selected>Средняя</option>
+      <option value="7">Толстая</option>
+    </select>
+  </div>
+  <div class="scratchpad-paper">
+    <canvas aria-label="Лист в клетку для вычислений"></canvas>
+  </div>
+  <div data-scratch-grip="n" aria-hidden="true"></div>
+  <div data-scratch-grip="e" aria-hidden="true"></div>
+  <div data-scratch-grip="s" aria-hidden="true"></div>
+  <div data-scratch-grip="w" aria-hidden="true"></div>
+  <button type="button" data-scratch-grip="nw" aria-label="Изменить размер за верхний левый угол" title="Изменить размер"></button>
+  <button type="button" data-scratch-grip="se" aria-label="Изменить размер за нижний правый угол" title="Изменить размер"></button>
+</aside>
+<button id="scratchpad-toggle" type="button" aria-controls="lesson-scratchpad" aria-expanded="false" aria-label="Открыть черновик" title="Открыть черновик"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 20 4.5-1 11-11a2.5 2.5 0 0 0-3.5-3.5l-11 11L4 20Z"/><path d="m14.5 6 3.5 3.5"/></svg></button>
+  `;
+  const stylesheet = document.createElement("link");
+  stylesheet.rel = "stylesheet";
+  stylesheet.href = new URL("scratchpad.css?v=3", document.currentScript.src).href;
+  stylesheet.addEventListener("load", () => { host.hidden = false; }, { once: true });
+  root.prepend(stylesheet);
+  document.body.append(host);
+
+  const panel = root.querySelector("#lesson-scratchpad");
+  const toggle = root.querySelector("#scratchpad-toggle");
   const close = panel.querySelector("[data-scratch-close]");
   const clear = panel.querySelector("[data-scratch-clear]");
   const grips = panel.querySelectorAll("[data-scratch-grip]");

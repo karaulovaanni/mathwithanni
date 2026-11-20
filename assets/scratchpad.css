@@ -1,10 +1,31 @@
+:host([hidden]), [hidden] { display:none !important }
+*, *::before, *::after { box-sizing:border-box }
+button, select {
+  font:inherit;
+  color:inherit;
+  border:1px solid #d2c5e2;
+  background:#fff;
+}
+button { cursor:pointer }
+button:hover { background:var(--lavender) }
+:focus-visible { outline:3px solid #7a5dab; outline-offset:2px }
 #scratchpad-toggle,
 #lesson-scratchpad {
   position:fixed;
   right:var(--scratchpad-right);
   z-index:20;
+  pointer-events:auto;
 }
-body {
+:host {
+  all:initial;
+  position:fixed;
+  inset:0;
+  z-index:10000;
+  display:block;
+  pointer-events:none;
+  font:16px/1.4 system-ui,sans-serif;
+  color:#35324c;
+  --lavender:#f0eaf8;
   --scratchpad-right:max(14px, env(safe-area-inset-right));
   --scratchpad-width:clamp(280px, 26vw, 408px);
   --scratchpad-bottom:max(14px, env(safe-area-inset-bottom));
