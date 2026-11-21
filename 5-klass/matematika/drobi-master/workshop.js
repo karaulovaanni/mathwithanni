@@ -33,6 +33,13 @@ commonPractice.querySelectorAll('.numbers button').forEach((b,i)=>b.onclick=()=>
 
 // Small outline follows the current lesson; no full-page category duplication.
 const outline=document.createElement('nav');outline.className='lesson-outline';outline.setAttribute('aria-label','Навигация по текущей теме');document.body.append(outline);
-function outlineUpdate(){const panel=document.querySelector('[role=tabpanel]:not([hidden])');if(!panel)return;let sections=[...panel.querySelectorAll(':scope > section')];outline.innerHTML='<strong>В этой теме</strong>'+sections.map((s,i)=>{if(!s.id)s.id=panel.id+'-part-'+i;let title=s.querySelector('h2')?.textContent||'';return `<a href="#${s.id}">${title}</a>`}).join('');}
+const shortSectionNames={
+ 'Одно целое — равные части':'Доли','Дробь рассказывает о долях':'Дробь','Собери свою дробь':'Модели','Закрась указанную часть':'Закрась','Запиши дробь по рисунку':'На рисунке','Прочитай и собери':'Из текста','Одна пицца — разные начинки':'Пицца','Точки и координаты':'На прямой','Выбери свою мини-тему':'Тренировка','Нарисуй, запиши, объясни':'В тетрадь',
+ 'Применение понятия дроби при решении задач':'О задачах','Условие оживает на рисунке':'Модели','Прочитай модель и реши':'Задачи по рисунку','Четыре типа задач':'Задачи','Составь схему и реши':'В тетрадь',
+ 'Задачи на равные дроби':'Задачи','Равные дроби с разными знаменателями':'Равные дроби','Разные записи одной части':'Модели','Час, квадрат и лента':'Час и фигуры','Две записи — одна точка':'На прямой','Находим равные записи':'Равенства','Один множитель — две строки дроби':'Домножение','Нарисуй и докажи':'В тетрадь',
+ 'Сравнение дробей':'О сравнении','Знаменатели равны':'Один знаменатель','Числители равны':'Один числитель','И числители, и знаменатели разные':'Разные дроби','Общий тренажёр':'Тренировка','От точек к цепочке дробей':'Прямая и порядок','Сравни и объясни':'В тетрадь',
+ 'Дробная черта — знак деления':'Дробная черта','Правильные и неправильные дроби':'Виды дробей','От части до нескольких целых':'Модели','Кондитерская: собери заказ':'Собери заказ','Нарисуй, реши, объясни':'В тетрадь'
+};
+function outlineUpdate(){const panel=document.querySelector('[role=tabpanel]:not([hidden])');if(!panel)return;const sections=[...panel.querySelectorAll(':scope > section')];outline.innerHTML='<strong>В теме</strong>'+sections.map((s,i)=>{if(!s.id)s.id=panel.id+'-part-'+i;const full=s.querySelector('h2')?.textContent||'';const title=s.dataset.nav||shortSectionNames[full]||full;return `<a href="#${s.id}" title="${full}">${title}</a>`}).join('');}
 window.refreshFractionOutline=outlineUpdate;addEventListener('hashchange',outlineUpdate);outlineUpdate();
 })();
