@@ -1,7 +1,8 @@
 /* Focused practice: mathematical skills and difficulty, with mixed contexts. */
 window.fractionChoices=function(host,options,onChange){host.innerHTML=options.map(([value,label])=>`<button type="button" data-value="${value}" aria-pressed="false">${label}</button>`).join('');host.classList.add('tap-choices');host.querySelectorAll('button').forEach(b=>b.onclick=()=>{host.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));onChange(b.dataset.value)});return ()=>{host.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed','false'))}};
 window.focusedFractionPractice=function(host,bank){
- const labels=['','1 · База','2 · Применение','3 · Подумай'];
+ host.classList.add('focused-trainer');
+ const labels=['','База','Сложнее','Повышенный'];
  const available=[1,2,3].filter(l=>bank.some(t=>(t.level||1)===l));
  let level=available[0],index=0,list=[],picked='';
  host.innerHTML='<div class="focus-levels tap-choices"></div><div class="focus-numbers numbers" aria-label="Номера заданий"></div><div class="focus-task"></div><div class="practice-navigation"><button class="focus-prev">← Назад</button><span class="focus-count"></span><button class="focus-next">Следующее →</button></div>';

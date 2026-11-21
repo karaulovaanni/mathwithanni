@@ -5,7 +5,8 @@ window.typesPractice = function(host, bank) {
  host.classList.add('types-trainer');
  host.innerHTML = '<div class="focus-levels tap-choices"></div><div class="focus-numbers numbers" aria-label="Номера заданий"></div><div class="focus-task"></div><div class="practice-navigation"><button class="focus-prev">Назад</button><span class="focus-count"></span><button class="focus-next">Следующее</button></div>';
  const levelBox=host.querySelector('.focus-levels');
- levelBox.innerHTML=levels.map(l=>`<button data-level="${l}" aria-pressed="${l===level}">${['','База','Применение','Подумай'][l]}</button>`).join('');
+ levelBox.innerHTML=levels.map(l=>`<button data-level="${l}" aria-pressed="${l===level}">${['','База','Сложнее','Повышенный'][l]}</button>`).join('');
+ levelBox.hidden=levels.length<2;
  const fractionFields=(name,label)=>`<label class="fraction-entry"><span>${label}</span><span class="frac"><span><input data-field="${name}-n" type="number" min="0" inputmode="numeric" aria-label="${label}: числитель"></span><span><input data-field="${name}-d" type="number" min="1" inputmode="numeric" aria-label="${label}: знаменатель"></span></span></label>`;
  function draw(){
   const t=list[index], box=host.querySelector('.focus-task'); let picked='', kind='';
@@ -33,23 +34,26 @@ window.typesPractice = function(host, bank) {
    feedback(box.querySelector('.feedback'),ok);
    if(ok){solved.add(level+':'+index);const number=host.querySelector(`[data-task-number="${index}"]`);number.classList.add('task-solved');number.setAttribute('aria-label',`Задание ${index+1}, выполнено`)}
    host.querySelector('.focus-next').disabled=index===list.length-1||(instant&&!ok);
+   progress();
    if(ok&&solved.size===list.length&&levels.length===1)box.querySelector('.feedback').textContent='Все задания выполнены!';
   }
   checkButton.onclick=check;
   input.addEventListener('input',clear);input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();check()}});
   host.querySelector('.focus-prev').disabled=index===0;host.querySelector('.focus-next').disabled=index===list.length-1||instant;
   host.querySelector('.focus-count').textContent=`${index+1} из ${list.length}`;
+  progress();
  }
+ function progress(){if(host.id!=='reviewDeck')return;let el=host.querySelector('.review-progress');if(!el){el=document.createElement('p');el.className='review-progress';el.setAttribute('aria-live','polite');host.append(el)}const count=[...solved].filter(key=>key.startsWith(level+':')).length;el.textContent=count===list.length?'Все '+list.length+' задания выполнены верно.':`Выполнено верно: ${count} из ${list.length}`}
  function choose(){list=bank.filter(t=>(t.level||1)===level);index=0;draw()}
  levelBox.querySelectorAll('button').forEach(b=>b.onclick=()=>{level=+b.dataset.level;levelBox.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));choose()});
  host.querySelector('.focus-prev').onclick=()=>{if(index){index--;draw()}};host.querySelector('.focus-next').onclick=()=>{if(index<list.length-1){index++;draw()}};choose();
 };
 
-window.typesMix = function(host, options, bank, deck) {
+window.typesMix = function(host, options, bank, deck, limit=24) {
  const selected=new Set([options[0][0]]);
  host.classList.add('tap-choices');host.setAttribute('aria-label','Выбор типов заданий');
  host.innerHTML=options.map(([v,label])=>`<button data-format="${v}" aria-pressed="${selected.has(v)}">${label}</button>`).join('')+'<button data-mix aria-pressed="false">Микс</button>';
- function update(){host.querySelectorAll('[data-format]').forEach(b=>b.setAttribute('aria-pressed',String(selected.has(b.dataset.format))));host.querySelector('[data-mix]').setAttribute('aria-pressed',String(selected.size===options.length));const tasks=bank.filter(t=>selected.has(t.direction));typesPractice(deck,selected.size>1?shuffleFractions(tasks):tasks)}
+ function update(){host.querySelectorAll('[data-format]').forEach(b=>b.setAttribute('aria-pressed',String(selected.has(b.dataset.format))));host.querySelector('[data-mix]').setAttribute('aria-pressed',String(selected.size===options.length));const tasks=bank.filter(t=>selected.has(t.direction));const result=[];[1,2,3].forEach(level=>{const queues=[...selected].map(direction=>shuffleFractions(tasks.filter(t=>(t.level||1)===level&&t.direction===direction)));let added=0;while(added<limit&&queues.some(q=>q.length)){for(const q of queues){if(q.length&&added<limit){result.push(q.shift());added++}}}});typesPractice(deck,shuffleFractions(result))}
  host.querySelectorAll('[data-format]').forEach(b=>b.onclick=()=>{const v=b.dataset.format;if(selected.has(v)){if(selected.size===1)return;selected.delete(v)}else selected.add(v);update()});
  host.querySelector('[data-mix]').onclick=()=>{options.forEach(([v])=>selected.add(v));update()};update();
 };
