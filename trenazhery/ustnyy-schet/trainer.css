@@ -1,0 +1,36 @@
+:root {
+  color-scheme: light;
+  --ink: #292d38;
+  --purple: #5944a7;
+  --line: #ddd8ef;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: #f8f7fc; color: var(--ink); font: 1rem/1.5 system-ui, sans-serif; }
+main { max-width: 48rem; margin: auto; padding: 1.5rem 1rem 3rem; }
+a { color: var(--purple); }
+h1 { margin: .4rem 0 1rem; font-size: clamp(2rem, 6vw, 3rem); }
+details, form { background: white; border: 1px solid var(--line); border-radius: 1rem; padding: 1rem; }
+summary { cursor: pointer; font-weight: 650; }
+.controls, .topics, .progress { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; }
+.controls { margin-top: .8rem; }
+select, input, button { font: inherit; }
+select, #answer { border: 1px solid #a39ab9; border-radius: .55rem; padding: .5rem; background: white; color: inherit; }
+fieldset { padding: 0; margin: .8rem 0 1rem; border: 0; }
+legend { margin-bottom: .4rem; }
+.topics label { border: 1px solid var(--line); border-radius: .65rem; padding: .35rem .6rem; cursor: pointer; }
+.topics label:has(:checked) { background: #eee8ff; border-color: #9a87d0; }
+input[type=checkbox] { accent-color: var(--purple); }
+button { border: 0; border-radius: .6rem; background: var(--purple); color: white; padding: .55rem .9rem; cursor: pointer; }
+button:disabled { opacity: .55; cursor: default; }
+:focus-visible { outline: 3px solid #9065dd; outline-offset: 3px; }
+form { margin: 1rem 0 .75rem; padding: clamp(1rem, 5vw, 2rem); text-align: center; }
+#example { font-size: clamp(1.9rem, 8vw, 4rem); font-weight: 700; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.answer-row { justify-content: center; }
+#answer { width: 10rem; max-width: 100%; text-align: center; }
+#hint { margin: .5rem 0 0; min-height: 1.5em; color: #9b3447; }
+.progress { margin: .8rem 0; justify-content: space-between; }
+#finish { color: var(--purple); background: #eee8ff; }
+#history { list-style: none; padding: 0; margin: 0; }
+#history li { padding: .45rem .65rem; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
+.correct { color: #246746; }
+.incorrect { color: #9b3447; }

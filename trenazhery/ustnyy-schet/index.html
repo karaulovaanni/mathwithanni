@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Устный счёт · Матемастерская</title>
+  <link rel="icon" href="../../favicon.ico">
+  <link rel="stylesheet" href="trainer.css">
+  <script src="trainer.js" defer></script>
+</head>
+<body>
+  <main>
+    <a href="../../index.html">Матемастерская</a>
+    <h1>Устный счёт</h1>
+    <details id="settings" open>
+      <summary>Настройки тренировки</summary>
+      <div class="controls">
+        <label>Класс <select id="grade"></select></label>
+        <label>Уровень <select id="level">
+          <option>Разминка</option><option>Практика</option><option>Посложнее</option>
+        </select></label>
+      </div>
+      <fieldset><legend>Темы</legend><div id="topics" class="topics"></div></fieldset>
+      <button id="start" type="button">Начать</button>
+    </details>
+    <section id="practice" hidden aria-label="Тренировка">
+      <form id="exercise">
+        <div id="example" aria-live="polite"></div>
+        <div class="controls answer-row">
+          <input id="answer" aria-label="Ответ" placeholder="Ответ" autocomplete="off" spellcheck="false" maxlength="40">
+          <button type="submit">Ответить</button>
+        </div>
+        <p id="hint" role="status"></p>
+      </form>
+      <div class="progress">
+        <span id="score" aria-live="polite"></span>
+        <button id="finish" type="button">Завершить</button>
+      </div>
+      <ol id="history" aria-label="Решённые примеры"></ol>
+    </section>
+  </main>
+</body>
+</html>
