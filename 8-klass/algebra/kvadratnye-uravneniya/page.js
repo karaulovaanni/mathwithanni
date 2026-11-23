@@ -2,6 +2,12 @@
 'use strict';
 function expression(s){return RootMath.math(s.replace(/D_1/g,'d').replace(/D/g,'z').replace(/x_1/g,'r').replace(/x_2/g,'s')).replace(/<mi>r<\/mi>/g,'<msub><mi>x</mi><mn>1</mn></msub>').replace(/<mi>s<\/mi>/g,'<msub><mi>x</mi><mn>2</mn></msub>').replace(/<mi>d<\/mi>/g,'<msub><mi>D</mi><mn>1</mn></msub>').replace(/<mi>z<\/mi>/g,'<mi>D</mi>');}
 document.querySelectorAll('[data-formula]').forEach(el=>{el.innerHTML=el.dataset.formula.split('=').map(expression).join(' <span class="equals">=</span> ');});
+
+const tabs=[...document.querySelectorAll('[data-tab]')];
+function selectTab(id,scroll=false){if(id==='examples')id='discriminant';if(!tabs.some(b=>b.dataset.tab===id))id='start';tabs.forEach(b=>{const active=b.dataset.tab===id;b.setAttribute('aria-selected',String(active));b.tabIndex=active?0:-1;document.getElementById(b.dataset.tab).hidden=!active;});if(scroll)document.getElementById('lessonAnchor').scrollIntoView({behavior:'instant'});}
+tabs.forEach(b=>{b.addEventListener('click',()=>{history.replaceState(null,'','#'+b.dataset.tab);selectTab(b.dataset.tab,true)});b.addEventListener('keydown',e=>{if(!['ArrowRight','ArrowLeft','Home','End'].includes(e.key))return;e.preventDefault();let i=tabs.indexOf(b);i=e.key==='Home'?0:e.key==='End'?tabs.length-1:(i+(e.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length;tabs[i].click();tabs[i].focus({preventScroll:true});});});
+selectTab(location.hash.slice(1));window.addEventListener('hashchange',()=>selectTab(location.hash.slice(1),true));
+document.querySelectorAll('[data-coef]').forEach(b=>b.addEventListener('click',()=>{const host=document.getElementById('start');const active=host.dataset.focus!==b.dataset.coef;host.classList.toggle('coef-focus',active);host.dataset.focus=active?b.dataset.coef:'';document.querySelectorAll('[data-coef]').forEach(x=>x.setAttribute('aria-pressed',String(active&&x===b)));}));
 const range=document.getElementById('cRange'), graph=document.getElementById('graph');
 function draw(){const c=Number(range.value),D=16-4*c; document.getElementById('cOut').textContent=c;
 const X=x=>60+(x+2)*72,Y=y=>390-(y+6)*23;let s='';
