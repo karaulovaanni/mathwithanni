@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Прямая и обратная пропорциональные зависимости для 6 класса. Модели, тренажёр и текстовые задачи.">
+  <title>Прямая и обратная пропорциональность · Матемастерская</title>
+  <link rel="icon" href="../../../favicon.ico">
+  <link rel="stylesheet" href="../../../assets/grade6-study.css">
+  <script type="module" src="lesson.js"></script>
+  <script defer src="../../../assets/scratchpad.js?v=3"></script>
+</head>
+<body>
+<main>
+  <a class="home" href="../../../index.html">← Матемастерская · К занятиям</a>
+  <header class="hero">
+    <div><p class="kicker">МАТЕМАТИКА · 6 КЛАСС</p>
+      <h1>Прямая и обратная пропорциональность</h1>
+      <p>Больше товара — дороже покупка. Выше скорость — меньше времени на тот же путь. Что остаётся неизменным в каждом случае?</p></div>
+    <svg viewBox="0 0 200 160" aria-hidden="true"><rect x="16" y="26" width="64" height="64" rx="8" fill="#d0bfe9" stroke="#756194" stroke-width="3"/><rect x="101" y="42" width="80" height="48" rx="7" fill="#b6d9cc" stroke="#537e72" stroke-width="3"/><path d="M17 126h160m-11-10 11 10-11 10M64 114l-12 12 12 12" stroke="#756194" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </header>
+
+  <nav aria-label="Разделы занятия">
+    <a href="#direct">Прямая</a><a href="#inverse">Обратная</a><a href="#compare">Как различить</a><a href="#training">Тренажёр</a><a href="#tasks">Задачи</a>
+  </nav>
+
+  <article id="direct" tabindex="-1">
+    <section>
+      <h2>Когда обе величины меняются в одну сторону</h2>
+      <p class="lead">У квадрата четыре равные стороны. Если каждую сторону увеличить в 2 раза, его периметр тоже увеличится в 2 раза.</p>
+      <p class="rule"><strong>Прямая пропорциональность.</strong> Во сколько раз увеличивается или уменьшается одна величина, во столько же раз увеличивается или уменьшается вторая. При положительных значениях частное <strong>y : x</strong> постоянно.</p>
+      <div class="formula">y = k · x</div>
+      <div class="lab">
+        <h3>Меняй сторону квадрата</h3>
+        <p>Выбери длину стороны и сравни периметр с первым квадратом. Одна клетка соответствует 1 см.</p>
+        <div class="slider"><label for="side">Сторона квадрата, см</label><input id="side" type="range" min="1" max="6" value="4"><output for="side">4</output></div>
+        <figure id="square-model"></figure>
+        <p class="formula" id="square-formula"></p>
+        <p id="square-caption" role="status"></p>
+        <div class="table-wrap"><table>
+          <caption>Сторона и периметр квадрата</caption>
+          <tbody><tr><th scope="row">Сторона, см</th><td>2</td><td id="square-side"></td></tr>
+          <tr><th scope="row">Периметр, см</th><td>8</td><td id="square-perimeter"></td></tr></tbody>
+        </table></div>
+      </div>
+    </section>
+    <section>
+      <h2>От условия к пропорции</h2>
+      <div class="worked">
+        <h3>8 одинаковых альбомов стоят 360 рублей. Сколько стоят 14?</h3>
+        <div class="table-wrap"><table aria-label="Краткая запись задачи про альбомы">
+          <tbody><tr><th>Количество, шт.</th><th>Стоимость, руб.</th></tr><tr><td>8</td><td>360</td></tr><tr><td>↓ 14</td><td>↓ x</td></tr></tbody>
+        </table></div>
+        <p>Цена одного альбома постоянна. Поэтому оба отношения читаем сверху вниз.</p>
+        <p class="formula"><math><mfrac><mn>8</mn><mn>14</mn></mfrac><mo>=</mo><mfrac><mn>360</mn><mi>x</mi></mfrac></math></p>
+        <p class="formula"><math><mi>x</mi><mo>=</mo><mfrac><mrow><mn>14</mn><mo>·</mo><mn>360</mn></mrow><mn>8</mn></mfrac><mo>=</mo><mn>630</mn></math> руб.</p>
+        <p>Проверка через единицу. Один альбом стоит 360 : 8 = 45 руб. Значит, 14 альбомов стоят 14 · 45 = 630 руб.</p>
+      </div>
+    </section>
+  </article>
+
+  <article id="inverse" tabindex="-1" hidden>
+    <section>
+      <h2>Когда произведение сохраняется</h2>
+      <p class="lead">У прямоугольника площадью 12 см² можно менять длину сторон. Если одна сторона стала в 2 раза длиннее, другая должна стать в 2 раза короче.</p>
+      <p class="rule"><strong>Обратная пропорциональность.</strong> При увеличении одной величины в несколько раз вторая уменьшается во столько же раз, и наоборот. Произведение <strong>x · y</strong> постоянно.</p>
+      <div class="formula"><math><mi>y</mi><mo>=</mo><mfrac><mi>k</mi><mi>x</mi></mfrac><mo>,</mo><mspace width="1em"/><mi>x</mi><mo> &gt; </mo><mn>0</mn></math></div>
+      <div class="lab inverse">
+        <h3>Перестрой прямоугольник, сохранив площадь</h3>
+        <p>Выбери первую сторону. Сосчитай клетки и сравни обе стороны с первым прямоугольником. Одна клетка занимает 1 см².</p>
+        <div class="controls" id="rectangle-controls" role="group" aria-label="Первая сторона в сантиметрах"></div>
+        <figure id="rectangle-model"></figure>
+        <p class="formula" id="rectangle-formula"></p>
+        <p id="rectangle-caption" role="status"></p>
+        <div class="table-wrap"><table>
+          <caption>Стороны прямоугольника площадью 12 см²</caption>
+          <tbody><tr><th scope="row">Первая сторона, см</th><td>2</td><td id="rectangle-side"></td></tr>
+          <tr><th scope="row">Вторая сторона, см</th><td>6</td><td id="rectangle-height"></td></tr></tbody>
+        </table></div>
+      </div>
+    </section>
+    <section>
+      <h2>Почему одно отношение переворачивается</h2>
+      <div class="worked">
+        <h3>Автобус прошёл маршрут за 5 ч со скоростью 48 км/ч. Сколько времени нужно при 60 км/ч?</h3>
+        <div class="table-wrap"><table aria-label="Краткая запись задачи про автобус">
+          <tbody><tr><th>Скорость, км/ч</th><th>Время, ч</th></tr><tr><td>48</td><td>5</td></tr><tr><td>↓ 60</td><td>↑ x</td></tr></tbody>
+        </table></div>
+        <p>Путь один и тот же, поэтому 48 · 5 = 60 · x. Отношение скоростей читаем сверху вниз, отношение времени — снизу вверх.</p>
+        <p class="formula"><math><mfrac><mn>48</mn><mn>60</mn></mfrac><mo>=</mo><mfrac><mi>x</mi><mn>5</mn></mfrac></math></p>
+        <p class="formula"><math><mi>x</mi><mo>=</mo><mfrac><mrow><mn>48</mn><mo>·</mo><mn>5</mn></mrow><mn>60</mn></mfrac><mo>=</mo><mn>4</mn></math> ч</p>
+        <p>Проверка. 48 · 5 = 240 км и 60 · 4 = 240 км. При большей скорости времени требуется меньше.</p>
+      </div>
+    </section>
+  </article>
+
+  <article id="compare" tabindex="-1" hidden>
+    <section>
+      <h2>Сначала спроси, что остаётся постоянным</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th scope="col">Условие</th><th scope="col">Что сравниваем</th><th scope="col">Зависимость</th></tr></thead>
+        <tbody>
+          <tr><td>Скорость постоянна</td><td>Время и путь</td><td>Прямая</td></tr>
+          <tr><td>Путь постоянен</td><td>Скорость и время</td><td>Обратная</td></tr>
+          <tr><td>Книга из 100 страниц</td><td>Прочитано и осталось</td><td>Ни та ни другая</td></tr>
+        </tbody>
+      </table></div>
+      <div class="worked"><h3>Постоянная сумма</h3>
+        <p>После 10 страниц осталось 90. После 20 страниц осталось 80. Прочитанное удвоилось, но остаток не уменьшился вдвое. Постоянна сумма, а произведения 10 · 90 и 20 · 80 различаются.</p></div>
+      <div class="worked"><h3>Площадь квадрата растёт быстрее стороны</h3>
+        <p>Если сторона выросла с 2 до 4 см, площадь выросла с 4 до 16 см². Сторона удвоилась, площадь выросла в 4 раза.</p></div>
+    </section>
+    <section>
+      <h2>Порядок решения</h2>
+      <ol class="checklist"><li>Назови две величины, их единицы и условие, которое не меняется.</li><li>Проверь, постоянно ли частное или произведение.</li><li>Запиши два случая в таблицу. В прямой зависимости читай оба столбца в одном направлении, в обратной — в противоположных.</li><li>Найди неизвестное и проверь единицы и смысл ответа.</li></ol>
+    </section>
+  </article>
+
+  <article id="training" tabindex="-1" hidden>
+    <section>
+      <h2>Отработай каждый шаг</h2>
+      <p>Распознавай зависимости, заполняй таблицы, исправляй ошибки и решай задачи. Можно выбрать один навык или пройти весь микс.</p>
+      <div id="trainer"></div>
+    </section>
+  </article>
+
+  <article id="tasks" tabindex="-1" hidden>
+    <section>
+      <h2>Реши и обоснуй</h2>
+      <p>В черновике запиши две величины, укажи, что сохраняется, и составь пропорцию, если она подходит.</p>
+      <ol class="task-list" role="list">
+        <li>Сторона квадрата была 3,5 см, а стала 8,75 см.<span>Во сколько раз изменился периметр? Что произошло с площадью?</span></li>
+        <li>Из 18 м ткани сшили 12 одинаковых чехлов.<span>Сколько ткани понадобится на 17 таких чехлов?</span></li>
+        <li>За 450 г орехов заплатили 162 рубля.<span>Сколько заплатят за 1,25 кг по той же цене?</span></li>
+        <li>6 машин одинаковой производительности расчистили дорогу за 35 минут.<span>За сколько минут расчистят эту дорогу 10 таких машин?</span></li>
+        <li>Путешественники ехали 6,5 ч со средней скоростью 56 км/ч.<span>Сколько времени займёт тот же путь при средней скорости 65 км/ч?</span></li>
+        <li>Запасов на 18 человек хватает на 10 дней. Каждый человек расходует одинаковую порцию в день.<span>На сколько дней хватит того же запаса для 12 человек?</span></li>
+        <li>После 15 страниц до конца книги осталось 105. Потом читатель удвоил число прочитанных страниц.<span>Сколько страниц осталось? Почему обратная пропорция здесь не подходит?</span></li>
+        <li>Ученик составил 6 : 9 = 12 : x для времени работы 6 и 9 одинаковых принтеров. Шесть принтеров выполняют заказ за 12 минут.<span>Исправь пропорцию и найди x.</span></li>
+        <li><strong>Со звёздочкой.</strong> Четыре одинаковых насоса за 6 минут перекачивают 48 т воды.<span>За сколько минут шесть насосов перекачают 84 т воды? Объясни, в каком порядке меняешь две величины.</span></li>
+      </ol>
+    </section>
+  </article>
+
+  <footer>
+    <p><a href="../vse-li-usvoeno/index.html">Всё ли усвоено? · Проверка за 6 класс →</a></p>
+    <p>Виленкин и др., § 20, с. 130–134. Шевкин, «Текстовые задачи по математике», с. 49–53. <a href="https://obrazavr.ru/trenazhyory/matematika/6-klass/otnosheniya-i-proporczii/pryamaya-i-obratnaya-proporczionalnost/">Тренажёр Образавра</a>.</p>
+  </footer>
+</main>
+</body>
+</html>
