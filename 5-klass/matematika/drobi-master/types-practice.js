@@ -15,18 +15,24 @@ window.typesPractice = function(host, bank) {
   box.innerHTML=`${t.skill?`<p class="recap-skill">${t.skill}</p>`:''}<div class="practice-question">${t.q}</div>${t.visual?`<div class="practice-visual">${t.visual}</div>`:''}<div class="focus-input"></div><button class="primary focus-check">Проверить</button><p class="feedback" aria-live="polite"></p>`;
   const input=box.querySelector('.focus-input');
   if(t.kind==='fraction')input.innerHTML=`<div class="fraction-entries">${t.unitDen?fractionFields('unit','Одно деление'):''}${fractionFields('answer',t.unitDen?'Координата точки':'Дробь')}</div>`;
-  else if(t.kind==='fractionOrWhole'){
-   input.innerHTML='<div class="answer-format tap-choices"></div><div class="operation-answer"></div>';
-   const formats=input.querySelector('.answer-format'),answerBox=input.querySelector('.operation-answer');
-   function answerForm(){answerBox.innerHTML=answerFormat==='fraction'?fractionFields('answer','Ответ'):'<label class="whole-answer">Целое число <input data-field="whole" type="number" min="0" step="1" inputmode="numeric" aria-label="Ответ целым числом"></label>';clear()}
-   fractionChoices(formats,[['fraction','Дробь'],['whole','Целое число']],v=>{answerFormat=v;answerForm()});formats.querySelector('button').setAttribute('aria-pressed','true');answerForm();
+  else if(t.kind==='fractionOrWhole')flexibleAnswer(input);
+  else if(t.kind==='eligibility'){
+   input.innerHTML='<div class="eligibility-choice tap-choices"></div><div class="eligibility-result" hidden></div>';
+   const result=input.querySelector('.eligibility-result');flexibleAnswer(result);
+   fractionChoices(input.querySelector('.eligibility-choice'),[['yes','Да'],['no','Нет']],v=>{picked=v;clear();const calculate=v==='yes'&&t.permitted;result.hidden=!calculate;checkButton.hidden=!calculate;if(calculate){box.querySelector('.feedback').className='feedback';box.querySelector('.feedback').textContent='Теперь найди результат.'}else check()});
   }
   else if(t.kind==='division')input.innerHTML='<div class="division-entry"><input type="number" min="0" data-field="dividend" aria-label="Делимое"><span>:</span><input type="number" min="1" data-field="divisor" aria-label="Делитель"></div>';
   else if(t.kind==='choice'||t.kind==='compare')fractionChoices(input,t.kind==='choice'?t.options.map((x,i)=>[i,x]):[['<','&lt;'],['=','='],['>','&gt;']],v=>{picked=v;clear();if(instant)check()});
   else input.innerHTML='<input type="number" min="0" step="any" aria-label="Ответ" data-field="number">';
   if(t.requireKind){input.insertAdjacentHTML('beforeend','<div class="kind-answer"><span>Вид дроби</span><div class="kind-buttons"></div></div>');fractionChoices(input.querySelector('.kind-buttons'),[['proper','Правильная'],['improper','Неправильная']],v=>{kind=v;clear()})}
   const instant=!!t.instant&&!t.requireKind;
-  const checkButton=box.querySelector('.focus-check'); if(instant)checkButton.hidden=true;
+  const checkButton=box.querySelector('.focus-check'); if(instant||t.kind==='eligibility')checkButton.hidden=true;
+  function flexibleAnswer(target){
+   target.innerHTML='<div class="answer-format tap-choices"></div><div class="operation-answer"></div>';
+   const formats=target.querySelector('.answer-format'),answerBox=target.querySelector('.operation-answer');
+   function answerForm(){answerBox.innerHTML=answerFormat==='fraction'?fractionFields('answer','Ответ'):'<label class="whole-answer">Целое число <input data-field="whole" type="number" min="0" step="1" inputmode="numeric" aria-label="Ответ целым числом"></label>';clear()}
+   fractionChoices(formats,[['fraction','Дробь'],['whole','Целое число']],v=>{answerFormat=v;answerForm()});formats.querySelector('button').setAttribute('aria-pressed','true');answerForm();
+  }
   function clear(){box.querySelector('.feedback').textContent=''}
   function value(name){const el=input.querySelector(`[data-field="${name}"]`);return el&&el.value.trim()!==''?Number(el.value):NaN}
   function pairOK(name,expected,strict){const n=value(name+'-n'),d=value(name+'-d');return Number.isInteger(n)&&Number.isInteger(d)&&n>=0&&d>0&&(strict?n===expected[0]&&d===expected[1]:n*expected[1]===d*expected[0])}
@@ -34,11 +40,14 @@ window.typesPractice = function(host, bank) {
    let ok=false;
    if(t.kind==='choice'||t.kind==='compare')ok=picked!==''&&picked===String(t.answer);
    else if(t.kind==='fraction')ok=pairOK('answer',t.answer,!!t.strict)&&(!t.unitDen||pairOK('unit',[1,t.unitDen],true));
+   else if(t.kind==='eligibility')ok=picked==='no'?!t.permitted:picked==='yes'&&t.permitted&&(answerFormat==='fraction'?pairOK('answer',t.answer,false):Number.isInteger(value('whole'))&&value('whole')>=0&&value('whole')*t.answer[1]===t.answer[0]);
    else if(t.kind==='fractionOrWhole')ok=answerFormat==='fraction'?pairOK('answer',t.answer,false):Number.isInteger(value('whole'))&&value('whole')>=0&&value('whole')*t.answer[1]===t.answer[0];
    else if(t.kind==='division')ok=value('dividend')===t.answer[0]&&value('divisor')===t.answer[1];
    else ok=Number.isFinite(value('number'))&&Math.abs(value('number')-t.answer)<1e-9;
    if(t.requireKind)ok=ok&&kind===(t.answer[0]<t.answer[1]?'proper':'improper');
    feedback(box.querySelector('.feedback'),ok);
+   if(t.kind==='eligibility'&&!ok&&picked==='no')box.querySelector('.feedback').textContent='Знаменатели одинаковые — по этому правилу можно посчитать.';
+   if(t.kind==='eligibility'&&!ok&&picked==='yes'&&!t.permitted)box.querySelector('.feedback').textContent='Знаменатели разные. По этому правилу пока не считаем.';
    if(ok){solved.add(level+':'+index);const number=host.querySelector(`[data-task-number="${index}"]`);number.classList.add('task-solved');number.setAttribute('aria-label',`Задание ${index+1}, выполнено`)}
    host.querySelector('.focus-next').disabled=index===list.length-1||(instant&&!ok);
    progress();

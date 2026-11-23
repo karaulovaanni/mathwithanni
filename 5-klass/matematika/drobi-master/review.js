@@ -25,8 +25,8 @@ function compareTask(a,b,c,d){return {q:`Сравни дроби.<div class="tas
   add('Деление и дробь',{q:'Запиши 17 : 8 дробью.',kind:'fraction',answer:[17,8],strict:true});
   add('Деление и дробь',{q:`Запиши ${F(25,6)} делением.`,kind:'division',answer:[25,6]});
  }
- if(level===1)[7,12].forEach(n=>add('Число и дробь',{q:`Запиши ${n} дробью со знаменателем 1.`,kind:'fraction',answer:[n,1],strict:true}));
- else{add('Число и дробь',{q:`Дополни равенство: 7 = ${F(28,'□')}.`,kind:'number',answer:4});add('Число и дробь',{q:`Дополни равенство: 6 = ${F('□',5)}.`,kind:'number',answer:30})}
+ if(level===1)[[1,7],[7,1]].forEach(([n,d])=>add('Число и дробь',{q:`Запиши ${n} дробью со знаменателем ${d}.`,kind:'fraction',answer:[n*d,d],strict:true}));
+ else{add('Число и дробь',{q:`Дополни равенство: 7 = ${F(28,'□')}.`,kind:'number',answer:4});add('Число и дробь',{q:'Запиши 3 дробью со знаменателем 4.',kind:'fraction',answer:[12,4],strict:true})}
  const stories=level===1?[
   [`Планировали собрать 60 кг ягод, а собрали ${F(6,5)} плана. Сколько килограммов собрали?`,72,'number'],
   ['В одной коробке 6 карандашей. Взяли 17 карандашей. Запиши количество в долях одной коробки.',[17,6],'fraction'],
