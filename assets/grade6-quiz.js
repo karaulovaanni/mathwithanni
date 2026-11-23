@@ -8,6 +8,7 @@ const numeric = (value, expected) => {
 
 export function mountQuiz(root, groups, { assessment = false } = {}) {
   const tagged = groups.map(group => group.tasks.map(task => ({ ...task, topic: group.title })));
+  const promptId = root.id + "-prompt";
   const all = assessment ? tagged.flat() : Array.from(
     { length: Math.max(...tagged.map(items => items.length)) },
     (_, i) => tagged.flatMap(items => items[i] ? [items[i]] : [])
@@ -22,7 +23,7 @@ export function mountQuiz(root, groups, { assessment = false } = {}) {
     <button type="button" data-reset>Начать заново</button></div>
     <div class="exercise" style="margin-top:14px">
       <div class="quiz-meta"><span data-topic></span><span data-position></span></div>
-      <form autocomplete="off"><div class="quiz-prompt" id="quiz-prompt" tabindex="-1"></div>
+      <form autocomplete="off"><div class="quiz-prompt" id="${promptId}" tabindex="-1"></div>
         <div class="quiz-body"></div>
         <div class="controls" style="justify-content:center;margin-top:12px">
           <button class="primary" type="submit">${assessment ? 'Записать ответ' : 'Проверить'}</button>
@@ -62,7 +63,7 @@ export function mountQuiz(root, groups, { assessment = false } = {}) {
     body.innerHTML = task.fields.map((field, i) => field.options
       ? `<fieldset><legend>${field.label}</legend><div class="choices">${field.options.map((option, j) =>
         `<label><input type="radio" name="answer${i}" value="${j}">${option}</label>`).join('')}</div></fieldset>`
-      : `<label>${field.label} <input type="text" name="answer${i}" aria-describedby="quiz-prompt"></label>`).join('');
+      : `<label>${field.label} <input type="text" name="answer${i}" aria-describedby="${promptId}"></label>`).join('');
     for (const input of body.querySelectorAll('input')) {
       const value = values[Number(input.name.slice(6))];
       if (input.type === 'radio') input.checked = value === input.value;

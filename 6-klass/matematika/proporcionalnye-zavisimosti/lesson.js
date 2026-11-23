@@ -1,4 +1,4 @@
-import { mountQuiz, task, value, choice, dependency } from '../../../assets/grade6-quiz.js';
+import { mountQuiz, task, value, choice, dependency } from '../../../assets/grade6-quiz.js?v=2';
 
 const get = id => document.getElementById(id);
 const links = [...document.querySelectorAll('nav a')];
@@ -42,7 +42,7 @@ const label = (x, y, value) => `<text x="${x}" y="${y}" dominant-baseline="middl
 
 function renderSquare() {
   const side = Number(get('side').value);
-  get('side').nextElementSibling.value = side;
+
   get('square-model').innerHTML = svg(grid(2, 2, 106, 168, 24, '#efe6fa') + grid(side, side, 335, 168, 24, '#ccbbeb') +
     label(106, 191, '2 см') + label(335, 191, side + ' см'), 'Квадраты со стороной 2 и ' + side + ' сантиметра');
   get('square-formula').textContent = `P = 4 · ${side} = ${side * 4} см`;
@@ -51,7 +51,7 @@ function renderSquare() {
   get('square-caption').textContent = side === 2 ? 'Квадраты одинакового размера. Периметры равны.' :
     `Сторона и периметр ${side > 2 ? 'увеличились' : 'уменьшились'} в ${format(side > 2 ? side / 2 : 2 / side)} раза. На каждый сантиметр стороны приходится 4 см периметра.`;
 }
-get('side').addEventListener('input', renderSquare);
+get('side').addEventListener('change', renderSquare);
 renderSquare();
 
 const rectangleControls = get('rectangle-controls');
@@ -77,7 +77,7 @@ function renderRectangle(side) {
 }
 renderRectangle(4);
 
-mountQuiz(get('trainer'), [
+const practiceGroups = [
   { title: 'Распознай зависимость', tasks: [
     task('Число порций и масса крупы, если рецепт один и тот же.', dependency(0), 'Подумай, сколько крупы приходится на каждую порцию.'),
     task('Число одинаковых принтеров и время печати одного тиража.', dependency(1), 'Тираж постоянен. При удвоении числа принтеров за минуту печатается вдвое больше.'),
@@ -106,4 +106,39 @@ mountQuiz(get('trainer'), [
     task('На 8 порций нужно 600 г ягод. Сколько граммов нужно на 14 таких порций?', [dependency(0), value('Граммов', 1050)], 'Рецепт неизменен. Определи массу ягод на порцию.'),
     task('На 480 рублей можно купить несколько одинаковых блокнотов. Было 60 руб. за штуку, стало 40 руб. Сколько блокнотов теперь можно купить?', [dependency(1), value('Блокнотов', 12)], 'Цена меняется при одной и той же сумме покупки.')
   ] }
-]);
+];
+
+mountQuiz(get('trainer'), practiceGroups);
+const byDependence = expected => practiceGroups.flatMap(group => group.tasks).filter(item =>
+  item.fields.some(field => field.label === 'Вид зависимости' && field.answer === expected)
+);
+mountQuiz(get('direct-practice'), [{title:'Распознай и реши',tasks:byDependence(0)}, {title:'Заполни таблицы',tasks:practiceGroups[1].tasks.filter((_,i)=>i%2===0)}]);
+mountQuiz(get('inverse-practice'), [{title:'Распознай и реши',tasks:byDependence(1)}, {title:'Заполни таблицы',tasks:practiceGroups[1].tasks.filter((_,i)=>i%2===1)}]);
+mountQuiz(get('compare-practice'), [practiceGroups[0], practiceGroups[2]]);
+
+function renderPurchase() {
+  const x = Number(get('purchase-x').value);
+  const k = Number(get('purchase-k').value);
+  get('purchase-model').innerHTML = svg(Array.from({length:x}, (_,i) => {
+    const left = 25 + i * 67;
+    return '<g><rect x="' + left + '" y="45" width="48" height="78" rx="5" fill="#cdbbe5" stroke="#6d568b" stroke-width="2"/><path d="M'+(left+9)+' 50v68" stroke="#fff" stroke-width="2"/><text x="'+(left+24)+'" y="151" text-anchor="middle" font-size="16" fill="#35324c">'+k+' руб.</text></g>';
+  }).join(''), 'Покупка '+x+' альбомов по '+k+' рублей');
+  get('purchase-formula').textContent = 'y = '+k+' · '+x+' = '+k*x+' руб.';
+  get('purchase-explain').textContent = k===40 ? 'Цена k остаётся 40 руб. Количество изменилось с 2 до '+x+', а стоимость с 80 до '+(k*x)+' руб. Их отношение y : x по-прежнему равно 40.' : 'Цена изменилась с 40 до '+k+' руб. При количестве '+x+' стоимость равна '+(k*x)+' руб. Теперь коэффициент k равен '+k+'.';
+}
+for(const id of ['purchase-x','purchase-k']) get(id).addEventListener('change',renderPurchase);
+renderPurchase();
+function renderBudget(){
+  const x=Number(get('budget-x').value);
+  const k=Number(get('budget-k').value);
+  const y=k/x;
+  get('budget-model').innerHTML=svg(
+    '<rect x="35" y="58" width="390" height="50" rx="10" fill="#d4e3f0" stroke="#577992" stroke-width="2"/>'+
+    Array.from({length:Math.ceil(y)-1},(_,i)=>'<path d="M'+(35+(i+1)*390/y)+' 58v50" stroke="#577992"/>').join('')+
+    label(230,36,'Бюджет '+k+' руб.')+label(230,143,format(y)+' альбомов по '+x+' руб.'),
+    'Сумма '+k+' рублей делится на цену '+x);
+  get('budget-formula').innerHTML='<math><mi>y</mi><mo>=</mo><mfrac><mn>'+k+'</mn><mn>'+x+'</mn></mfrac><mo>=</mo><mn>'+format(y)+'</mn></math>';
+  get('budget-explain').textContent='При бюджете '+k+' руб. цена '+x+' руб. даёт '+format(y)+' альбомов. Проверка произведения — '+x+' · '+format(y)+' = '+k+'.';
+}
+for(const id of ['budget-x','budget-k']) get(id).addEventListener('change',renderBudget);
+renderBudget();

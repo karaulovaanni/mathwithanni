@@ -38,7 +38,7 @@ article > section + section { margin-top: clamp(48px,6vw,70px) }
 .lab.inverse { background: var(--blue) }
 .worked { background: #fff }
 .worked + .worked { margin-top: 18px }
-.formula { text-align: center; font-size: clamp(24px,5vw,40px); font-weight: 700; color: #4c3b73; padding-block: 8px; overflow: auto }
+.formula { text-align: center; font-size: clamp(24px,5vw,40px); font-weight: 700; color: #4c3b73; padding-block: 8px; overflow-wrap: anywhere }
 figure { margin: 18px 0 }
 figure svg { display:block; width:min(100%,660px); margin:auto; height:auto; font-family: system-ui,sans-serif }
 figcaption { text-align: center; color: var(--muted); margin-top: 10px }
@@ -82,3 +82,13 @@ footer { margin-top: 60px; padding-top: 18px; padding-right: 48px; border-top: 1
   .task-list li { padding: 15px 12px 15px 50px }
   .task-list li::before { top: 15px; left: 12px; min-width: 28px }
 }
+
+.paper-prompt { font-size:clamp(20px,3vw,26px); line-height:1.5; margin-bottom:18px }
+.paper-answer label { display:flex; gap:12px; align-items:center; flex-wrap:wrap; font-size:18px }
+.paper-answer input[type="text"] { width:min(100%,210px); margin-block:8px }
+.paper-answer .choices label { display:inline-flex }
+.paper-answer .choices { justify-content:flex-start }
+.paper-answer legend { margin-inline:0; font-size:18px }
+.paper-prompt math { font-size:1.18em }
+.paper-answer fieldset { margin-block:10px }
+.meaning h3 { margin-top:24px }
