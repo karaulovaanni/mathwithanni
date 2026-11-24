@@ -29,7 +29,7 @@ export function mountStoryTrainer(root, bank, {steps=false,fixed=false}={}) {
  const useSteps=()=>fixed||$('[data-steps]').checked;
  const input=(name,label)=>`<input name="${name}" type="text" aria-label="${label}" aria-describedby="${promptId}" spellcheck="false" inputmode="text">`;
  const get=()=>Object.fromEntries(new FormData(form));
- function save(){drafts.set(tasks[index],get());}
+ function save(){drafts.set(tasks[index],{...drafts.get(tasks[index]),...get()});}
  function render(focus=false){
   const t=tasks[index],d=drafts.get(t)||{};
   $('.story-count').textContent=`${t.level===1?'База':'Сложнее'} · ${index+1} из ${tasks.length}`;
