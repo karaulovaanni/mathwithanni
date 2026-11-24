@@ -7,12 +7,13 @@
   <title>Прямая и обратная пропорциональность · Матемастерская</title>
   <link rel="icon" href="../../../favicon.ico">
   <link rel="stylesheet" href="../../../assets/grade6-study.css?v=2">
-  <script type="module" src="lesson.js?v=3"></script>
+  <link rel="stylesheet" href="visual.css?v=4">
+  <script type="module" src="lesson.js?v=4"></script>
   <script defer src="../../../assets/scratchpad.js?v=3"></script>
 </head>
 <body>
 <main>
-  <a class="home" href="../../../index.html">← Матемастерская · К занятиям</a>
+  <a class="home" href="../../../index.html">Матемастерская · К занятиям</a>
   <header class="hero">
     <div><p class="kicker">МАТЕМАТИКА · 6 КЛАСС</p>
       <h1>Прямая и обратная пропорциональность</h1>
@@ -25,22 +26,21 @@
   </nav>
 
   <article id="direct" tabindex="-1"><section class="meaning">
-<h2>Что такое пропорциональность</h2>
-<p class="lead">Две величины связаны правилом. Когда одну меняют в несколько раз, другая меняется во столько же раз. В прямой зависимости обе растут или обе уменьшаются. В обратной одна растёт, другая уменьшается.</p>
-<h3>Что означают буквы</h3>
-<p><strong>x</strong> — значение, которое выбираем. <strong>y</strong> — связанное с ним значение, которое вычисляем. <strong>k</strong> — постоянное число для выбранных условий. Его называют коэффициентом пропорциональности.</p>
-<p>Для покупки x может быть количеством альбомов, y — стоимостью, а k — ценой одного альбома. Если цена одна и та же, стоимость всегда равна цене, умноженной на количество.</p>
-<div class="formula">y = k · x</div>
-<p>При x = 2 и k = 40 получаем y = 80. Если альбомов стало в 3 раза больше, за каждый по-прежнему платим 40 рублей. Поэтому общая стоимость тоже вырастет в 3 раза.</p>
+<p class="section-label">Разбираемся на примере покупки</p><h2>Что такое пропорциональность</h2>
+<div class="spot-formula" role="math" aria-label="y равно k умножить на x"><span class="var-y">y</span> = <span class="var-k">k</span><span class="var-x">x</span></div>
+<div class="example-board lavender"><h3>Один альбом — 40 рублей. Два альбома?</h3>
+<div class="spot-formula" role="math" aria-label="80 равно 40 умножить на 2"><span class="var-y">80</span> = <span class="var-k">40</span> · <span class="var-x">2</span></div>
+<p class="caption">Стоимость = цена одного альбома × количество.</p></div>
+<dl class="letter-lines"><div class="var-x"><dt>x</dt><dd>Количество альбомов — выбираем: <strong>2 штуки</strong>.</dd></div><div class="var-k"><dt>k</dt><dd>Цена одного альбома — постоянна: <strong>40 руб.</strong></dd></div><div class="var-y"><dt>y</dt><dd>Стоимость покупки — вычисляем: <strong>80 руб.</strong></dd></div></dl>
+<p class="caption">При одной цене в 3 раза больше альбомов стоят в 3 раза дороже. Так работает <strong>прямая пропорциональность</strong>.</p>
 </section>
     <section>
-      <h2>Когда обе величины меняются в одну сторону</h2>
-      <p class="lead">У квадрата четыре равные стороны. Если каждую сторону увеличить в 2 раза, его периметр тоже увеличится в 2 раза.</p>
-      <p class="rule"><strong>Прямая пропорциональность.</strong> Во сколько раз увеличивается или уменьшается одна величина, во столько же раз увеличивается или уменьшается вторая. При положительных значениях частное <strong>y : x</strong> постоянно.</p>
-      <div class="formula">y = k · x</div>
+      <p class="section-label">Прямая зависимость</p><h2>Обе величины меняются во столько же раз</h2>
+      
+      <div class="change-row"><span>Сторона <b>× 2</b></span><span>Периметр <b>× 2</b></span></div><p class="caption">У квадрата четыре равные стороны: P = 4a. Удвоим каждую — удвоится весь периметр.</p>
       <div class="lab">
         <h3>Меняй сторону квадрата</h3>
-        <p>Выбери длину стороны и сравни периметр с первым квадратом. Длина стороны клетки соответствует 1 см.</p>
+        <p class="caption">Сравни с квадратом слева. Сторона клетки — 1 см.</p>
         <div class="slider"><label for="side">Сторона квадрата, см</label><select id="side" aria-label="Сторона квадрата, см"><option>1</option><option>2</option><option>3</option><option selected>4</option><option>5</option><option>6</option></select></div>
         <figure id="square-model"></figure>
         <p class="formula" id="square-formula"></p>
@@ -52,46 +52,45 @@
         </table></div>
       </div>
     </section>
-<section class="lab">
+<section class="lab peach">
 <h2>Из количества и цены получаем стоимость</h2>
-<p>Меняй x и k по отдельности. Сравни результат с покупкой двух альбомов по 40 рублей.</p>
 <div class="controls"><label>Количество x <select id="purchase-x"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>6</option></select></label>
 <label>Цена k, руб. за штуку <select id="purchase-k"><option>20</option><option selected>40</option><option>60</option></select></label></div>
 <figure id="purchase-model"></figure><p class="formula" id="purchase-formula"></p><p id="purchase-explain" role="status"></p>
-<p>Когда меняем k, выбираем новую цену и получаем другую зависимость. Внутри одной зависимости k остаётся одним и тем же. Если менять одновременно и цену, и количество, нужно учитывать оба изменения.</p></section><section>
+<p class="caption">Меняем количество x — проверяем прямую зависимость. Меняем цену k — получаем новое правило покупки.</p></section><section>
       <h2>От условия к пропорции</h2>
       <div class="worked">
         <h3>8 одинаковых альбомов стоят 360 рублей. Сколько стоят 14?</h3>
         <div class="table-wrap"><table aria-label="Краткая запись задачи про альбомы">
           <tbody><tr><th>Количество, шт.</th><th>Стоимость, руб.</th></tr><tr><td>8</td><td>360</td></tr><tr><td>14</td><td>x</td></tr></tbody>
         </table></div>
-        <p>Здесь буквой x обозначили неизвестную стоимость 14 альбомов. Цена одного альбома постоянна. В левом отношении сравним первое количество со вторым — 8 с 14. Справа в том же порядке сравним первую стоимость со второй — 360 с x. Одинаковая цена сохраняет отношение стоимости к количеству.</p>
-        <p class="formula"><math><mfrac><mn>8</mn><mn>14</mn></mfrac><mo>=</mo><mfrac><mn>360</mn><mi>x</mi></mfrac></math></p>
+        
+        <p class="formula"><math><mfrac><mn>8</mn><mn>14</mn></mfrac><mo>=</mo><mfrac><mn>360</mn><mi>x</mi></mfrac></math></p><p class="caption">x — неизвестная стоимость. Слева сравнили 8 с 14, справа — соответствующие стоимости в том же порядке.</p>
         <p class="formula"><math><mi>x</mi><mo>=</mo><mfrac><mrow><mn>14</mn><mo>·</mo><mn>360</mn></mrow><mn>8</mn></mfrac><mo>=</mo><mn>630</mn></math> руб.</p>
         <p>Проверка через единицу. Один альбом стоит 360 : 8 = 45 руб. Значит, 14 альбомов стоят 14 · 45 = 630 руб.</p>
       </div>
     </section>
-  <section><h2>Прямая зависимость · отработка</h2><div id="direct-practice"></div></section>
+  <section><p class="section-label">Твоя очередь</p><h2>Прямая зависимость · отработка</h2><div id="direct-practice"></div></section><section><h2>Из задачи — в свою пропорцию</h2><p class="caption">Заполни таблицу, составь две дроби и найди x. В ячейку неизвестного впиши x.</p><div id="direct-builder"></div></section>
 <section><h2>Реши, запиши, объясни</h2><ol class="task-list" role="list"><li><strong>Уровень 1</strong><span>За 6 одинаковых тетрадей заплатили 270 руб. Сколько стоят 10 таких тетрадей? Составь пропорцию и проверь через цену одной тетради.</span></li><li><strong>Уровень 1</strong><span>На 12 порций каши требуется 900 г крупы. Сколько крупы нужно на 20 порций по тому же рецепту?</span></li><li><strong>Уровень 1</strong><span>При постоянной скорости поезд проходит 180 км за 3 ч. Сколько километров он пройдёт за 5 ч?</span></li><li><strong>Уровень 2</strong><span>Труба длиной 2,5 м весит 11,8 кг. Найди массу 4 м такой трубы. Укажи условие, при котором масса пропорциональна длине.</span></li><li><strong>Уровень 2</strong><span>Из 3,5 кг семян получают 1,4 кг масла. Сколько масла получится из 9,5 кг при том же выходе?</span></li><li><strong>Уровень 2</strong><span>Планировали за 5 дней напечатать 22,5% тиража. За сколько дней напечатают 94,5% при постоянной производительности?</span></li><li><strong>Уровень 2</strong><span>При приготовлении пюре на 9 частей готового продукта приходится 2 части отходов. Сколько отходов образуется, если получено 24,3 т пюре?</span></li><li><strong>Объясни</strong><span>Доставка стоит 150 руб. за оформление и 40 руб. за каждый километр. Удвоится ли общая стоимость при удвоении пути с 3 до 6 км? Обоснуй, применима ли прямая пропорция.</span></li></ol></section></article>
 
-  <article id="inverse" tabindex="-1" hidden><section><h2>Та же сумма, другая цена</h2>
-<p class="lead">У тебя 240 рублей. При цене 40 рублей можно купить 6 альбомов. Если каждый альбом стал вдвое дороже, на те же деньги получится купить вдвое меньше.</p>
-<p>Здесь <strong>x</strong> — цена альбома, <strong>y</strong> — количество, <strong>k</strong> — вся сумма покупки. Сумма сохраняется, поэтому x · y = k. Чтобы найти количество, делим сумму на цену.</p>
-<div class="formula"><math><mi>y</mi><mo>=</mo><mfrac><mi>k</mi><mi>x</mi></mfrac></math></div>
-<div class="lab inverse"><h3>Раздели бюджет на цену</h3>
-<div class="controls"><label>Цена x, руб. <select id="budget-x"><option>20</option><option selected>40</option><option>60</option><option>80</option><option>120</option></select></label>
-<label>Сумма k, руб. <select id="budget-k"><option>120</option><option selected>240</option><option>480</option></select></label></div>
-<figure id="budget-model"></figure><p class="formula" id="budget-formula"></p><p id="budget-explain" role="status"></p>
-<p>В этой модели показано количество альбомов, на которое хватает бюджета, включая долю альбома. Для покупки целых предметов нужно отдельно проверить, делится ли сумма на цену без остатка.</p></div>
-<p>Если x увеличить в 2 раза при том же k, делитель станет в 2 раза больше, а частное y — в 2 раза меньше. Если увеличить k при той же цене, денег хватит на большее количество. Это уже изменение постоянной суммы и переход к другой зависимости.</p></section>
+  <article id="inverse" tabindex="-1" hidden><section class="meaning"><p class="section-label">Обратная зависимость</p><h2>Выше скорость — меньше времени</h2>
+<div class="spot-formula" role="math" aria-label="y равно k делить на x"><span class="var-y">y</span> = <span class="fraction"><span><span class="var-k">k</span></span><span><span class="var-x">x</span></span></span></div>
+<div class="example-board blue"><h3>Едем 120 км со скоростью 60 км/ч</h3>
+<div class="spot-formula" role="math" aria-label="2 равно 120 делить на 60"><span class="var-y">2</span> = <span class="fraction"><span><span class="var-k">120</span></span><span><span class="var-x">60</span></span></span></div>
+<p class="caption">Время = весь путь : скорость.</p></div>
+<dl class="letter-lines"><div class="var-x"><dt>x</dt><dd>Скорость — выбираем: <strong>60 км/ч</strong>.</dd></div><div class="var-k"><dt>k</dt><dd>Весь путь — постоянен: <strong>120 км</strong>.</dd></div><div class="var-y"><dt>y</dt><dd>Время в пути — вычисляем: <strong>2 ч</strong>.</dd></div></dl>
+<div class="example-board peach"><figure class="road-scene"><figcaption>Один и тот же путь — <strong>120 км</strong></figcaption><div class="road-row"><p><strong>30 км/ч</strong><b>4 ч</b></p><svg viewBox="0 0 640 58" aria-hidden="true"><rect x="0.0" y="10" width="160.0" height="38" rx="4" fill="#bca1d8" stroke="white" stroke-width="3"/><rect x="160.0" y="10" width="160.0" height="38" rx="4" fill="#bca1d8" stroke="white" stroke-width="3"/><rect x="320.0" y="10" width="160.0" height="38" rx="4" fill="#bca1d8" stroke="white" stroke-width="3"/><rect x="480.0" y="10" width="160.0" height="38" rx="4" fill="#bca1d8" stroke="white" stroke-width="3"/><path d="M0 29h640" fill="none" stroke="white" stroke-width="2" stroke-dasharray="12 12"/></svg><p class="caption">Один участок — путь за 1 час: 30 км.</p></div><div class="road-row"><p><strong>60 км/ч</strong><b>2 ч</b></p><svg viewBox="0 0 640 58" aria-hidden="true"><rect x="0.0" y="10" width="320.0" height="38" rx="4" fill="#7fb9bd" stroke="white" stroke-width="3"/><rect x="320.0" y="10" width="320.0" height="38" rx="4" fill="#7fb9bd" stroke="white" stroke-width="3"/><path d="M0 29h640" fill="none" stroke="white" stroke-width="2" stroke-dasharray="12 12"/></svg><p class="caption">Один участок — путь за 1 час: 60 км.</p></div></figure>
+<div class="change-row"><span>Скорость <b>× 2</b></span><span>Время <b>÷ 2</b></span></div>
+<p class="caption">За час проезжаем вдвое больше. На тот же путь нужно вдвое меньше часов.</p></div>
+<p class="caption">При положительных величинах x и y: <strong>xy = k</strong>. Произведение сохраняется — это <strong>обратная пропорциональность</strong>.</p></section>
     <section>
       <h2>Когда произведение сохраняется</h2>
-      <p class="lead">У прямоугольника площадью 12 см² можно менять длину сторон. Если одна сторона стала в 2 раза длиннее, другая должна стать в 2 раза короче.</p>
-      <p class="rule"><strong>Обратная пропорциональность.</strong> При увеличении одной величины в несколько раз вторая уменьшается во столько же раз, и наоборот. Произведение <strong>x · y</strong> постоянно.</p>
+      
+      <p class="caption">Площадь остаётся 12 см². Удлини одну сторону — вторая станет короче.</p>
       <div class="formula"><math><mi>y</mi><mo>=</mo><mfrac><mi>k</mi><mi>x</mi></mfrac><mo>,</mo><mspace width="1em"/><mi>x</mi><mo> &gt; </mo><mn>0</mn></math></div>
       <div class="lab inverse">
         <h3>Перестрой прямоугольник, сохранив площадь</h3>
-        <p>Выбери первую сторону. Сосчитай клетки и сравни обе стороны с первым прямоугольником. Одна клетка занимает 1 см².</p>
+        <p class="caption">Сравни с прямоугольником слева. Каждая клетка — 1 см².</p>
         <div class="controls" id="rectangle-controls" role="group" aria-label="Первая сторона в сантиметрах"></div>
         <figure id="rectangle-model"></figure>
         <p class="formula" id="rectangle-formula"></p>
@@ -106,52 +105,41 @@
     <section>
       <h2>Почему одно отношение переворачивается</h2>
       <div class="worked">
-        <h3>Автобус прошёл маршрут за 5 ч со скоростью 48 км/ч. Сколько времени нужно при 60 км/ч?</h3>
+        <h3>Автобус прошёл маршрут за 5 ч со скоростью 48 км/ч. Сколько времени нужно при 60 км/ч?</h3><figure class="road-scene"><figcaption>Один и тот же путь — <strong>240 км</strong></figcaption><div class="road-row"><p><strong>48 км/ч</strong><b>5 ч</b></p><svg viewBox="0 0 640 58" aria-hidden="true"><rect x="0.0" y="10" width="128.0" height="38" rx="4" fill="#bca1d8" stroke="white" stroke-width="3"/><rect x="128.0" y="10" width="128.0" height="38" rx="4" fill="#bca1d8" stroke="white" stroke-width="3"/><rect x="256.0" y="10" width="128.0" height="38" rx="4" fill="#bca1d8" stroke="white" stroke-width="3"/><rect x="384.0" y="10" width="128.0" height="38" rx="4" fill="#bca1d8" stroke="white" stroke-width="3"/><rect x="512.0" y="10" width="128.0" height="38" rx="4" fill="#bca1d8" stroke="white" stroke-width="3"/><path d="M0 29h640" fill="none" stroke="white" stroke-width="2" stroke-dasharray="12 12"/></svg><p class="caption">Один участок — путь за 1 час: 48 км.</p></div><div class="road-row"><p><strong>60 км/ч</strong><b>4 ч</b></p><svg viewBox="0 0 640 58" aria-hidden="true"><rect x="0.0" y="10" width="160.0" height="38" rx="4" fill="#7fb9bd" stroke="white" stroke-width="3"/><rect x="160.0" y="10" width="160.0" height="38" rx="4" fill="#7fb9bd" stroke="white" stroke-width="3"/><rect x="320.0" y="10" width="160.0" height="38" rx="4" fill="#7fb9bd" stroke="white" stroke-width="3"/><rect x="480.0" y="10" width="160.0" height="38" rx="4" fill="#7fb9bd" stroke="white" stroke-width="3"/><path d="M0 29h640" fill="none" stroke="white" stroke-width="2" stroke-dasharray="12 12"/></svg><p class="caption">Один участок — путь за 1 час: 60 км.</p></div></figure>
         <div class="table-wrap"><table aria-label="Краткая запись задачи про автобус">
           <tbody><tr><th>Скорость, км/ч</th><th>Время, ч</th></tr><tr><td>48</td><td>5</td></tr><tr><td>60</td><td>x</td></tr></tbody>
         </table></div>
-        <p>В этой задаче x — неизвестное время. Путь один и тот же. В первом случае он равен 48 · 5, во втором — 60 · x. Поэтому 48 · 5 = 60 · x.
-Скорость выросла, время должно уменьшиться. Отношению первой скорости ко второй соответствует отношение второго времени к первому. Поэтому справа записываем x : 5.</p>
-        <p class="formula"><math><mfrac><mn>48</mn><mn>60</mn></mfrac><mo>=</mo><mfrac><mi>x</mi><mn>5</mn></mfrac></math></p>
+        <p class="caption">x — неизвестное время. Путь сохраняется: <strong>48 · 5 = 60x</strong>.</p>
+        <p class="formula"><math><mfrac><mn>48</mn><mn>60</mn></mfrac><mo>=</mo><mfrac><mi>x</mi><mn>5</mn></mfrac></math></p><p class="caption">Скорости сравнили как «первая ко второй». Время — в обратном порядке: «второе к первому».</p>
         <p class="formula"><math><mi>x</mi><mo>=</mo><mfrac><mrow><mn>48</mn><mo>·</mo><mn>5</mn></mrow><mn>60</mn></mfrac><mo>=</mo><mn>4</mn></math> ч</p>
         <p>Проверка. 48 · 5 = 240 км и 60 · 4 = 240 км. При большей скорости времени требуется меньше.</p>
       </div>
     </section>
-  <section><h2>Обратная зависимость · отработка</h2><div id="inverse-practice"></div></section>
+  <section><p class="section-label">Твоя очередь</p><h2>Обратная зависимость · отработка</h2><div id="inverse-practice"></div></section><section><h2>Таблица, пропорция, решение</h2><p class="caption">Выпиши данные из задачи. Составь пропорцию с x и вычисли ответ.</p><div id="inverse-builder"></div></section>
 <section><h2>Реши, запиши, объясни</h2><ol class="task-list" role="list"><li><strong>Уровень 1</strong><span>5 маляров красят один забор за 8 дней. За сколько дней его покрасят 10 маляров той же производительности?</span></li><li><strong>Уровень 1</strong><span>Поезд проходит один и тот же маршрут за 4 ч при скорости 60 км/ч. Сколько часов потребуется при скорости 80 км/ч?</span></li><li><strong>Уровень 1</strong><span>На 720 руб. покупают тетради по 60 руб. Сколько тетрадей можно купить по 40 руб. на ту же сумму?</span></li><li><strong>Уровень 2</strong><span>6 одинаковых станков выполняют один заказ за 9 ч. За сколько часов справятся 9 таких станков? Запиши равенство произведений и пропорцию.</span></li><li><strong>Уровень 2</strong><span>5 машин одинаковой производительности расчищают дорогу за 24 мин. Сколько минут потребуется 8 таким машинам?</span></li><li><strong>Уровень 2</strong><span>Прямоугольник имеет площадь 30 см². Одна сторона равна 7,5 см. Какова вторая сторона? Как она изменится, если первую уменьшить до 5 см?</span></li><li><strong>Уровень 2</strong><span>Корма хватает для 24 животных на 15 дней при одинаковой ежедневной норме. Часть животных перевезли, осталось 18. На сколько дней хватило бы полного запаса для 18 животных?</span></li><li><strong>Со звёздочкой</strong><span>Бригада из 12 рабочих должна выполнить заказ за 18 дней. Прошло 6 дней, затем к бригаде присоединились ещё 6 рабочих такой же производительности. За сколько дней будет выполнен оставшийся заказ?</span></li></ol></section></article>
 
   <article id="compare" tabindex="-1" hidden>
-    <section>
-      <h2>В чём разница двух зависимостей</h2>
-<div class="worked"><h3>Прямая · y = k · x</h3><p>Цена фиксирована. Покупаем в 2 раза больше альбомов — тратим в 2 раза больше денег. Постоянно частное стоимости и количества.</p><p class="formula">2 · 40 = 80 &nbsp; → &nbsp; 4 · 40 = 160</p></div>
-<div class="worked"><h3>Обратная · x · y = k</h3><p>Бюджет фиксирован. Цена выросла в 2 раза — доступное количество уменьшилось в 2 раза. Постоянно произведение цены и количества.</p><p class="formula">40 · 6 = 240 &nbsp; → &nbsp; 80 · 3 = 240</p></div>
-<h3 style="margin-top:28px">Сначала спроси, что остаётся постоянным</h3>
-      <div class="table-wrap"><table>
-        <thead><tr><th scope="col">Условие</th><th scope="col">Что сравниваем</th><th scope="col">Зависимость</th></tr></thead>
-        <tbody>
-          <tr><td>Скорость постоянна</td><td>Время и путь</td><td>Прямая</td></tr>
-          <tr><td>Путь постоянен</td><td>Скорость и время</td><td>Обратная</td></tr>
-          <tr><td>Книга из 100 страниц</td><td>Прочитано и осталось</td><td>Ни та ни другая</td></tr>
-        </tbody>
-      </table></div>
-      <div class="worked"><h3>Постоянная сумма</h3>
-        <p>После 10 страниц осталось 90. После 20 страниц осталось 80. Прочитанное удвоилось, но остаток не уменьшился вдвое. Постоянна сумма, а произведения 10 · 90 и 20 · 80 различаются.</p></div>
-      <div class="worked"><h3>Площадь квадрата растёт быстрее стороны</h3>
-        <p>Если сторона выросла с 2 до 4 см, площадь выросла с 4 до 16 см². Сторона удвоилась, площадь выросла в 4 раза.</p></div>
-    </section>
-    <section>
-      <h2>Порядок решения</h2>
-      <ol class="checklist"><li>Назови две величины, их единицы и условие, которое не меняется.</li><li>Проверь, постоянно ли частное или произведение.</li><li>Запиши два случая в таблицу. В прямой зависимости сравни оба столбца в одинаковом порядке. В обратной в одном из отношений поменяй порядок значений.</li><li>Найди неизвестное и проверь единицы и смысл ответа.</li></ol>
-    </section>
+<section><p class="section-label">Сравни на числах</p><h2>Что меняется, а что сохраняется?</h2>
+<div class="example-board lavender"><h3>Прямая · цена одного альбома — 40 руб.</h3><div class="spot-formula" role="math" aria-label="y равно k умножить на x"><span class="var-y">y</span> = <span class="var-k">k</span><span class="var-x">x</span></div>
+<div class="comparison-pair"><div><span>Количество</span><b>2 → 4</b><em>× 2</em></div><div><span>Стоимость, руб.</span><b>80 → 160</b><em>× 2</em></div></div>
+<div class="spot-formula" role="math" aria-label="80 разделить на 2 равно 160 разделить на 4 равно 40"><span class="fraction"><span>80</span><span>2</span></span> = <span class="fraction"><span>160</span><span>4</span></span> = <span class="var-k">40</span></div>
+<p class="caption">Делим стоимость на количество — получаем одну и ту же цену.</p></div>
+<div class="example-board blue"><h3>Обратная · весь путь — 120 км</h3><div class="spot-formula" role="math" aria-label="y равно k делить на x"><span class="var-y">y</span> = <span class="fraction"><span><span class="var-k">k</span></span><span><span class="var-x">x</span></span></span></div>
+<div class="comparison-pair"><div><span>Скорость, км/ч</span><b>30 → 60</b><em>× 2</em></div><div><span>Время, ч</span><b>4 → 2</b><em>÷ 2</em></div></div>
+<div class="spot-formula" role="math" aria-label="30 умножить на 4 равно 60 умножить на 2 равно 120"><span class="var-x">30</span> · <span class="var-y">4</span> = <span class="var-x">60</span> · <span class="var-y">2</span> = 120</div>
+<p class="caption">Умножаем скорость на время — получаем один и тот же путь.</p></div>
+<div class="example-board peach"><h3>Одна растёт, другая уменьшается. Этого мало!</h3>
+<div class="comparison-pair"><div><span>Прочитано страниц</span><b>10 → 20</b><em>× 2</em></div><div><span>Осталось из 100</span><b>90 → 80</b><em>не ÷ 2</em></div></div>
+<p class="caption">Это не обратная пропорциональность: остаток не уменьшился вдвое. Сохраняется сумма, а не произведение.</p></div></section>
+<section><h2>Как выбрать способ?</h2><ol class="reason-steps"><li><strong>Найди постоянное.</strong> Цена, путь, объём заказа?</li><li><strong>Проверь на удвоении.</strong> Вторая величина тоже удвоилась или уменьшилась вдвое?</li><li><strong>Составь пропорцию.</strong> Прямая — одинаковый порядок. Обратная — одно отношение переверни.</li></ol><p class="caption">Увеличение двух величин само по себе не доказывает прямую зависимость: при удвоении стороны площадь квадрата увеличится в 4 раза.</p></section>
   <section><h2>Различи зависимости · отработка</h2><div id="compare-practice"></div></section>
 <section><h2>Реши, запиши, объясни</h2><ol class="task-list" role="list"><li><strong>Объясни</strong><span>Чем отличается вопрос о пути за одно и то же время от вопроса о времени на один и тот же путь? Придумай по одному числовому примеру.</span></li><li><strong>Сравни</strong><span>В двух столбцах таблицы стоят пары (2; 12), (4; 6), (8; 3). Какое действие над числами каждой пары даёт постоянный результат? Запиши правило для y через x.</span></li><li><strong>Сравни</strong><span>Для пар (2; 10), (3; 15), (6; 30) найди y : x и x · y. Определи зависимость и её коэффициент.</span></li><li><strong>Найди ошибку</strong><span>Ученик рассуждает: «Количество страниц, которые осталось прочитать, уменьшается, значит, зависимость обратная». Проверь его вывод на книге из 120 страниц.</span></li><li><strong>Подумай</strong><span>За 2 часа рыбалки поймали 12 рыб. Можно ли по этим данным точно сказать, сколько рыб поймают за 3 часа? Какого условия не хватает?</span></li></ol></section></article>
 
   <article id="training" tabindex="-1" hidden>
     <section>
-      <h2>Отработай каждый шаг</h2>
-      <p>Распознавай зависимости, заполняй таблицы, исправляй ошибки и решай задачи. Можно выбрать один навык или пройти весь микс.</p>
+      <h2>Распознай, дополни, проверь</h2>
       <div id="trainer"></div>
-    </section>
+    </section><section><p class="section-label">Большой банк текстовых задач</p><h2>Реши задачу</h2><p class="caption">Выбери вид зависимости и найди ответ. Включи таблицу и пропорцию, чтобы записать решение по шагам.</p><div id="story-trainer"></div></section>
   </article>
 
   <article id="tasks" tabindex="-1" hidden>
@@ -173,7 +161,7 @@
   </article>
 
   <footer>
-    <p><a href="../vse-li-usvoeno/index.html">Всё ли усвоено? · Проверка за 6 класс →</a></p>
+    <p><a href="../vse-li-usvoeno/index.html">Всё ли усвоено? · Проверка за 6 класс</a></p>
     <p>Виленкин и др., § 20, с. 130–134. Шевкин, «Текстовые задачи по математике», с. 49–53. Упражнения разработаны также с опорой на материалы Образавра.</p>
   </footer>
 </main>
