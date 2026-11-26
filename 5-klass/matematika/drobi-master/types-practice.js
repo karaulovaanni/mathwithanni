@@ -15,6 +15,12 @@ window.typesPractice = function(host, bank) {
   box.innerHTML=`${t.skill?`<p class="recap-skill">${t.skill}</p>`:''}<div class="practice-question">${t.q}</div>${t.visual?`<div class="practice-visual">${t.visual}</div>`:''}<div class="focus-input"></div><button class="primary focus-check">Проверить</button><p class="feedback" aria-live="polite"></p>`;
   const input=box.querySelector('.focus-input');
   if(t.kind==='fraction')input.innerHTML=`<div class="fraction-entries">${t.unitDen?fractionFields('unit','Одно деление'):''}${fractionFields('answer',t.unitDen?'Координата точки':'Дробь')}</div>`;
+  else if(t.kind==='mixed'){
+   answerFormat='mixed';input.innerHTML='<div class="answer-format tap-choices"></div><div class="mx-answer"></div>';
+   const fieldBox=input.querySelector('.mx-answer');
+   function mixedForm(){fieldBox.innerHTML=answerFormat==='mixed'?'<label class="mx-whole-field">Целая часть<input data-field="mixed-w" type="number" min="0" step="1" inputmode="numeric" aria-label="Целая часть"></label>'+fractionFields('mixed','Дробная часть'):answerFormat==='proper'?fractionFields('mixed','Дробь'):'<label class="whole-answer">Целое число<input data-field="whole" type="number" min="0" step="1" inputmode="numeric" aria-label="Ответ целым числом"></label>';clear()}
+   fractionChoices(input.querySelector('.answer-format'),[['mixed','Смешанное число'],['whole','Целое число'],['proper','Дробь']],v=>{answerFormat=v;mixedForm()});input.querySelector('.answer-format button').setAttribute('aria-pressed','true');mixedForm();
+  }
   else if(t.kind==='fractionOrWhole')flexibleAnswer(input);
   else if(t.kind==='eligibility'){
    input.innerHTML='<div class="eligibility-choice tap-choices"></div><div class="eligibility-result" hidden></div>';
@@ -39,6 +45,10 @@ window.typesPractice = function(host, bank) {
   function check(){
    let ok=false;
    if(t.kind==='choice'||t.kind==='compare')ok=picked!==''&&picked===String(t.answer);
+   else if(t.kind==='mixed'){
+    const w=answerFormat==='proper'?0:value('mixed-w'),n=value('mixed-n'),d=value('mixed-d');
+    ok=answerFormat==='whole'?Number.isInteger(value('whole'))&&value('whole')>=0&&value('whole')*t.answer[1]===t.answer[0]:Number.isInteger(w)&&w>=0&&Number.isInteger(n)&&n>0&&Number.isInteger(d)&&d>n&&(w*d+n)*t.answer[1]===t.answer[0]*d&&(!t.strict||d===t.answer[1]);
+   }
    else if(t.kind==='fraction')ok=pairOK('answer',t.answer,!!t.strict)&&(!t.unitDen||pairOK('unit',[1,t.unitDen],true));
    else if(t.kind==='eligibility')ok=picked==='no'?!t.permitted:picked==='yes'&&t.permitted&&(answerFormat==='fraction'?pairOK('answer',t.answer,false):Number.isInteger(value('whole'))&&value('whole')>=0&&value('whole')*t.answer[1]===t.answer[0]);
    else if(t.kind==='fractionOrWhole')ok=answerFormat==='fraction'?pairOK('answer',t.answer,false):Number.isInteger(value('whole'))&&value('whole')>=0&&value('whole')*t.answer[1]===t.answer[0];

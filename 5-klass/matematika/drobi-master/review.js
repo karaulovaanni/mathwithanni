@@ -1,5 +1,5 @@
 (()=>{
-const banks={types:[],comparison:[],operations:window.fractionOperationBanks?.review||[]};
+const banks={types:[],comparison:[],operations:window.fractionOperationBanks?.review||[],mixed:window.MixedBanks.review,mixedOperations:window.MixedBanks.operationsReview};
 const push=(topic,level,skill,task)=>banks[topic].push({...task,level,skill,instant:false});
 const cmp=(a,b,c,d)=>a*d<c*b?'<':a*d===c*b?'=':'>';
 function compareTask(a,b,c,d){return {q:`Сравни дроби.<div class="task-expression">${F(a,b)} <span class="sign-placeholder">?</span> ${F(c,d)}</div>`,kind:'compare',answer:cmp(a,b,c,d)}}
@@ -74,8 +74,8 @@ function compareTask(a,b,c,d){return {q:`Сравни дроби.<div class="tas
  else{[[3,4,5,6,12,1],[2,3,5,6,12,2],[1,5,7,10,10,5],[3,8,2,3,24,7]].forEach(([a,b,c,d,D,answer])=>add('Домножение',{q:`Приведи ${F(a,b)} и ${F(c,d)} к знаменателю ${D}. На сколько новый числитель второй дроби больше нового числителя первой?`,kind:'number',answer}))}
 });
 window.reviewBanks=banks;
-const requested=new URLSearchParams(location.search).get('topic');const topic=['comparison','operations'].includes(requested)?requested:'types';
-$('#reviewTopic').textContent={types:'Правильные и неправильные дроби',comparison:'Сравнение дробей',operations:'Сложение и вычитание дробей'}[topic];
+const requested=new URLSearchParams(location.search).get('topic');const topic=['comparison','operations','mixed','mixedOperations'].includes(requested)?requested:'types';
+$('#reviewTopic').textContent={types:'Правильные и неправильные дроби',comparison:'Сравнение дробей',operations:'Сложение и вычитание дробей',mixed:'Смешанные числа',mixedOperations:'Сложение и вычитание смешанных чисел'}[topic];
 $('#reviewBack').href='index.html?v=nov23a#'+topic;
 document.title='Всё ли усвоено? · '+$('#reviewTopic').textContent;
 typesPractice($('#reviewDeck'),shuffleFractions(banks[topic]));
