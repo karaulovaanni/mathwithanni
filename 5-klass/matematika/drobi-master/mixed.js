@@ -105,5 +105,6 @@
  by('mxSubtractView').querySelectorAll('[data-loose]').forEach(b=>b.onclick=()=>{const i=+b.dataset.loose;if(removed.includes(i))removed=removed.filter(x=>x!==i);else if(removed.length<3)removed.push(i);subtraction()});by('mxSubtractBack').disabled=!subStep;by('mxSubtractStep').disabled=subStep===2;by('mxSubtractStep').textContent=subStep?'Вычесть целую часть':'Разменять одно целое';
  }
  by('mxSubtractStep').onclick=()=>{subStep++;subtraction()};by('mxSubtractBack').onclick=()=>{subStep--;removed=[];subtraction()};by('mxSubtractReset').onclick=()=>{subStep=0;removed=[];subtraction()};subtraction();
+ window.dispatchEvent(new Event('hashchange'));
  window.refreshFractionOutline?.();
 })();
