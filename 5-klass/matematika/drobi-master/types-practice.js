@@ -9,10 +9,10 @@ window.typesPractice = function(host, bank) {
  levelBox.hidden=levels.length<2;
  const fractionFields=(name,label)=>`<label class="fraction-entry"><span>${label}</span><span class="frac"><span><input data-field="${name}-n" type="number" min="0" inputmode="numeric" aria-label="${label}: числитель"></span><span><input data-field="${name}-d" type="number" min="1" inputmode="numeric" aria-label="${label}: знаменатель"></span></span></label>`;
  function draw(){
-  const t=list[index], box=host.querySelector('.focus-task'); let picked='', kind='', answerFormat='fraction';
+  const t=list[index], box=host.querySelector('.focus-task'); let picked='', kind='', answerFormat='fraction',auditPicked='';
   host.querySelector('.focus-numbers').innerHTML=list.map((_,i)=>`<button data-task-number="${i}" aria-current="${i===index?'step':'false'}" class="${solved.has(level+':'+i)?'task-solved':''}" aria-label="Задание ${i+1}${solved.has(level+':'+i)?', выполнено':''}">${i+1}</button>`).join('');
   host.querySelectorAll('[data-task-number]').forEach(b=>b.onclick=()=>{index=+b.dataset.taskNumber;draw()});
-  box.innerHTML=`${t.skill?`<p class="recap-skill">${t.skill}</p>`:''}<div class="practice-question">${t.q}</div>${t.visual?`<div class="practice-visual">${t.visual}</div>`:''}<div class="focus-input"></div><button class="primary focus-check">Проверить</button><p class="feedback" aria-live="polite"></p>`;
+  box.innerHTML=`${t.skill?`<p class="recap-skill">${t.skill}</p>`:''}<div class="practice-question">${t.q}</div>${t.visual?`<div class="practice-visual">${t.visual}</div>`:''}${t.audit?'<div class="audit-verdict tap-choices" aria-label="Есть ли ошибка?"></div>':''}<div class="focus-input"></div><button class="primary focus-check">Проверить</button><p class="feedback" aria-live="polite"></p>`;
   const input=box.querySelector('.focus-input');
   if(t.kind==='fraction')input.innerHTML=`<div class="fraction-entries">${t.unitDen?fractionFields('unit','Одно деление'):''}${fractionFields('answer',t.unitDen?'Координата точки':'Дробь')}</div>`;
   else if(t.kind==='mixed'){
@@ -32,7 +32,8 @@ window.typesPractice = function(host, bank) {
   else input.innerHTML='<input type="number" min="0" step="any" aria-label="Ответ" data-field="number">';
   if(t.requireKind){input.insertAdjacentHTML('beforeend','<div class="kind-answer"><span>Вид дроби</span><div class="kind-buttons"></div></div>');fractionChoices(input.querySelector('.kind-buttons'),[['proper','Правильная'],['improper','Неправильная']],v=>{kind=v;clear()})}
   const instant=!!t.instant&&!t.requireKind;
-  const checkButton=box.querySelector('.focus-check'); if(instant||t.kind==='eligibility')checkButton.hidden=true;
+  const checkButton=box.querySelector('.focus-check'); if(instant||t.kind==='eligibility'||t.audit)checkButton.hidden=true;
+  if(t.audit){input.hidden=true;fractionChoices(box.querySelector('.audit-verdict'),[['valid','Всё верно'],['error','Есть ошибка']],v=>{auditPicked=v;input.hidden=v!=='error';checkButton.hidden=v!=='error';clear();if(v==='valid')check()})}
   function flexibleAnswer(target){
    target.innerHTML='<div class="answer-format tap-choices"></div><div class="operation-answer"></div>';
    const formats=target.querySelector('.answer-format'),answerBox=target.querySelector('.operation-answer');
@@ -55,7 +56,9 @@ window.typesPractice = function(host, bank) {
    else if(t.kind==='division')ok=value('dividend')===t.answer[0]&&value('divisor')===t.answer[1];
    else ok=Number.isFinite(value('number'))&&Math.abs(value('number')-t.answer)<1e-9;
    if(t.requireKind)ok=ok&&kind===(t.answer[0]<t.answer[1]?'proper':'improper');
+   if(t.audit)ok=auditPicked==='valid'?t.auditValid:auditPicked==='error'&&!t.auditValid&&ok;
    feedback(box.querySelector('.feedback'),ok);
+   if(ok&&t.audit&&auditPicked==='valid')box.querySelector('.feedback').textContent='Запись верна. Исправлять не нужно.';
    if(t.kind==='eligibility'&&!ok&&picked==='no')box.querySelector('.feedback').textContent='Знаменатели одинаковые — по этому правилу можно посчитать.';
    if(t.kind==='eligibility'&&!ok&&picked==='yes'&&!t.permitted)box.querySelector('.feedback').textContent='Знаменатели разные. По этому правилу пока не считаем.';
    if(ok){solved.add(level+':'+index);const number=host.querySelector(`[data-task-number="${index}"]`);number.classList.add('task-solved');number.setAttribute('aria-label',`Задание ${index+1}, выполнено`)}

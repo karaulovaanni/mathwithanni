@@ -73,6 +73,7 @@ function compareTask(a,b,c,d){return {q:`Сравни дроби.<div class="tas
  if(level===1){[[2,3,12,4],[3,4,20,5],[5,6,18,3],[3,5,20,4]].forEach(([n,d,D,k])=>add('Домножение',{q:`На какое число нужно умножить и числитель, и знаменатель ${F(n,d)}, чтобы знаменатель стал ${D}?`,kind:'number',answer:k}))}
  else{[[3,4,5,6,12,1],[2,3,5,6,12,2],[1,5,7,10,10,5],[3,8,2,3,24,7]].forEach(([a,b,c,d,D,answer])=>add('Домножение',{q:`Приведи ${F(a,b)} и ${F(c,d)} к знаменателю ${D}. На сколько новый числитель второй дроби больше нового числителя первой?`,kind:'number',answer}))}
 });
+banks.types=banks.types.map((t,i)=>t.skill==='Исправь ошибку'?{...FractionAudit.types()[i%24],level:t.level,skill:'Проверь запись'}:t);
 window.reviewBanks=banks;
 const requested=new URLSearchParams(location.search).get('topic');const topic=['comparison','operations','mixed','mixedOperations'].includes(requested)?requested:'types';
 $('#reviewTopic').textContent={types:'Правильные и неправильные дроби',comparison:'Сравнение дробей',operations:'Сложение и вычитание дробей',mixed:'Смешанные числа',mixedOperations:'Сложение и вычитание смешанных чисел'}[topic];

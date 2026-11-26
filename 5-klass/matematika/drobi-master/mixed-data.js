@@ -1,10 +1,13 @@
 /* Banks use integer counts of denominator-sized pieces; no floating-point answers. */
 window.MixedBanks=(()=>{
- const M=MixedModels,{frac:F,mixed:S,from:R,eq:E}=M;
+ const M=MixedModels,{frac:F,mixed:S,from:R,whole:W,eq:E}=M;
  const task=(q,n,d,extra={})=>({q,kind:'mixed',answer:[n,d],...extra});
  const specimens=Array.from({length:24},(_,i)=>{const d=[3,4,5,6,8,10][i%6],w=1+Math.floor(i/6),n=1+(i*3+1)%(d-1);return{w,n,d,N:w*d+n}});
  const pictures=specimens.map(({w,n,d,N},i)=>task('Запиши закрашенное количество смешанным числом.',N,d,{visual:M.pies(N,d,i%3===1?'bars':'pies'),strict:true}));
- const parts=specimens.map(({w,n,d},i)=>i%2?{q:`Запиши дробную часть числа.${E(S(w,n,d))}`,kind:'fraction',answer:[n,d],strict:true}:{q:`Назови целую часть числа.${E(S(w,n,d))}`,kind:'number',answer:w});
+ const parts=specimens.map(({w,n,d},i)=>i%2?{q:`Запиши дробную часть числа.${E(S(w,n,d))}`,kind:'fractionOrWhole',answer:[n,d],strict:true}:{q:`Назови целую часть числа.${E(S(w,n,d))}`,kind:'number',answer:w});
+ parts[0]={q:`Назови дробную часть числа.${E(W(4))}`,kind:'number',answer:0};
+ parts[3]={q:`Назови целую часть числа.${E(F(3,7))}`,kind:'number',answer:0};
+ parts[4]={q:`Назови дробную часть числа.${E(W(6))}`,kind:'number',answer:0};
  const toMixed=specimens.map(({N,d},i)=>task(`Выдели целую часть.${E(F(i%8===7?N-N%d:N,d))}`,i%8===7?N-N%d:N,d));
  const toFraction=specimens.map(({w,n,d,N})=>({q:`Запиши неправильной дробью.${E(S(w,n,d))}`,kind:'fraction',answer:[N,d],strict:true}));
  const line=specimens.map(({w,n,d,N},i)=>task('Запиши координату точки смешанным числом.',N,d,{strict:true,visual:M.ray(N,d,Math.max(3,w+1))}));
@@ -22,7 +25,7 @@ window.MixedBanks=(()=>{
  }
  function storyIcon(i){return `<div class="mx-story-icon"><svg viewBox="0 0 460 90" role="img" aria-label="${i%2?'Лента из равных частей':'Сосуды с водой'}">${i%2?Array.from({length:8},(_,j)=>`<rect x="${35+j*48}" y="28" width="46" height="38" rx="4" fill="${j%2?'#dba1b6':'#b8a2d0'}"/>`).join(''):Array.from({length:4},(_,j)=>`<g transform="translate(${65+j*90} 0)"><path d="M-11 9h22v16l10 10v42h-42V35l10-10Z" fill="#edf5f6" stroke="#8cb6be" stroke-width="2"/><path d="M-19 45h38v30h-38Z" fill="#a8ced4"/><rect x="-13" y="5" width="26" height="8" rx="2" fill="#9a83b9"/></g>`).join('')}</svg></div>`}
  const stories=specimens.map((_,i)=>story(i));
- const errors=specimens.map(({w,n,d,N},i)=>i%3===0?task(`Исправь ответ.${E(F(N,d),S(w+1,n,d))}`,N,d):i%3===1?{q:`Исправь числитель в ответе.${E(S(w,n,d),F(w+n,d))}Запиши верную неправильную дробь.`,kind:'fraction',answer:[N,d],strict:true}:task(`Это число записали как произведение ${w} · ${F(n,d)}. Запиши верное смешанное число для суммы ${w} + ${F(n,d)}.`,N,d));
+ const errors=specimens.map(({w,n,d,N},i)=>{const valid=FractionAudit.valid(i);return i%2===0?FractionAudit.task(`${F(N,d)} = ${S(valid?w:w+1,n,d)}`,'mixed',[N,d],valid):FractionAudit.task(`${S(w,n,d)} = ${F(valid?N:w+n,d)}`,'fraction',[N,d],valid,{strict:true})});
  const categories=[['add','Без перехода через целое'],['carry','Выделяем целое'],['sub','Без размена'],['borrow','Разменяем целое'],['plusNatural','С натуральным: +'],['minusNatural','С натуральным: −'],['naturalMinus','Натуральное − смешанное'],['naturalFraction','Натуральное − дробь'],['plusFraction','Прибавляем дробь'],['minusFraction','Вычитаем дробь'],['wholeResult','Получается целое'],['zero','Получается ноль'],['naturalPlusFraction','Натуральное + дробь']];
  const calculations=[];
  categories.forEach(([direction,label],c)=>{for(let i=0;i<24;i++){
@@ -44,7 +47,7 @@ window.MixedBanks=(()=>{
   calculations.push(task(`Вычисли.${E(R(A,d)+(sign==='+'?' + ':' − ')+R(B,d))}`,result,d,{direction,skill:label,meta:{A,B,d,sign,result}}));
  }});
  const opStories=specimens.map((_,i)=>story(i,true));
- const opErrors=Array.from({length:24},(_,i)=>{const t=calculations[(i%12)*24+i],{A,B,d,sign,result}=t.meta;const wrong=i%3===0?R(result+d,d):i%3===1?F(result||1,d+1):R(result+d*(2+i%2),d);return task(`Исправь результат.${E(R(A,d)+(sign==='+'?' + ':' − ')+R(B,d),wrong)}`,result,d,{skill:'Исправь ошибку'})});
+ const opErrors=Array.from({length:24},(_,i)=>{const t=calculations[(i%12)*24+i],{A,B,d,sign,result}=t.meta,valid=FractionAudit.valid(i),wrong=i%3===0?R(result+d,d):i%3===1?F(result||1,d+1):R(result+2*d,d);return FractionAudit.task(`${R(A,d)} ${sign} ${R(B,d)} = ${valid?R(result,d):wrong}`,'mixed',[result,d],valid,{skill:'Проверь запись'})});
  const chains=Array.from({length:24},(_,i)=>{const d=[3,4,5,6,8,10][i%6],A=(3+Math.floor(i/6))*d+1,B=d+d-1,C=d+2;return task(`Вычисли по порядку.${E(`${R(A,d)} + ${R(B,d)} − ${R(C,d)}`)}`,A+B-C,d,{skill:'Два действия',meta:{A,B,C,d,result:A+B-C}})});
  const gaps=Array.from({length:24},(_,i)=>{const d=3+i%6,w=2+Math.floor(i/6),a=1+i%(d-1);return i%2?{q:`Какой числитель пропущен после размена целого?${E(S(w,a,d),`${w-1} + ${F('□',d)}`)}`,kind:'number',answer:d+a}:{q:`Сколько целых получится из дробной части?${E(`${w} + ${F(d+a,d)}`,`${w} + □ + ${F(a,d)}`)}`,kind:'number',answer:1}});
  function review(level,ops){

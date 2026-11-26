@@ -54,14 +54,14 @@ window.fractionOperationBanks=(()=>{
   [`Нужно решить 48 заданий. В первый день решили ${F(5,12)} всех заданий, во второй — ${F(3,12)}. Сколько заданий осталось?`,16,2,[5,3,12]]
  ];
  const stories=storyRows.map(([q,answer,level,scheme])=>({q,answer,level,kind:Array.isArray(answer)?'fractionOrWhole':'number',visual:scheme?V.storyScheme(...scheme):''}));
- const errors=Array.from({length:24},(_,i)=>{const d=[5,7,8,9,11,13,14,15,16,17,19,20,21,22,23,24,25,27,28,29,31,32,35,40][i],a=1+i%3,b=1+i%2;let q,answer;
-  if(i%4===0){q=`${F(a,d)} + ${F(b,d)} = ${F(a+b,2*d)}`;answer=[a+b,d]}
-  else if(i%4===1){q=`${F(a+b,d)} − ${F(b,d)} = ${F(a+2*b,d)}`;answer=[a,d]}
-  else if(i%4===2){q=`${F(a,d)} − ${F(a,d)} = ${F(1,d)}`;answer=[0,d]}
-  else{q=`${F(a,d)} + ${F(d-a,d)} = ${F(1,d)}`;answer=[d,d]}
-  return {q:`Исправь результат.<div class="task-expression mistake-expression">${q}</div>`,kind:'fractionOrWhole',answer,level:1};
+ const errors=Array.from({length:24},(_,i)=>{const d=[5,7,8,9,11,13,14,15,16,17,19,20,21,22,23,24,25,27,28,29,31,32,35,40][i],a=1+i%3,b=1+i%2,valid=FractionAudit.valid(i);let left,answer,wrong;
+ if(i%4===0){left=`${F(a,d)} + ${F(b,d)}`;answer=[a+b,d];wrong=[a+b,2*d]}
+ else if(i%4===1){left=`${F(a+b,d)} − ${F(b,d)}`;answer=[a,d];wrong=[a+2*b,d]}
+ else if(i%4===2){left=`${F(a,d)} − ${F(a,d)}`;answer=[0,d];wrong=[1,d]}
+ else{left=`${F(a,d)} + ${F(d-a,d)}`;answer=[d,d];wrong=[1,d]}
+ return FractionAudit.task(left+' = '+F(...(valid?answer:wrong)),'fractionOrWhole',answer,valid,{level:1});
  });
  const review=[];
- [1,2].forEach(level=>{const take=(rows,skill)=>rows.slice(0,4).forEach(t=>review.push({...t,skill,level}));take(level===1?[...pictures.filter(t=>t.direction==='add'&&t.answer[0]<=t.answer[1]).slice(0,2),...pictures.filter(t=>t.direction==='subtract').slice(0,2)]:[...pictures.filter(t=>t.direction==='add'&&t.answer[0]>=t.answer[1]).slice(0,2),...pictures.filter(t=>t.direction==='subtract'&&t.operands[0]>=t.operands[2]).slice(0,2)],'По рисунку');take(level===1?[add[0],subtract[0],{...eligibility[1],skill:'По нашему правилу'},{...eligibility[12],skill:'По нашему правилу'}]:[add[14],subtract[14],{...eligibility[7],skill:'По нашему правилу'},{...eligibility[20],skill:'По нашему правилу'}],'Примеры');take(chains.filter(t=>t.difficulty===level),'Цепочки');take(gaps.filter(t=>t.level===level),'Пропуски');take(stories.filter(t=>t.level===level),'Задача');take(level===1?errors:errors.slice(12),'Исправь ошибку')});
+ [1,2].forEach(level=>{const take=(rows,skill)=>rows.slice(0,4).forEach(t=>review.push({...t,skill,level}));take(level===1?[...pictures.filter(t=>t.direction==='add'&&t.answer[0]<=t.answer[1]).slice(0,2),...pictures.filter(t=>t.direction==='subtract').slice(0,2)]:[...pictures.filter(t=>t.direction==='add'&&t.answer[0]>=t.answer[1]).slice(0,2),...pictures.filter(t=>t.direction==='subtract'&&t.operands[0]>=t.operands[2]).slice(0,2)],'По рисунку');take(level===1?[add[0],subtract[0],{...eligibility[1],skill:'По нашему правилу'},{...eligibility[12],skill:'По нашему правилу'}]:[add[14],subtract[14],{...eligibility[7],skill:'По нашему правилу'},{...eligibility[20],skill:'По нашему правилу'}],'Примеры');take(chains.filter(t=>t.difficulty===level),'Цепочки');take(gaps.filter(t=>t.level===level),'Пропуски');take(stories.filter(t=>t.level===level),'Задача');take(level===1?errors:errors.slice(12),'Проверь запись')});
  return {addCases,subCases,add,subtract,eligibility,pictures,chains,gaps,stories,errors,review};
 })();

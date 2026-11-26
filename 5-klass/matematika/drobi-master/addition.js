@@ -21,7 +21,7 @@
  <section id="operations-chains" class="practice-panel" data-nav="Цепочки"><h2>Несколько действий</h2><p class="centered">Сначала действия в скобках, затем слева направо.</p><div id="opChainDeck"></div></section>
  <section id="operations-gaps" class="practice-panel" data-nav="Пропуски"><h2>Найди пропуск или неизвестную дробь</h2><div id="opGapDeck"></div></section>
  <section id="operations-stories" class="practice-panel" data-nav="Задачи"><h2>Задачи</h2><div id="opStoryDeck"></div></section>
- <section id="operations-errors" class="practice-panel" data-nav="Исправь ошибку"><h2>Исправь ошибку</h2><div id="opErrorDeck"></div></section>
+ <section id="operations-errors" class="practice-panel" data-nav="Проверка"><h2>Проверь запись</h2><div id="opErrorDeck"></div></section>
  <section id="operations-ray" data-nav="Шаги на прямой"><details class="explanation op-ray-detail"><summary>Посмотрим действие на прямой</summary><div class="op-actions"><button data-ray-op="add" aria-pressed="true">Прибавляем</button><button data-ray-op="subtract" aria-pressed="false">Вычитаем</button></div><div id="opRayScene"></div><div id="opRayEquation"></div><p class="centered">Прибавляем — движемся вправо. Вычитаем — влево. Длина шага — ${F(1,8)}.</p></details></section>
  <section id="operations-notebook" data-nav="В тетрадь"><div class="section-label">В тетрадь</div><h2>Нарисуй, вычисли, реши</h2><ol class="notebook">
  <li>Вычисли: ${F(3,11)} + ${F(5,11)}; ${F(7,15)} + ${F(8,15)}; ${F(9,14)} + ${F(8,14)}; ${F(17,1000)} + ${F(46,1000)}.</li>
