@@ -36,10 +36,10 @@
  <li>Известно, что ${F(7,31)} + ${F(12,31)} = ${F(19,31)}. Запиши два соответствующих примера на вычитание и уравнение с неизвестным слагаемым.</li>
  <li>Для салата взяли ${F(5,18)} кг помидоров и ${F(7,18)} кг огурцов. Найди массу салата. На сколько килограммов больше огурцов, чем помидоров?</li>
  <li>В баке было ${F(10,12)} его вместимости. На полив потратили ${F(4,12)}, затем долили ${F(3,12)} вместимости. Какая часть бака заполнена теперь? Сделай схему.</li>
- <li>За первый день прочитали ${F(7,24)} книги, за второй — ${F(9,24)}. В книге 96 страниц. Сколько страниц осталось прочитать?</li>
+ <li>За первый день прочитали ${F(7,24)} книги, за второй — ${F(9,24)}. Какую часть книги осталось прочитать?</li>
  <li>Первый рассказ занимает ${F(6,25)} книги. Второй на ${F(2,25)} книги меньше первого, а повесть — на ${F(3,25)} книги больше первого. Какую часть книги занимают все три произведения?</li>
- <li>Первая бригада выполнила ${F(5,18)} заказа, вторая — ${F(8,18)}. Вторая сделала на 21 деталь больше первой. Сколько деталей в заказе?</li>
- </ol><p class="source-note">Основа: Виленкин, часть 2, § 29, с. 30–36. Дополнительно: <a href="https://obrazavr.ru/matematika/5-klass-matematika/drobnye-chisla/obyknovennye-drobi/slozhenie-i-vychitanie-drobej-s-odinakovymi-znamenatelyami/" target="_blank" rel="noopener">Образавр</a> · <a href="https://fraction.slonum.ru/lesson/3" target="_blank" rel="noopener">СлонУм</a>.</p></section>`;
+ <li>Первая бригада выполнила ${F(5,18)} заказа, вторая — ${F(8,18)}. Какую часть заказа они выполнили вместе? Какую часть осталось выполнить?</li>
+ </ol></section>`;
  let join={d:8,a:2,b:3,joined:[],layout:null,timer:null};
  function stopJoin(){clearTimeout(join.timer);join.timer=null}
  function paintJoin(){const{d,a,b,joined}=join;$('#opJoinAOut').textContent=a;$('#opJoinBOut').textContent=b;$('#opJoinDenWords').textContent=d;const scene=V.joinScene(a,b,d,joined,join.layout);join.layout=scene.layout;$('#opJoinScene').innerHTML=scene.svg;$('#opJoinScene').querySelectorAll('[data-join-piece]').forEach(el=>clickable(el,()=>{stopJoin();const id=+el.dataset.joinPiece;join.joined=join.joined.includes(id)?join.joined.filter(x=>x!==id):[...join.joined,id];paintJoin()}));$('#opJoinStatus').innerHTML=`На общем блюде ${F(joined.length,d)} пирога. Перенесено ${joined.length} из ${a+b} долей.`;$('#opJoinEquation').innerHTML=V.equation(a,b,d,'+',joined.length===a+b);$('#opJoinStep').disabled=joined.length===a+b;$('#opJoinAll').disabled=joined.length===a+b}

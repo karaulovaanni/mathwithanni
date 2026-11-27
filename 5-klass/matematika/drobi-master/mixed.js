@@ -2,11 +2,11 @@
  const M=MixedModels,B=MixedBanks,{frac:F,mixed:S,from:R,whole:W,eq:E}=M;
  const sec=(id,title,nav,body,practice=false)=>`<section id="${id}" data-nav="${nav}"${practice?' class="practice-panel"':''}><h2>${title}</h2>${body}</section>`;
  const deck=(id,title,nav)=>sec(id,title,nav,`<div id="${id}Deck"></div>`,true);
- const source=(ops=false)=>`<p class="source-note">По учебнику Виленкина, Жохова и Чеснокова, 5 класс, часть 2: §${ops?'32':'31'}. Дополнительно: <a href="https://fraction.slonum.ru/lesson/${ops?'6':'5'}" target="_blank" rel="noopener">СлонУм</a> · <a href="https://obrazavr.ru/matematika/5-klass-matematika/drobnye-chisla/smeshannye-chisla/${ops?'slozhenie-i-vychitanie-smeshannyh-chisel':'smeshannye-chisla'}/" target="_blank" rel="noopener">Образавр</a>.</p>`;
+ const source=()=>'';
  const mixed=document.getElementById('mixedLesson'),operations=document.getElementById('mixedOperationsLesson');
  const wholeSection=document.getElementById('types-whole');
  mixed.classList.add('mx-lesson');operations.classList.add('mx-lesson');
- mixed.innerHTML=sec('mixed-meaning','Целые и ещё часть','Смешанное число',`${E(S(2,3,5),`${W(2)} + ${F(3,5)}`)}<div class="mx-part-labels"><span><b class="mx-whole">2</b>целая часть</span><span><b>${F(3,5)}</b>дробная часть</span></div><p>Смешанное число — сумма целой части и правильной дроби. Читаем: «две целых три пятых». Между частями подразумевается <b>плюс</b>.</p><div class="mx-lab"><div class="mx-controls"><label>Целых <input id="mxW" type="range" min="1" max="4" value="2"><output id="mxWOut">2</output></label><label>Долей <input id="mxN" type="range" min="1" max="4" value="3"><output id="mxNOut">3</output></label><label>В целом <select id="mxD" aria-label="Знаменатель модели"><option>3</option><option>4</option><option selected>5</option><option>6</option><option>8</option></select> долей</label></div><div id="mxMeaningPicture"></div><div id="mxMeaningEquation" aria-live="polite"></div><div class="mx-ray-scroll" id="mxMeaningRay"></div><p>Все пироги одинакового размера. Дробная часть меньше одного пирога.</p></div>${source()}`)
+ mixed.innerHTML=sec('mixed-meaning','Целые и ещё часть','Смешанное число',`<div class="mx-lab"><div class="mx-controls"><label>Целых <input id="mxW" type="range" min="1" max="4" value="2"><output id="mxWOut">2</output></label><label>Долей <input id="mxN" type="range" min="1" max="4" value="3"><output id="mxNOut">3</output></label><label>В целом <select id="mxD" aria-label="Знаменатель модели"><option>3</option><option>4</option><option selected>5</option><option>6</option><option>8</option></select> долей</label></div><div id="mxMeaningPicture"></div><div id="mxMeaningEquation" aria-live="polite"></div><div class="mx-ray-scroll" id="mxMeaningRay"></div><p>Все пироги одинакового размера. Дробная часть меньше одного пирога.</p></div>${source()}`)
  +deck('mixed-pictures','Какое количество на рисунке?','Рисунки')
  +deck('mixed-parts','Целая и дробная части','Части числа')
  +sec('mixed-conversion','Из неправильной дроби — в смешанное число','Выделяем целое',`<div class="mx-lab"><div class="mx-controls"><label>Пример <select id="mxConvertExample"><option value="0">17 пятых</option><option value="1">11 четвертых</option><option value="2">23 шестых</option><option value="3">18 шестых</option></select></label></div><div id="mxConversionView"></div><div class="mx-actions"><button id="mxConvertBack">Назад</button><button id="mxConvertStep" class="primary">Собрать целые</button><button id="mxConvertReset">Сначала</button></div></div>`)
@@ -25,9 +25,9 @@
  `Найди натуральные числа: ${F(24,6)}; ${F(28,7)}; ${F(35,5)}.`,
  `Отметь на прямой ${S(1,1,4)}, ${S(2,3,4)}, ${F(7,4)}. Единичный отрезок — 8 клеток.`,
  `Какие две соседние натуральные отметки окружают ${S(4,2,3)}?`,
- `На 6 одинаковых костюмов поровну израсходовали 17 м ткани. Сколько метров ткани ушло на один костюм?`,
- `В 19 бутылочках по ${F(1,4)} л. Сколько всего литров?`,
- `Ленту длиной ${S(3,2,5)} м нарезали на кусочки по ${F(1,5)} м. Сколько кусочков получилось?`,
+ `Для костюма купили 2 м ткани, затем ещё ${F(3,5)} м. Сколько метров ткани купили?`,
+ `В одном сосуде 3 л воды, в другом ${F(3,4)} л. Сколько всего литров воды?`,
+ `Для украшения взяли 4 м ленты и ещё ${F(2,5)} м. Какова общая длина ленты?`,
  `Запиши три разных смешанных числа между 5 и 6.`,
  `У числа целая часть 4, знаменатель 9, числитель дробной части на 2 меньше знаменателя. Запиши это число и равную ему неправильную дробь.`
  ].map(x=>`<li>${x}</li>`).join('')}</ol>`);
@@ -38,21 +38,9 @@
  const by=id=>document.getElementById(id);
  function loose(n,d,interactive=false,removed=[]){return `<div class="mx-loose-pieces">${Array.from({length:n},(_,i)=>`<${interactive?'button':'span'} ${interactive?`data-loose="${i}" aria-pressed="${removed.includes(i)}" aria-label="${removed.includes(i)?'Вернуть':'Убрать'} долю ${i+1}"`:''} class="${removed.includes(i)?'mx-removed':''}"><svg viewBox="0 0 75 75" aria-hidden="true"><path d="M10 66L10 10A56 56 0 0 1 ${10+56*Math.sin(2*Math.PI/d)} ${66-56*Math.cos(2*Math.PI/d)}Z" fill="${M.C.part}" stroke="#f5d6b2" stroke-width="3"/></svg>${F(1,d)}</${interactive?'button':'span'}>`).join('')}</div>`}
  
- function meaning(){const w=+by('mxW').value,d=+by('mxD').value;by('mxN').max=d-1;if(+by('mxN').value>=d)by('mxN').value=d-1;const n=+by('mxN').value;by('mxWOut').value=w;by('mxNOut').value=n;by('mxMeaningPicture').innerHTML=M.pies(w*d+n,d);by('mxMeaningEquation').innerHTML=E(S(w,n,d),`${W(w)} + ${F(n,d)}`);by('mxMeaningRay').innerHTML=M.ray(w*d+n,d,Math.max(3,w+1))}
+ function meaning(){const w=+by('mxW').value,d=+by('mxD').value;by('mxN').max=d-1;if(+by('mxN').value>=d)by('mxN').value=d-1;const n=+by('mxN').value;by('mxWOut').value=w;by('mxNOut').value=n;by('mxMeaningPicture').innerHTML=M.pies(w*d+n,d);by('mxMeaningEquation').innerHTML=`<div class="mx-anatomy"><div><span>Целая часть</span>${W(w)}</div><div><span>Дробная часть</span>${F(n,d)}</div></div>`;by('mxMeaningRay').innerHTML=M.ray(w*d+n,d,Math.max(3,w+1))}
  ['mxW','mxD','mxN'].forEach(id=>by(id).oninput=meaning);meaning();
- let conversionStep=0;
- function conversion(){const [n,d]=[[17,5],[11,4],[23,6],[18,6]][+by('mxConvertExample').value],w=Math.floor(n/d),r=n%d;
- let html=E(F(n,d))+(conversionStep?M.pies(n,d):loose(n,d));
- if(conversionStep===0)html+='<p>Собери из отдельных долей полные пироги.</p>';
- if(conversionStep===1)html+='<p>Целые собраны. Теперь найдём, как записать это количество числом.</p>';
- if(conversionStep>=2)html+=`<div class="mx-conversion-steps"><span>${n} : ${d}<small>делим числитель на знаменатель</small></span><span>Частное <b class="mx-whole">${w}</b><small>это целая часть</small></span><span>Остаток <b style="color:${M.C.part}">${r}</b><small>${r?'это числитель дробной части':'дробной части нет'}</small></span></div><p>${n} : ${d} = ${w} (ост. ${r}). Знаменатель ${d} сохраняем.</p>`;
- if(conversionStep>=3)html+=E(F(n,d),R(n,d));
- if(conversionStep===4)html+=`<div class="mx-stage"><h3>Проверка</h3>${E(`${W(w)} · ${d} + ${r}`,n)}<p>Целые умножили на знаменатель и прибавили остаток — получили исходный числитель.</p></div>`;
- by('mxConversionView').innerHTML=html;by('mxConvertBack').disabled=!conversionStep;by('mxConvertStep').disabled=conversionStep===4;by('mxConvertStep').textContent=['Собрать целые','Разделить числитель на знаменатель',r?'Записать смешанное число':'Записать целое число','Проверить перевод','Готово'][conversionStep];}
- by('mxConvertBack').onclick=()=>{conversionStep--;conversion()};by('mxConvertStep').onclick=()=>{conversionStep++;conversion()};by('mxConvertReset').onclick=()=>{conversionStep=0;conversion()};by('mxConvertExample').onchange=()=>{conversionStep=0;conversion()};conversion();
- let reverseStep=0;
- function reverse(){by('mxReverseView').innerHTML=(reverseStep?loose(17,5):M.pies(17,5))+(reverseStep===0?E(S(3,2,5),`${W(3)} + ${F(2,5)}`):reverseStep===1?E(`${W(3)} + ${F(2,5)}`,`${F('3 · 5',5)} + ${F(2,5)}`):E(S(3,2,5),F('3 · 5 + 2',5),F(17,5)));by('mxReverseStep').textContent=reverseStep?'Сосчитать все пятые':'Разделить целые на пятые';by('mxReverseStep').disabled=reverseStep===2}
- by('mxReverseStep').onclick=()=>{reverseStep++;reverse()};by('mxReverseReset').onclick=()=>{reverseStep=0;reverse()};reverse();
+ window.mountMixedWorkshops();
  fractionChoices(by('mxRayModes'),[['read','Напиши число'],['place','Поставь точку']],v=>{if(v==='read')init('mixed-ray',B.line);else rayPlace()});by('mxRayModes').querySelector('button').setAttribute('aria-pressed','true');init('mixed-ray',B.line);
  function rayPlace(){let idx=0,chosen=null;const host=by('mixed-rayDeck');host.classList.add('types-trainer');
  function draw(){const t=B.specimens[idx],units=Math.max(3,t.w+1);host.innerHTML=`<div class="focus-numbers numbers">${B.specimens.map((_,i)=>`<button data-task-number="${i}" aria-current="${i===idx?'step':'false'}">${i+1}</button>`).join('')}</div><div class="practice-question">Поставь точку.${E(S(t.w,t.n,t.d))}</div><div class="mx-ray-scroll">${M.ray(chosen,t.d,units,true,chosen===null)}</div><button class="primary mx-place-check">Проверить</button><p class="feedback" aria-live="polite"></p><div class="practice-navigation"><button class="focus-prev"${idx===0?' disabled':''}>Назад</button><span>${idx+1} из 24</span><button class="focus-next"${idx===23?' disabled':''}>Следующее</button></div>`;

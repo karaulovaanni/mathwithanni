@@ -39,6 +39,6 @@
  fractionRows.forEach((row,i)=>row.insertAdjacentHTML('beforeend',examples(specs[i],t=>`<div class="op-equation">${i===7?`1 − ${V.frac(t[1],t[2])}`:i===5||i===9?`${V.frac(t[0],t[2])} ${i===5?'+':'−'} 0`:V.expression(...t)} = ?</div>`,t=>(i===7?`<div class="op-equation">1 − ${V.frac(t[1],t[2])} = ${V.frac(t[2],t[2])} − ${V.frac(t[1],t[2])}</div>`:'')+V.equation(...t))));
  // Definitions of proper/improper fractions get the same short independent practice.
  document.querySelectorAll('#types-definition .type-rules article').forEach((row,i)=>row.insertAdjacentHTML('beforeend',examples(i?[[8,8],[11,8]]:[[3,8],[5,9]],([n,d])=>E(`${F(n,d)} — какая дробь?`),([n,d])=>`<p>${n} ${n<d?'меньше':n===d?'равно':'больше'} ${d}. Дробь ${n<d?'правильная':'неправильная'}.</p>`)));
- const parts=document.querySelector('#mixed-parts');parts.insertAdjacentHTML('afterbegin',`<div class="mx-part-zero">${E('4','4 + 0')}${E(F(3,7),`0 + ${F(3,7)}`)}<p>У натурального числа дробная часть — 0. У правильной дроби целая часть — 0.</p></div>`);parts.prepend(parts.querySelector('h2'));
+ document.querySelectorAll('.source-note').forEach(el=>el.remove());
  window.dispatchEvent(new Event('hashchange'));window.refreshFractionOutline?.();
 })();
